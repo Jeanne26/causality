@@ -1,0 +1,11 @@
+{
+    "name": "pi",
+    "description": "politique de base: John ne fait rien",
+    "policy": [
+        {
+            "t" : 0,
+            "state": "S0",
+            "decision": []
+        }
+    ]
+}

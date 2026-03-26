@@ -1,0 +1,59 @@
+{
+    "name": "Jardinier1",
+    "description": "John does not water a plant. The next day, the plant dries up and die. Case 1 : John is the only person that can access the local where the plant is.",
+
+    "states": [
+        {
+            "name": "S0",
+            "fluents": [
+            {
+                "name": "LivingPlant",
+                "value": true
+            }
+            ]
+        },
+        {
+            "name": "S1",
+            "fluents": [
+            {
+                "name": "LivingPlant",
+                "value": false
+            }
+            ]
+        }
+    ],
+
+    "events": [
+        {
+            "name": "JohnWaters",
+            "preconditions": [
+                {
+                    "fluent": "LivingPlant",
+                    "value": true
+                }
+            ]
+        }
+    ],
+
+    "tau": [
+        {
+            "from": "S0",
+            "to": "S0",
+            "decisions": [
+                {
+                    "event": "JohnWaters"
+                }
+            ]
+        },
+        {
+            "from": "S0",
+            "to": "S1",
+            "decisions": []
+        },
+        {
+            "from": "S1",
+            "to": "S1",
+            "decisions": []
+        }
+    ]
+}

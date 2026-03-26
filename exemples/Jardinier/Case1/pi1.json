@@ -1,0 +1,11 @@
+{
+    "name": "pi1",
+    "description": "politique contrefactuelle: John arrose",
+    "policy": [
+        {
+            "t" : 0,
+            "state": "S0",
+            "decision": ["JohnWaters"]
+        }
+    ]
+}
