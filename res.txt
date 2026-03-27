@@ -1,0 +1,15 @@
+Resultats lorsqu'on considere N = nb states
+Perplexité CF1: 1.4285714285714286, (states: ['VO', 'vivant'], events: ['boire'])
+Perplexité CF2: 2.23606797749979, (states: ['VO', 'VV', 'mort'], events: ['vider', 'nothing'])
+Perplexité CF4: 2.426427503202586, (states: ['VO', 'VE', 'VA', 'vivant'], events: ['emp', 'antidote', 'boire'])
+Perplexité CF3: 4.054801330382266, (states: ['VO', 'VE', 'VV', 'mort'], events: ['emp', 'vider', 'nothing'])
+Perplexité obs: 8.164965809277257, (states: ['VO', 'VE', 'mort'], events: ['emp', 'boire'])
+
+Obs: states: ['VO', 'VE', 'mort'],events: ['emp', 'boire']
+Cout pour CF2:  3.24, (perplexité: 2.24, distance: 1.0), (states: ['VO', 'VV', 'mort'], events: ['vider', 'nothing'])
+Cout pour CF4:  4.43, (perplexité: 2.43, distance: 2.0), (states: ['VO', 'VE', 'VA', 'vivant'], events: ['emp', 'antidote', 'boire'])
+Cout pour CF1:  4.43, (perplexité: 1.43, distance: 3.0), (states: ['VO', 'vivant'], events: ['boire'])
+Cout pour CF3:  5.05, (perplexité: 4.05, distance: 1.0), (states: ['VO', 'VE', 'VV', 'mort'], events: ['emp', 'vider', 'nothing'])
+
+
+Resultats lorsqu'on considere N= nb state où choix
