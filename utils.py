@@ -98,7 +98,7 @@ def find_paths(graph, start, path=None, seen=None, depth_limit=2):
         seen = {start}
     
     # limite profondeur
-    if len(path)-1 >= depth_limit:
+    if len(path)-1 >= depth_limit * 2:
         yield path
         return
     
@@ -113,7 +113,9 @@ def find_paths(graph, start, path=None, seen=None, depth_limit=2):
         if n in seen: 
             yield path
         else:
-            yield from find_paths(graph, n, path + [n], seen.union([n]), depth_limit)
+            edge = get_edge(graph, start, n)
+            new_path = path + [edge[0], n]
+            yield from find_paths(graph, n, new_path, seen.union([n]), depth_limit)
 
 #==================Politiques optimales==================
 def optimal_policy_no_plan(graph):
@@ -128,15 +130,22 @@ def optimal_policy_no_plan(graph):
     return policy
 
 
-def compute_score(path,graph, agg: lambda liste: np.mean(liste)):
-    #pour un chemin donné calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
+def compute_score(state_path,graph, agg: lambda liste: np.mean(liste), choice=False):
+    #pour un chemin (etat+event) donné, calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
     scores = []
-    for i in range(0, len(path)-1 ,1):
-        edge = get_edge(graph,path[i],path[i+1])
-        scores.append(edge[1])
+    for i in range(0, len(state_path)-2 ,2):
+        if choice and len(graph.out_edges(state_path[i]))<=1:
+            continue
+        edge_weight= get_edge(graph,state_path[i],state_path[i+2])[1]
+        scores.append(edge_weight)
     return agg(scores)
 
-def optimal_policy_plan(graph,horizon, agg= np.mean):
+def perplexite_agg(liste_score):
+    assert len(liste_score)>0
+    N= len(liste_score)
+    return np.exp(-(1/N)* np.sum(np.log(liste_score)))
+
+def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
     #politique optimale avec plannification qui choisit l'evenement qui se situe sur le chemin qui maximise 
     #la fonction d'aggregation à un horizon n
     policy = {}
@@ -147,18 +156,16 @@ def optimal_policy_plan(graph,horizon, agg= np.mean):
         edges = list(graph.out_edges(s,data = True))
         if not edges:
             continue
-        paths_from_s = find_paths(graph,s,depth_limit=horizon)
-        best_path = max(paths_from_s, key=lambda path: compute_score(path, graph, agg))
-        policy[s] = get_edge(graph,best_path[0],best_path[1])[0]
+        paths_from_s = list(find_paths(graph,s,depth_limit=horizon))
+        best_path = min(paths_from_s, key=lambda path: compute_score(path, graph, agg))
+        policy[s] = best_path[1]
     return policy
 
 
 
 #=================================D_OPT============================================================
 
-def perplexite_agg(liste_score):
-    N= len(liste_score)
-    return np.exp(-(1/N)* np.sum(np.log(liste_score)))
+
 
 def distance_pi_opt(pi,pi_opt,state_path):
     denom = len(state_path)
@@ -170,8 +177,8 @@ def distance_pi_opt(pi,pi_opt,state_path):
 
 #=================================D_Obs============================================================
 def levenshtein_distance(path1, path2):
-    s1 = extract_sigma_state(path1)
-    s2 = extract_sigma_state(path2)
+    s1 = path1
+    s2 = path2
     n,m= len(s1), len(s2)
     dp = np.zeros((n+1,m+1))
     for i in range(n+1):
@@ -199,7 +206,7 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         states2_choice = extract_sigma_state_choice(path2, graph)
     
 
-    d_observation = d_obs(path1,path2)
+    d_observation = d_obs(states1,states2)
 
     if pi_opt:
         if choice:
@@ -207,11 +214,7 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         else:
             d_optimale = distance_pi_opt(pi2, pi_opt, states2)
     else:
-        if choice:
-            d_optimale = compute_score(states2_choice,graph, perplexite_agg)
-        else:
-            d_optimale = compute_score(states2,graph, perplexite_agg)
-
+        d_optimale = compute_score(path2,graph, perplexite_agg,choice)
     print(f"d_obs = {d_observation}, d_opt = {d_optimale}")
     return lambda1*d_observation + lambda2*d_optimale
 
