@@ -215,9 +215,13 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
             d_optimale = distance_pi_opt(pi2, pi_opt, states2)
     else:
         d_optimale = compute_score(path2,graph, perplexite_agg,choice)
-    print(f"d_obs = {d_observation}, d_opt = {d_optimale}")
-    return lambda1*d_observation + lambda2*d_optimale
+    return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
 
 
 
-    
+def compute_all_res(graph, S0, pi1, pi2, pi_opt):
+    res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True),
+          'L+P2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False),
+          'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, pi_opt=pi_opt),
+          'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, pi_opt=pi_opt)}
+    return res
