@@ -54,7 +54,6 @@ def extract_sigma_event(path):
 
 def get_edge(graph,node1,node2):
     #renvoie l'arc entre node1 et node2 dans graph, si plusieurs arcs existent on utilise l'heuristique pour choisir
-    print(node1, node2)
     edge = list(graph.get_edge_data(node1, node2).values())
     if not edge:
         raise ValueError(f"pas d'arc entre {node1} et {node2}")
@@ -72,6 +71,32 @@ def astar_trace(graph,start,end):
     return res
 
 
+def find_paths(G, terminals, start, path=None, seen=None, depth_limit=2):
+    #explore le graph en partant de node et retourne tous les chemins de longueur distance depuis cette source
+    #ou qui ont atteint un état terminal
+    if path is None:
+        path = [start]
+    if seen is None:
+        seen = {start}
+    
+    # limite profondeur
+    if len(path)-1 >= depth_limit:
+        yield path
+        return
+    
+    # etat terminal atteint
+    if start in terminals:
+        yield path
+        return
+    
+    # descendant direct
+    desc = nx.descendants_at_distance(G, start, 1)
+    for n in desc:
+        if n in seen: 
+            yield path
+        else:
+            yield from find_paths(G, terminals, n, path + [n], seen.union([n]), depth_limit)
+
 #==================Policies optimales==================
 def optimal_policy_no_plan(graph):
     #politique optimale sans plannif choix de la meilleure action à chaque état
@@ -88,8 +113,7 @@ def optimal_policy_no_plan(graph):
 def compute_score(path,graph, agg: lambda liste: np.mean(liste)):
     #pour un chemin donné calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
     scores = []
-    for i in range(0, len(path)-2, 2):
-        edge = get_edge(graph,path[i],path[i+2])
-        print(edge)
+    for i in range(0, len(path)-1 ,1):
+        edge = get_edge(graph,path[i],path[i+1])
         scores.append(edge[1])
     return agg(scores)
