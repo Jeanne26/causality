@@ -33,6 +33,17 @@ def next_state(state, action, graph):
             return succ
     raise ValueError(f"{state}: action {action} non valide pour cet état")
 
+def get_path(graph, pi,S0):
+    current_node = S0
+    path = [current_node]
+    while current_node not in graph.terminals:
+        action = pi[current_node]
+        path.append(action)
+        current_node = next_state(current_node, action, graph)
+        path.append(current_node)
+    return path
+
+
 
 def extract_sigma(pi, graph,S0):
     #extrait le chemin emprunté par une politique pi à partir d'un état initial S0 dans le graphe graph
@@ -53,6 +64,11 @@ def extract_sigma_event(path):
     #extrait la séquence d'événements d'un chemin
     return path[1::2]
 
+def extract_sigma_state_choice(path,graph):
+    #extrait la séquence d'etats d'un chemin qui possède strictement plus d'un arcs sortant
+    path = extract_sigma_state(path)
+    path = [s for s in path if len(graph.out_edges(s))>1]
+    return path
 
 def get_edge(graph,node1,node2):
     #renvoie l'arc entre node1 et node2 dans graph, si plusieurs arcs existent on utilise l'heuristique pour choisir
@@ -99,7 +115,7 @@ def find_paths(graph, start, path=None, seen=None, depth_limit=2):
         else:
             yield from find_paths(graph, n, path + [n], seen.union([n]), depth_limit)
 
-#==================Policies optimales==================
+#==================Politiques optimales==================
 def optimal_policy_no_plan(graph):
     #politique optimale sans plannif choix de la meilleure action à chaque état
     policy = {}
@@ -135,3 +151,70 @@ def optimal_policy_plan(graph,horizon, agg= np.mean):
         best_path = max(paths_from_s, key=lambda path: compute_score(path, graph, agg))
         policy[s] = get_edge(graph,best_path[0],best_path[1])[0]
     return policy
+
+
+
+#=================================D_OPT============================================================
+
+def perplexite_agg(liste_score):
+    N= len(liste_score)
+    return np.exp(-(1/N)* np.sum(np.log(liste_score)))
+
+def distance_pi_opt(pi,pi_opt,state_path):
+    denom = len(state_path)
+    assert denom>0
+    num = np.sum([1 for s in state_path if pi[s]!=pi_opt[s]] )
+    return num/denom
+
+
+
+#=================================D_Obs============================================================
+def levenshtein_distance(path1, path2):
+    s1 = extract_sigma_state(path1)
+    s2 = extract_sigma_state(path2)
+    n,m= len(s1), len(s2)
+    dp = np.zeros((n+1,m+1))
+    for i in range(n+1):
+        for j in range(m+1):
+            if i==0:
+                dp[i][j] = j
+            elif j==0:
+                dp[i][j] = i
+            elif s1[i-1] == s2[j-1]: 
+                dp[i][j] = dp[i-1][j-1]
+            else:
+                dp[i][j] = 1 + min(dp[i-1][j]+1, dp[i][j-1], dp[i-1][j-1]) # insertion, deletion, substitution
+    return dp[n][m]
+
+
+def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None):
+    #pi1 politique observé pi2 la politique à evaluer relativement à pi1
+    path1 = get_path(graph, pi1, S0)
+    path2 = get_path(graph, pi2, S0)
+    states1 = extract_sigma_state(path1)
+    states2 = extract_sigma_state(path2)  
+
+    if choice:
+        # states1_choice = extract_sigma_state_choice(path1, graph)
+        states2_choice = extract_sigma_state_choice(path2, graph)
+    
+
+    d_observation = d_obs(path1,path2)
+
+    if pi_opt:
+        if choice:
+            d_optimale = distance_pi_opt(pi2, pi_opt, states2_choice)
+        else:
+            d_optimale = distance_pi_opt(pi2, pi_opt, states2)
+    else:
+        if choice:
+            d_optimale = compute_score(states2_choice,graph, perplexite_agg)
+        else:
+            d_optimale = compute_score(states2,graph, perplexite_agg)
+
+    print(f"d_obs = {d_observation}, d_opt = {d_optimale}")
+    return lambda1*d_observation + lambda2*d_optimale
+
+
+
+    

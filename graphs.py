@@ -24,7 +24,7 @@ pi2 = {'VO': 'boire'}
 pi3 = {'VO': 'vider', 'VV': '$\\varnothing$'}
 pi4 = {'VO': 'emp', 'VE': 'vider', 'VV': '$\\varnothing$'}
 pi5 = {'VO': 'emp', 'VE': 'antidote', 'VA': 'boire'}
-policies = {"pi1": complete_policy(pi1, P_graph), "pi2": complete_policy(pi2, P_graph), "pi3": complete_policy(pi3, P_graph), "pi4": complete_policy(pi4, P_graph), "pi5": complete_policy(pi5, P_graph)}
+P_policies = {"pi1": complete_policy(pi1, P_graph), "pi2": complete_policy(pi2, P_graph), "pi3": complete_policy(pi3, P_graph), "pi4": complete_policy(pi4, P_graph), "pi5": complete_policy(pi5, P_graph)}
     
 
 
