@@ -22,6 +22,9 @@ def is_terminal_state(state, graph):
     out_edges = list(graph.out_edges(state))
     return len(out_edges)==1 and out_edges[0][1]==state
 
+def terminals(graph):
+    #retoyurne l'ensemble des états terminaux du graphe
+    return [node for node in graph.nodes() if is_terminal_state(node, graph)]
 
 def next_state(state, action, graph):
     #renvoie le successeur de state lorsque l'action action est appliquée
@@ -35,8 +38,7 @@ def extract_sigma(pi, graph,S0):
     #extrait le chemin emprunté par une politique pi à partir d'un état initial S0 dans le graphe graph
     path = [S0]
     current_state = S0
-    terminals = [node for node in graph.nodes() if is_terminal_state(node, graph)]
-    while current_state not in terminals:
+    while current_state not in graph.terminals:
         action = pi[current_state]
         path.append(action)
         next_s = next_state(current_state, action, graph)
@@ -71,7 +73,7 @@ def astar_trace(graph,start,end):
     return res
 
 
-def find_paths(G, terminals, start, path=None, seen=None, depth_limit=2):
+def find_paths(graph, start, path=None, seen=None, depth_limit=2):
     #explore le graph en partant de node et retourne tous les chemins de longueur distance depuis cette source
     #ou qui ont atteint un état terminal
     if path is None:
@@ -85,17 +87,17 @@ def find_paths(G, terminals, start, path=None, seen=None, depth_limit=2):
         return
     
     # etat terminal atteint
-    if start in terminals:
+    if start in graph.terminals:
         yield path
         return
     
     # descendant direct
-    desc = nx.descendants_at_distance(G, start, 1)
+    desc = nx.descendants_at_distance(graph, start, 1)
     for n in desc:
         if n in seen: 
             yield path
         else:
-            yield from find_paths(G, terminals, n, path + [n], seen.union([n]), depth_limit)
+            yield from find_paths(graph, n, path + [n], seen.union([n]), depth_limit)
 
 #==================Policies optimales==================
 def optimal_policy_no_plan(graph):
@@ -117,3 +119,19 @@ def compute_score(path,graph, agg: lambda liste: np.mean(liste)):
         edge = get_edge(graph,path[i],path[i+1])
         scores.append(edge[1])
     return agg(scores)
+
+def optimal_policy_plan(graph,horizon, agg= np.mean):
+    #politique optimale avec plannification qui choisit l'evenement qui se situe sur le chemin qui maximise 
+    #la fonction d'aggregation à un horizon n
+    policy = {}
+    for s in graph.nodes():
+        if s in graph.terminals:
+            policy[s] = get_edge(graph,s,s)[0]
+            continue
+        edges = list(graph.out_edges(s,data = True))
+        if not edges:
+            continue
+        paths_from_s = find_paths(graph,s,depth_limit=horizon)
+        best_path = max(paths_from_s, key=lambda path: compute_score(path, graph, agg))
+        policy[s] = get_edge(graph,best_path[0],best_path[1])[0]
+    return policy

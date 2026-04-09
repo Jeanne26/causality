@@ -1,11 +1,7 @@
-from graph_poison import P_graph, policies, terminals
+from graph_poison import P_graph, policies
 from utils import *
 
 if __name__ == "__main__":
-    paths = list(nx.all_simple_paths(P_graph, source="VO", target="vivant", cutoff=3))
-    res = find_paths(P_graph,terminals,"VO", depth_limit=1 )
-    for r in res:
-        print(r)
-    # for p in paths:
-    #     score = compute_score(p, P_graph, np.sum)
-    #     print(p,score)
+    print('Politique no plan\n', optimal_policy_no_plan(P_graph))
+    print("Politique plan\n", optimal_policy_plan(P_graph, horizon=3))
+
