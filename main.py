@@ -1,4 +1,4 @@
-from graph_poison import P_graph, policies
+from graphs import P_graph, policies
 from utils import *
 
 if __name__ == "__main__":
