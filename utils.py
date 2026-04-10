@@ -177,8 +177,9 @@ def distance_pi_opt(pi,pi_opt,state_path):
 
 #=================================D_Obs============================================================
 def levenshtein_distance(path1, path2):
-    s1 = path1
-    s2 = path2
+    #on ne prends pas en compte le dernier état car desavantage les scenarios valides qui n'ont pas le meme état terminal que la politique de référence
+    s1 = path1[:-1]
+    s2 = path2[:-1]
     n,m= len(s1), len(s2)
     dp = np.zeros((n+1,m+1))
     for i in range(n+1):
@@ -233,8 +234,12 @@ def compute_all_res(graph, S0, pi1, pi2, pi_opt):
 
 
 def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, start_state, agg_func=None, horizon=3, cout_max=5, pi_opt=None):
+
     results = {}
     baseline_policy = policies_dict[baseline_policy_name]
+
+    baseline_path = get_path(graph, baseline_policy, start_state)
+    print(f"Baseline: {baseline_policy_name}, Path: {baseline_path}\n")
     for policy_name in policy_names:
 
         results[policy_name] = compute_all_res(graph, start_state, baseline_policy, 
