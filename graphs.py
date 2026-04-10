@@ -1,3 +1,4 @@
+from utils import complete_expertise, add_expertise
 import networkx as nx
 
 from utils import complete_policy, terminals
@@ -77,3 +78,29 @@ pi2 = {"S0": "SW"}
 pi3 = {"S0": "$\\varnothing$"}
 J_policies = {"pi1": complete_policy(pi1, J_graph), "pi2": complete_policy(pi2, J_graph), "pi3": complete_policy(pi3, J_graph)}
 J_graph.policies = J_policies
+
+
+
+#====================================================
+G1= nx.DiGraph()
+G1.add_edge(0,1,label="a")
+G1.add_edge(1,2,label="b")
+G1.add_edge(2,3,label="c")
+G1.add_edge(3,4,label="d")
+G1.add_edge(4,5,label="e")
+
+G1.add_edge(0,2,label="f")
+G1.add_edge(3,5,label="g")
+
+G1.add_edge(5,5,label="$\\varnothing$")
+
+partial_expertise= {}
+expertise = complete_expertise(G1,partial_expertise)
+add_expertise(G1, expertise)
+
+pi1 = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "$\\varnothing$"}
+pi2 = {0:"f",3:"d"}
+pi3 = {0:"a",3:"g"}
+G1.positions = {0: (0, 0), 1: (1, 2), 2: (2, 4), 3: (3, 6), 4: (4, 8), 5: (5, 10)}
+G1.terminals = terminals(G1)
+G1.policies = {"pi1": complete_policy(pi1, G1), "pi2": complete_policy(pi2, G1), "pi3": complete_policy(pi3, G1)}

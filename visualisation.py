@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-from graphs import P_graph,T_graph,J_graph
+from graphs import P_graph,T_graph,J_graph,G1
 
 def show_poison():
     pos = {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
@@ -43,14 +43,22 @@ def show_graph(graph, pos,fichier):
     }
 
     ax[0].set_title("Labels")
-    nx.draw(graph, pos, ax=ax[0], with_labels=True, **options)
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[0], font_color='red')
-
+    if pos is not None:
+        nx.draw(graph, pos, ax=ax[0], with_labels=True, **options)
+        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[0], font_color='red')
+    else:
+        pos = nx.spring_layout(graph)
+        nx.draw(graph, pos, ax=ax[0], with_labels=True, **options)
+        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[0], font_color='red')
 
     ax[1].set_title("Poids")
-    nx.draw(graph, pos, ax=ax[1], with_labels=True, **options)
     edge_labels = nx.get_edge_attributes(graph, 'weight')
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[1], font_color='blue')
+    if pos is not None:
+        nx.draw(graph, pos, ax=ax[1], with_labels=True, **options)
+        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[1], font_color='blue')
+    else:
+        nx.draw(graph, pos, ax=ax[1], with_labels=True, **options)
+        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[1], font_color='blue')
 
     plt.tight_layout()
     plt.savefig(f"fig/{fichier}.png")
@@ -62,4 +70,5 @@ if __name__== "__main__":
     # show_graph(P_graph, pos_poison, "graphe_poison")
     # show_graph(T_graph, pos_test, "graphe_test")
 
-    show_graph(J_graph, J_graph.positions,"graphe_jardinier")
+    # show_graph(J_graph, J_graph.positions,"graphe_jardinier")
+    show_graph(G1, None, "graphe_G1")

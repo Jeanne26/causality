@@ -145,6 +145,13 @@ def perplexite_agg(liste_score):
     N= len(liste_score)
     return np.exp(-(1/N)* np.sum(np.log(liste_score)))
 
+def gamma_agg(liste_score,gamma=.9):
+    assert len(liste_score)>0
+    for i in range(0,len(liste_score)):
+        liste_score[i] = gamma**(i+1)*liste_score[i]
+    print(liste_score)
+    return np.sum(liste_score)
+
 def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
     #politique optimale avec plannification qui choisit l'evenement qui se situe sur le chemin qui maximise 
     #la fonction d'aggregation à un horizon n
@@ -195,7 +202,7 @@ def levenshtein_distance(path1, path2):
     return dp[n][m]
 
 
-def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None):
+def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg):
     #pi1 politique observé pi2 la politique à evaluer relativement à pi1
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
@@ -215,7 +222,7 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         else:
             d_optimale = distance_pi_opt(pi2, pi_opt, states2)
     else:
-        d_optimale = compute_score(path2,graph, perplexite_agg,choice)
+        d_optimale = compute_score(path2,graph, agg,choice)
     return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
 
 def critere_selection(graph, S0, pi1,pi2, cout_max):
@@ -224,11 +231,11 @@ def critere_selection(graph, S0, pi1,pi2, cout_max):
     path2 = get_path(graph, pi2, S0)
     return res['cout']<= cout_max and path1[-1]!=path2[-1]
 
-def compute_all_res(graph, S0, pi1, pi2, pi_opt):
-    res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True),
-          'L+P2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False),
-          'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, pi_opt=pi_opt),
-          'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, pi_opt=pi_opt)}
+def compute_all_res(graph, S0, pi1, pi2, pi_opt,agg):
+    res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, agg=agg),
+          'L+P2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, agg=agg),
+          'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, pi_opt=pi_opt, agg=agg),
+          'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, pi_opt=pi_opt, agg=agg)}
     return res
 
 
@@ -239,32 +246,63 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
     baseline_policy = policies_dict[baseline_policy_name]
 
     baseline_path = get_path(graph, baseline_policy, start_state)
-    print(f"Baseline: {baseline_policy_name}, Path: {baseline_path}\n")
+    print(f"Baseline: {baseline_policy_name}, Path : {baseline_path}\n")
     for policy_name in policy_names:
 
         results[policy_name] = compute_all_res(graph, start_state, baseline_policy, 
-                                                policies_dict[policy_name], pi_opt)
-    print("==========================================================================================")
-    print("| Policy | Perplexité | Distance à opt | Levenshtein | L+P1 | L+P2 | L+D1 | L+D2 |")
+                                                policies_dict[policy_name], pi_opt, agg_func)
+    # print("==========================================================================================")
+    # print("| Policy | Perplexité | Distance à opt | Levenshtein | L+P1 | L+P2 | L+D1 | L+D2 |")
+    print( "| CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |")
+    print( "|       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |")
     for policy_name in policy_names:
         if policy_name == baseline_policy_name:
             continue
         res = results[policy_name]
-        print(f"|{policy_name:^7}|{res['L+P1']['d_opt']:^10.2f}|{res['L+D1']['d_opt']:^14.2f}|{res['L+P1']['d_obs']:^11.2f}|"
-                f"{res['L+P1']['cout']:^5.2f}|{res['L+P2']['cout']:^5.2f}|{res['L+D1']['cout']:^5.2f}|{res['L+D2']['cout']:^6.2f}|")
+        # print(f"|{policy_name:^7}|{res['L+P1']['d_opt']:^10.2f}|{res['L+D1']['d_opt']:^14.2f}|{res['L+P1']['d_obs']:^11.2f}|"
+        #         f"{res['L+P1']['cout']:^5.2f}|{res['L+P2']['cout']:^5.2f}|{res['L+D1']['cout']:^5.2f}|{res['L+D2']['cout']:^6.2f}|")
+        
+        print(f"|{policy_name}  |  {res['L+P1']['d_opt']:.2f} |  {res['L+P2']['d_opt']:.2f} |  {res['L+D1']['d_opt']:.2f} |"
+            f"  {res['L+D2']['d_opt']:.2f} |     {res['L+P1']['d_obs']:.2f}       | {res['L+P1']['cout']:.2f} |"  
+            f"  {res['L+P2']['cout']:.2f} |  {res['L+D1']['cout']:.2f} |  {res['L+D2']['cout']:.2f}  |")
     print("==========================================================================================")
     
     for config in ["L+P1", "L+P2", "L+D1", "L+D2"]:
-        print(f"Configuration: {config}")
+        print(f"Configuration : {config}")
         policies = [(name, results[name][config]['cout']) for name in policy_names if name != baseline_policy_name]
         policies.sort(key=lambda x: x[1])
-        for policy_name, cout in policies:
+        for policy_name,cout in policies:
             path = get_path(graph, policies_dict[policy_name], start_state)
             print(f"Policy: {policy_name}, Cost: {cout:.2f}, Path: {path}")
         print("==========================================================================================")
     
     print(f"Politiques valides pour un cout max de {cout_max}:")
     for config in ["L+P1", "L+P2", "L+D1", "L+D2"]:
-        print(f"Configuration: {config}")
+        print(f"Configuration : {config}")
         valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max)]
         print(f"Politiques valides: {', '.join(valid_policies)}\n")
+
+
+
+def complete_expertise(graph, partial_expertise, value=1):
+    #complete une expertise partielle, ajout de la valeur par defaut pour les event non notés
+    res = {s:{} for s in graph.nodes()}
+    for state in graph.nodes():
+        for _, succ, data in graph.out_edges(state, data=True):
+            event_label = data["label"]
+            if state in partial_expertise and event_label in partial_expertise[state]:
+                res[state][event_label] = partial_expertise[state][event_label]
+            else:
+                res[state][event_label] = value
+    return res
+
+def add_expertise(graph, expertise):
+    #ajoute une expertise au graphe en modifiant les poids des arcs
+    for state in expertise.keys():
+        for event_label in expertise[state].keys():
+            for _, succ, data in graph.out_edges(state, data=True):
+                if data['label'] == event_label:
+                    data['weight'] = expertise[state][event_label]
+                    break
+
+
