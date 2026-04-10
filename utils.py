@@ -146,11 +146,18 @@ def perplexite_agg(liste_score):
     return np.exp(-(1/N)* np.sum(np.log(liste_score)))
 
 def gamma_agg(liste_score,gamma=.9):
+    #aggregation qui prend en compte la position de l'événement dans le chemin, les événements plus proches du début du chemin sont plus importants que ceux proches de la fin
+    #on normalise le score pour qu'il soit compris entre 0 et 1 
     assert len(liste_score)>0
+    N = len(liste_score)
     for i in range(0,len(liste_score)):
-        liste_score[i] = gamma**(i+1)*liste_score[i]
-    print(liste_score)
-    return np.sum(liste_score)
+        liste_score[i] = (gamma**i) *liste_score[i]
+    if gamma == 1:
+        return (N - np.sum(liste_score))/N
+    sum_gamma = (1- gamma**(N))/(1 -gamma)
+    return (sum_gamma - np.sum(liste_score))/sum_gamma
+
+
 
 def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
     #politique optimale avec plannification qui choisit l'evenement qui se situe sur le chemin qui maximise 
@@ -198,8 +205,10 @@ def levenshtein_distance(path1, path2):
             elif s1[i-1] == s2[j-1]: 
                 dp[i][j] = dp[i-1][j-1]
             else:
-                dp[i][j] = 1 + min(dp[i-1][j]+1, dp[i][j-1], dp[i-1][j-1]) # insertion, deletion, substitution
-    return dp[n][m]
+                dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) # insertion, deletion, substitution
+    mini = abs(m-n)
+    maxi = max(m,n)
+    return dp[n][m]-mini/max(m,n)
 
 
 def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg):
@@ -225,22 +234,22 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         d_optimale = compute_score(path2,graph, agg,choice)
     return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
 
-def critere_selection(graph, S0, pi1,pi2, cout_max):
-    res = cout(graph,levenshtein_distance, S0, pi1,pi2)
+def critere_selection(graph, S0, pi1,pi2, cout_max, lambda1=1, lambda2=1, agg=perplexite_agg):
+    res = cout(graph,levenshtein_distance, S0, pi1,pi2, lambda1=lambda1, lambda2=lambda2, agg=agg)
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
     return res['cout']<= cout_max and path1[-1]!=path2[-1]
 
-def compute_all_res(graph, S0, pi1, pi2, pi_opt,agg):
-    res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, agg=agg),
-          'L+P2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, agg=agg),
-          'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, pi_opt=pi_opt, agg=agg),
-          'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, pi_opt=pi_opt, agg=agg)}
+def compute_all_res(graph, S0, pi1, pi2, pi_opt,agg, lambda1=1, lambda2=1):
+    res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=True, agg=agg),
+          'L+P2' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=False, agg=agg),
+          'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=True, pi_opt=pi_opt, agg=agg),
+          'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=False, pi_opt=pi_opt, agg=agg)}
     return res
 
 
 
-def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, start_state, agg_func=None, horizon=3, cout_max=5, pi_opt=None):
+def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, start_state, agg_func=None, horizon=3, cout_max=5, pi_opt=None, lambda1=1, lambda2=1):
 
     results = {}
     baseline_policy = policies_dict[baseline_policy_name]
@@ -250,18 +259,13 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
     for policy_name in policy_names:
 
         results[policy_name] = compute_all_res(graph, start_state, baseline_policy, 
-                                                policies_dict[policy_name], pi_opt, agg_func)
-    # print("==========================================================================================")
-    # print("| Policy | Perplexité | Distance à opt | Levenshtein | L+P1 | L+P2 | L+D1 | L+D2 |")
+                                                policies_dict[policy_name], pi_opt, agg_func, lambda1=lambda1, lambda2=lambda2)
     print( "| CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |")
     print( "|       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |")
     for policy_name in policy_names:
         if policy_name == baseline_policy_name:
             continue
         res = results[policy_name]
-        # print(f"|{policy_name:^7}|{res['L+P1']['d_opt']:^10.2f}|{res['L+D1']['d_opt']:^14.2f}|{res['L+P1']['d_obs']:^11.2f}|"
-        #         f"{res['L+P1']['cout']:^5.2f}|{res['L+P2']['cout']:^5.2f}|{res['L+D1']['cout']:^5.2f}|{res['L+D2']['cout']:^6.2f}|")
-        
         print(f"|{policy_name}  |  {res['L+P1']['d_opt']:.2f} |  {res['L+P2']['d_opt']:.2f} |  {res['L+D1']['d_opt']:.2f} |"
             f"  {res['L+D2']['d_opt']:.2f} |     {res['L+P1']['d_obs']:.2f}       | {res['L+P1']['cout']:.2f} |"  
             f"  {res['L+P2']['cout']:.2f} |  {res['L+D1']['cout']:.2f} |  {res['L+D2']['cout']:.2f}  |")
@@ -279,7 +283,7 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
     print(f"Politiques valides pour un cout max de {cout_max}:")
     for config in ["L+P1", "L+P2", "L+D1", "L+D2"]:
         print(f"Configuration : {config}")
-        valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max)]
+        valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max, lambda1=lambda1, lambda2=lambda2, agg=agg_func)]
         print(f"Politiques valides: {', '.join(valid_policies)}\n")
 
 

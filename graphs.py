@@ -94,7 +94,7 @@ G1.add_edge(3,5,label="g")
 
 G1.add_edge(5,5,label="$\\varnothing$")
 
-partial_expertise= {}
+partial_expertise= {0:{"f":0.5},3:{"g":0.5}}
 expertise = complete_expertise(G1,partial_expertise)
 add_expertise(G1, expertise)
 
