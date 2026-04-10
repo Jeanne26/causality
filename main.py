@@ -5,14 +5,17 @@ if __name__ == "__main__":
 
     lambda1 = 1
     lambda2 = 1
-    horizon = 2
-    agg = gamma_agg
+    horizon = 5
+    agg = seuil_agg
     coût_max = 5
+
+
 
     print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max={coût_max}\n")
     print("===============================Poison=====================================\n")
 
     P_pi_opt = optimal_policy_no_plan(P_graph)
+
     analyze_policies(P_graph, P_graph.policies,list(P_graph.policies.keys()), "pi1", start_state="VO", agg_func=agg, horizon=horizon, cout_max=coût_max, pi_opt=P_pi_opt, lambda1=lambda1, lambda2=lambda2)
     
     print("===============================Test=====================================\n")

@@ -1,4 +1,4 @@
-Parametres : lambda1=1, lambda2=1, horizon=2, agg=gamma_agg, coût_max=5
+Parametres : lambda1=1.5, lambda2=1, horizon=2, agg=gamma_agg, coût_max=5
 
 ===============================Poison=====================================
 
@@ -6,34 +6,34 @@ Baseline: pi1, Path : ['VO', 'emp', 'VE', 'boire', 'mort']
 
 | CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |
 |       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |
-|pi2  |  0.00 |  0.00 |  0.00 |  0.00 |     0.50       | 0.50 |  0.50 |  0.50 |  0.50  |
-|pi3  |  0.50 |  0.50 |  1.00 |  0.33 |     1.00       | 1.50 |  1.50 |  2.00 |  1.33  |
-|pi4  |  0.71 |  0.65 |  1.00 |  0.50 |     0.67       | 1.38 |  1.31 |  1.67 |  1.17  |
-|pi5  |  0.47 |  0.33 |  0.50 |  0.25 |     0.67       | 1.14 |  1.00 |  1.17 |  0.92  |
+|pi2  |  0.00 |  0.00 |  0.00 |  0.00 |     0.50       | 0.75 |  0.75 |  0.75 |  0.75  |
+|pi3  |  0.50 |  0.50 |  1.00 |  0.33 |     1.00       | 2.00 |  2.00 |  2.50 |  1.83  |
+|pi4  |  0.71 |  0.65 |  1.00 |  0.50 |     0.67       | 1.71 |  1.65 |  2.00 |  1.50  |
+|pi5  |  0.47 |  0.33 |  0.50 |  0.25 |     0.67       | 1.47 |  1.33 |  1.50 |  1.25  |
 ==========================================================================================
 Configuration : L+P1
-Policy: pi2, Cost: 0.50, Path: ['VO', 'boire', 'vivant']
-Policy: pi5, Cost: 1.14, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
-Policy: pi4, Cost: 1.38, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
-Policy: pi3, Cost: 1.50, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
-==========================================================================================
-Configuration : L+P2
-Policy: pi2, Cost: 0.50, Path: ['VO', 'boire', 'vivant']
-Policy: pi5, Cost: 1.00, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
-Policy: pi4, Cost: 1.31, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
-Policy: pi3, Cost: 1.50, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
-==========================================================================================
-Configuration : L+D1
-Policy: pi2, Cost: 0.50, Path: ['VO', 'boire', 'vivant']
-Policy: pi5, Cost: 1.17, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
-Policy: pi4, Cost: 1.67, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
+Policy: pi2, Cost: 0.75, Path: ['VO', 'boire', 'vivant']
+Policy: pi5, Cost: 1.47, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
+Policy: pi4, Cost: 1.71, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
 Policy: pi3, Cost: 2.00, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
 ==========================================================================================
+Configuration : L+P2
+Policy: pi2, Cost: 0.75, Path: ['VO', 'boire', 'vivant']
+Policy: pi5, Cost: 1.33, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
+Policy: pi4, Cost: 1.65, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
+Policy: pi3, Cost: 2.00, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
+==========================================================================================
+Configuration : L+D1
+Policy: pi2, Cost: 0.75, Path: ['VO', 'boire', 'vivant']
+Policy: pi5, Cost: 1.50, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
+Policy: pi4, Cost: 2.00, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
+Policy: pi3, Cost: 2.50, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
+==========================================================================================
 Configuration : L+D2
-Policy: pi2, Cost: 0.50, Path: ['VO', 'boire', 'vivant']
-Policy: pi5, Cost: 0.92, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
-Policy: pi4, Cost: 1.17, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
-Policy: pi3, Cost: 1.33, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
+Policy: pi2, Cost: 0.75, Path: ['VO', 'boire', 'vivant']
+Policy: pi5, Cost: 1.25, Path: ['VO', 'emp', 'VE', 'antidote', 'VA', 'boire', 'vivant']
+Policy: pi4, Cost: 1.50, Path: ['VO', 'emp', 'VE', 'vider', 'VV', '$\\varnothing$', 'mort']
+Policy: pi3, Cost: 1.83, Path: ['VO', 'vider', 'VV', '$\\varnothing$', 'mort']
 ==========================================================================================
 Politiques valides pour un cout max de 5:
 Configuration : L+P1
@@ -54,29 +54,29 @@ Baseline: pi1, Path : [0, 'a', 1, 'a', 3]
 
 | CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |
 |       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |
-|pi2  |  0.36 |  0.36 |  0.00 |  0.00 |     1.00       | 1.36 |  1.36 |  1.00 |  1.00  |
+|pi2  |  0.36 |  0.36 |  0.00 |  0.00 |     1.00       | 1.86 |  1.86 |  1.50 |  1.50  |
 |pi3  |  0.54 |  0.54 |  1.00 |  0.67 |     0.00       | 0.54 |  0.54 |  1.00 |  0.67  |
-|pi4  |  0.36 |  0.36 |  0.50 |  0.33 |     1.00       | 1.36 |  1.36 |  1.50 |  1.33  |
+|pi4  |  0.36 |  0.36 |  0.50 |  0.33 |     1.00       | 1.86 |  1.86 |  2.00 |  1.83  |
 ==========================================================================================
 Configuration : L+P1
 Policy: pi3, Cost: 0.54, Path: [0, 'a', 1, 'b', 4]
-Policy: pi2, Cost: 1.36, Path: [0, 'b', 2, 'a', 5]
-Policy: pi4, Cost: 1.36, Path: [0, 'b', 2, 'b', 6]
+Policy: pi2, Cost: 1.86, Path: [0, 'b', 2, 'a', 5]
+Policy: pi4, Cost: 1.86, Path: [0, 'b', 2, 'b', 6]
 ==========================================================================================
 Configuration : L+P2
 Policy: pi3, Cost: 0.54, Path: [0, 'a', 1, 'b', 4]
-Policy: pi2, Cost: 1.36, Path: [0, 'b', 2, 'a', 5]
-Policy: pi4, Cost: 1.36, Path: [0, 'b', 2, 'b', 6]
+Policy: pi2, Cost: 1.86, Path: [0, 'b', 2, 'a', 5]
+Policy: pi4, Cost: 1.86, Path: [0, 'b', 2, 'b', 6]
 ==========================================================================================
 Configuration : L+D1
-Policy: pi2, Cost: 1.00, Path: [0, 'b', 2, 'a', 5]
 Policy: pi3, Cost: 1.00, Path: [0, 'a', 1, 'b', 4]
-Policy: pi4, Cost: 1.50, Path: [0, 'b', 2, 'b', 6]
+Policy: pi2, Cost: 1.50, Path: [0, 'b', 2, 'a', 5]
+Policy: pi4, Cost: 2.00, Path: [0, 'b', 2, 'b', 6]
 ==========================================================================================
 Configuration : L+D2
 Policy: pi3, Cost: 0.67, Path: [0, 'a', 1, 'b', 4]
-Policy: pi2, Cost: 1.00, Path: [0, 'b', 2, 'a', 5]
-Policy: pi4, Cost: 1.33, Path: [0, 'b', 2, 'b', 6]
+Policy: pi2, Cost: 1.50, Path: [0, 'b', 2, 'a', 5]
+Policy: pi4, Cost: 1.83, Path: [0, 'b', 2, 'b', 6]
 ==========================================================================================
 Politiques valides pour un cout max de 5:
 Configuration : L+P1
@@ -97,24 +97,24 @@ Baseline: pi3, Path : ['S0', '$\\varnothing$', 'S2']
 
 | CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |
 |       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |
-|pi1  |  0.10 |  0.05 |  0.00 |  0.00 |     0.50       | 0.60 |  0.55 |  0.50 |  0.50  |
-|pi2  |  0.90 |  0.47 |  1.00 |  0.33 |     0.50       | 1.40 |  0.97 |  1.50 |  0.83  |
+|pi1  |  0.10 |  0.05 |  0.00 |  0.00 |     0.50       | 0.85 |  0.80 |  0.75 |  0.75  |
+|pi2  |  0.90 |  0.47 |  1.00 |  0.33 |     0.50       | 1.65 |  1.22 |  1.75 |  1.08  |
 ==========================================================================================
 Configuration : L+P1
-Policy: pi1, Cost: 0.60, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
-Policy: pi2, Cost: 1.40, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+Policy: pi1, Cost: 0.85, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 1.65, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
 ==========================================================================================
 Configuration : L+P2
-Policy: pi1, Cost: 0.55, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
-Policy: pi2, Cost: 0.97, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+Policy: pi1, Cost: 0.80, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 1.22, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
 ==========================================================================================
 Configuration : L+D1
-Policy: pi1, Cost: 0.50, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
-Policy: pi2, Cost: 1.50, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+Policy: pi1, Cost: 0.75, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 1.75, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
 ==========================================================================================
 Configuration : L+D2
-Policy: pi1, Cost: 0.50, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
-Policy: pi2, Cost: 0.83, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+Policy: pi1, Cost: 0.75, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 1.08, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
 ==========================================================================================
 Politiques valides pour un cout max de 5:
 Configuration : L+P1
@@ -135,24 +135,24 @@ Baseline: pi1, Path : [0, 'a', 1, 'b', 2, 'c', 3, 'd', 4, 'e', 5]
 
 | CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |
 |       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |
-|pi2  |  0.26 |  0.15 |  0.50 |  0.20 |     0.80       | 1.06 |  0.95 |  1.30 |  1.00  |
-|pi3  |  0.24 |  0.11 |  0.50 |  0.20 |     0.80       | 1.04 |  0.91 |  1.30 |  1.00  |
+|pi2  |  0.26 |  0.15 |  0.50 |  0.20 |     0.80       | 1.46 |  1.35 |  1.70 |  1.40  |
+|pi3  |  0.24 |  0.11 |  0.50 |  0.20 |     0.80       | 1.44 |  1.31 |  1.70 |  1.40  |
 ==========================================================================================
 Configuration : L+P1
-Policy: pi3, Cost: 1.04, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
-Policy: pi2, Cost: 1.06, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
+Policy: pi3, Cost: 1.44, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
+Policy: pi2, Cost: 1.46, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
 ==========================================================================================
 Configuration : L+P2
-Policy: pi3, Cost: 0.91, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
-Policy: pi2, Cost: 0.95, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
+Policy: pi3, Cost: 1.31, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
+Policy: pi2, Cost: 1.35, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
 ==========================================================================================
 Configuration : L+D1
-Policy: pi2, Cost: 1.30, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
-Policy: pi3, Cost: 1.30, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
+Policy: pi2, Cost: 1.70, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
+Policy: pi3, Cost: 1.70, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
 ==========================================================================================
 Configuration : L+D2
-Policy: pi2, Cost: 1.00, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
-Policy: pi3, Cost: 1.00, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
+Policy: pi2, Cost: 1.40, Path: [0, 'f', 2, 'c', 3, 'd', 4, 'e', 5]
+Policy: pi3, Cost: 1.40, Path: [0, 'a', 1, 'b', 2, 'c', 3, 'g', 5]
 ==========================================================================================
 Politiques valides pour un cout max de 5:
 Configuration : L+P1

@@ -157,6 +157,10 @@ def gamma_agg(liste_score,gamma=.9):
     sum_gamma = (1- gamma**(N))/(1 -gamma)
     return (sum_gamma - np.sum(liste_score))/sum_gamma
 
+def seuil_agg(liste_score, seuil=0.5):
+    assert len(liste_score)>0
+    return 1 if not all(score >= seuil for score in liste_score) else 1
+
 
 
 def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
@@ -206,9 +210,8 @@ def levenshtein_distance(path1, path2):
                 dp[i][j] = dp[i-1][j-1]
             else:
                 dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) # insertion, deletion, substitution
-    mini = abs(m-n)
-    maxi = max(m,n)
-    return dp[n][m]-mini/max(m,n)
+
+    return dp[n][m]/max(m,n)
 
 
 def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg):
