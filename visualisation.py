@@ -1,6 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-from graphs import P_graph,T_graph
+from graphs import P_graph,T_graph,J_graph
 
 def show_poison():
     pos = {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
@@ -57,7 +57,9 @@ def show_graph(graph, pos,fichier):
     plt.show()
 
 if __name__== "__main__":
-    pos_poison=  {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
-    pos_test = {0:(0,3), 1:(1,5), 2:(1,1), 3:(2,6), 4:(2,4), 5:(2,2), 6:(2,0)}
-    show_graph(P_graph, pos_poison, "graphe_poison")
-    show_graph(T_graph, pos_test, "graphe_test")
+    # pos_poison=  {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
+    # pos_test = {0:(0,3), 1:(1,5), 2:(1,1), 3:(2,6), 4:(2,4), 5:(2,2), 6:(2,0)}
+    # show_graph(P_graph, pos_poison, "graphe_poison")
+    # show_graph(T_graph, pos_test, "graphe_test")
+
+    show_graph(J_graph, J_graph.positions,"graphe_jardinier")

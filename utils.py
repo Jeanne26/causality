@@ -217,7 +217,11 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         d_optimale = compute_score(path2,graph, perplexite_agg,choice)
     return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
 
-
+def critere_selection(graph, S0, pi1,pi2, cout_max):
+    res = cout(graph,levenshtein_distance, S0, pi1,pi2)
+    path1 = get_path(graph, pi1, S0)
+    path2 = get_path(graph, pi2, S0)
+    return res['cout']<= cout_max and path1[-1]!=path2[-1]
 
 def compute_all_res(graph, S0, pi1, pi2, pi_opt):
     res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True),
@@ -225,3 +229,37 @@ def compute_all_res(graph, S0, pi1, pi2, pi_opt):
           'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=True, pi_opt=pi_opt),
           'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,choice=False, pi_opt=pi_opt)}
     return res
+
+
+
+def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, start_state, agg_func=None, horizon=3, cout_max=5, pi_opt=None):
+    results = {}
+    baseline_policy = policies_dict[baseline_policy_name]
+    for policy_name in policy_names:
+
+        results[policy_name] = compute_all_res(graph, start_state, baseline_policy, 
+                                                policies_dict[policy_name], pi_opt)
+    print("==========================================================================================")
+    print("| Policy | Perplexité | Distance à opt | Levenshtein | L+P1 | L+P2 | L+D1 | L+D2 |")
+    for policy_name in policy_names:
+        if policy_name == baseline_policy_name:
+            continue
+        res = results[policy_name]
+        print(f"|{policy_name:^7}|{res['L+P1']['d_opt']:^10.2f}|{res['L+D1']['d_opt']:^14.2f}|{res['L+P1']['d_obs']:^11.2f}|"
+                f"{res['L+P1']['cout']:^5.2f}|{res['L+P2']['cout']:^5.2f}|{res['L+D1']['cout']:^5.2f}|{res['L+D2']['cout']:^6.2f}|")
+    print("==========================================================================================")
+    
+    for config in ["L+P1", "L+P2", "L+D1", "L+D2"]:
+        print(f"Configuration: {config}")
+        policies = [(name, results[name][config]['cout']) for name in policy_names if name != baseline_policy_name]
+        policies.sort(key=lambda x: x[1])
+        for policy_name, cout in policies:
+            path = get_path(graph, policies_dict[policy_name], start_state)
+            print(f"Policy: {policy_name}, Cost: {cout:.2f}, Path: {path}")
+        print("==========================================================================================")
+    
+    print(f"Politiques valides pour un cout max de {cout_max}:")
+    for config in ["L+P1", "L+P2", "L+D1", "L+D2"]:
+        print(f"Configuration: {config}")
+        valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max)]
+        print(f"Politiques valides: {', '.join(valid_policies)}\n")

@@ -1,0 +1,34 @@
+==========================================================================================
+| Policy | Perplexité | Distance à opt | Levenshtein | L+P1 | L+P2 | L+D1 | L+D2 |
+|  pi1  |   1.11   |     0.00     |   2.00    |3.11 |3.05 |2.00 | 2.00 |
+|  pi2  |  10.00   |     1.00     |   2.00    |12.00|5.16 |3.00 | 2.33 |
+==========================================================================================
+Configuration: L+P1
+Policy: pi1, Cost: 3.11, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 12.00, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+==========================================================================================
+Configuration: L+P2
+Policy: pi1, Cost: 3.05, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 5.16, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+==========================================================================================
+Configuration: L+D1
+Policy: pi1, Cost: 2.00, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 3.00, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+==========================================================================================
+Configuration: L+D2
+Policy: pi1, Cost: 2.00, Path: ['S0', 'JW', 'S1a', '$\\varnothing$', 'S1']
+Policy: pi2, Cost: 2.33, Path: ['S0', 'SW', 'S1b', '$\\varnothing$', 'S1']
+==========================================================================================
+Politiques valides pour un cout max de 5:
+Configuration: L+P1
+Politiques valides: pi1
+
+Configuration: L+P2
+Politiques valides: pi1
+
+Configuration: L+D1
+Politiques valides: pi1
+
+Configuration: L+D2
+Politiques valides: pi1
+
