@@ -157,9 +157,9 @@ def gamma_agg(liste_score,gamma=.9):
     sum_gamma = (1- gamma**(N))/(1 -gamma)
     return (sum_gamma - np.sum(liste_score))/sum_gamma
 
-def seuil_agg(liste_score, seuil=0.5):
+def seuil_agg(liste_score, seuil=0.4):
     assert len(liste_score)>0
-    return 1 if not all(score >= seuil for score in liste_score) else 1
+    return 0 if all(score >= seuil for score in liste_score) else 1
 
 
 
@@ -222,7 +222,6 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
     states2 = extract_sigma_state(path2)  
 
     if choice:
-        # states1_choice = extract_sigma_state_choice(path1, graph)
         states2_choice = extract_sigma_state_choice(path2, graph)
     
 
@@ -237,22 +236,23 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         d_optimale = compute_score(path2,graph, agg,choice)
     return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
 
-def critere_selection(graph, S0, pi1,pi2, cout_max, lambda1=1, lambda2=1, agg=perplexite_agg):
+def critere_selection(graph, S0, pi1,pi2, cout_max_obs, cout_max_opt, lambda1=1, lambda2=1, agg=perplexite_agg):
     res = cout(graph,levenshtein_distance, S0, pi1,pi2, lambda1=lambda1, lambda2=lambda2, agg=agg)
+    cout_res = res["d_obs"]*lambda1 < cout_max_obs and res["d_opt"]*lambda2 < cout_max_opt
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
-    return res['cout']<= cout_max and path1[-1]!=path2[-1]
+    return cout_res and path1[-1]!=path2[-1]
 
 def compute_all_res(graph, S0, pi1, pi2, pi_opt,agg, lambda1=1, lambda2=1):
-    res ={'L+P1' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=True, agg=agg),
-          'L+P2' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=False, agg=agg),
-          'L+D1' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=True, pi_opt=pi_opt, agg=agg),
-          'L+D2' :cout(graph,levenshtein_distance,S0, pi1, pi2,lambda1=lambda1, lambda2=lambda2, choice=False, pi_opt=pi_opt, agg=agg)}
+    res ={'L+P1' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, agg=agg),
+          'L+P2' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=False, agg=agg),
+          'L+D1' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, pi_opt=pi_opt, agg=agg),
+          'L+D2' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=False, pi_opt=pi_opt, agg=agg)}
     return res
 
 
 
-def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, start_state, agg_func=None, horizon=3, cout_max=5, pi_opt=None, lambda1=1, lambda2=1):
+def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, start_state, agg_func=None, horizon=3, cout_max_obs=5, cout_max_opt=5, pi_opt=None, lambda1=1, lambda2=1):
 
     results = {}
     baseline_policy = policies_dict[baseline_policy_name]
@@ -263,7 +263,7 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
 
         results[policy_name] = compute_all_res(graph, start_state, baseline_policy, 
                                                 policies_dict[policy_name], pi_opt, agg_func, lambda1=lambda1, lambda2=lambda2)
-    print( "| CF    |   Perplexité  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |")
+    print( f"| CF    |   {agg_func.__name__}  | Distance à opt|  Levenshtein   |L +P1 | L +P2 | L +D1 | L+D2   |")
     print( "|       |   P1  |   P2  |   D1  |   D2  |       L        |      |       |       |        |")
     for policy_name in policy_names:
         if policy_name == baseline_policy_name:
@@ -283,10 +283,10 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
             print(f"Policy: {policy_name}, Cost: {cout:.2f}, Path: {path}")
         print("==========================================================================================")
     
-    print(f"Politiques valides pour un cout max de {cout_max}:")
+    print(f"Politiques valides pour un cout max de {cout_max_obs} (obs) et {cout_max_opt} (opt):")
     for config in ["L+P1", "L+P2", "L+D1", "L+D2"]:
         print(f"Configuration : {config}")
-        valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max, lambda1=lambda1, lambda2=lambda2, agg=agg_func)]
+        valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max_obs, cout_max_opt, lambda1=lambda1, lambda2=lambda2, agg=agg_func)]
         print(f"Politiques valides: {', '.join(valid_policies)}\n")
 
 
