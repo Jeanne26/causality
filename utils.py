@@ -143,7 +143,9 @@ def compute_score(state_path,graph, agg: lambda liste: np.mean(liste), choice=Fa
 def perplexite_agg(liste_score):
     assert len(liste_score)>0
     N= len(liste_score)
-    return np.exp(-(1/N)* np.sum(np.log(liste_score)))
+    return np.exp((1/N)* np.sum(np.log(liste_score)))
+
+
 
 def gamma_agg(liste_score,gamma=.9):
     #aggregation qui prend en compte la position de l'événement dans le chemin, les événements plus proches du début du chemin sont plus importants que ceux proches de la fin
@@ -156,6 +158,15 @@ def gamma_agg(liste_score,gamma=.9):
         return (N - np.sum(liste_score))/N
     sum_gamma = (1- gamma**(N))/(1 -gamma)
     return (sum_gamma - np.sum(liste_score))/sum_gamma
+
+def mean_geometrique_agg(liste_score):
+    assert len(liste_score)>0
+    N = len(liste_score)
+    prod = np.prod(liste_score)
+    return (1- prod**(1/N))
+
+
+
 
 def seuil_agg(liste_score, seuil=0.4):
     assert len(liste_score)>0
