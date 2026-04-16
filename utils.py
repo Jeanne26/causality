@@ -1,6 +1,9 @@
 import networkx as nx
 import numpy as np
+from agg_operators import *
+from utils_graph import *
 
+#===================Complétion politique et expertise====================
 
 def complete_policy(pi, graph):
     #si une politique est definie partiellement on la complete, lorsqu'un unique arc sortant est disponible on
@@ -17,33 +20,29 @@ def complete_policy(pi, graph):
     return res_pi
 
 
-def is_terminal_state(state, graph):
-    #les états terminaux sont ceux qui ont pour unique successeur eux memes
-    out_edges = list(graph.out_edges(state))
-    return len(out_edges)==1 and out_edges[0][1]==state
+def complete_expertise(graph, partial_expertise, value=1):
+    #complete une expertise partielle, ajout de la valeur par defaut pour les event non notés
+    res = {s:{} for s in graph.nodes()}
+    for state in graph.nodes():
+        for _, succ, data in graph.out_edges(state, data=True):
+            event_label = data["label"]
+            if state in partial_expertise and event_label in partial_expertise[state]:
+                res[state][event_label] = partial_expertise[state][event_label]
+            else:
+                res[state][event_label] = value
+    return res
 
-def terminals(graph):
-    #retoyurne l'ensemble des états terminaux du graphe
-    return [node for node in graph.nodes() if is_terminal_state(node, graph)]
-
-def next_state(state, action, graph):
-    #renvoie le successeur de state lorsque l'action action est appliquée
-    for _, succ, data in graph.out_edges(state, data=True):
-        if data['label'] == action:
-            return succ
-    raise ValueError(f"{state}: action {action} non valide pour cet état")
-
-def get_path(graph, pi,S0):
-    current_node = S0
-    path = [current_node]
-    while current_node not in graph.terminals:
-        action = pi[current_node]
-        path.append(action)
-        current_node = next_state(current_node, action, graph)
-        path.append(current_node)
-    return path
+def add_expertise(graph, expertise):
+    #ajoute une expertise au graphe en modifiant les poids des arcs
+    for state in expertise.keys():
+        for event_label in expertise[state].keys():
+            for _, succ, data in graph.out_edges(state, data=True):
+                if data['label'] == event_label:
+                    data['weight'] = expertise[state][event_label]
+                    break
 
 
+#==================Extraction trace====================================
 
 def extract_sigma(pi, graph,S0):
     #extrait le chemin emprunté par une politique pi à partir d'un état initial S0 dans le graphe graph
@@ -70,52 +69,7 @@ def extract_sigma_state_choice(path,graph):
     path = [s for s in path if len(graph.out_edges(s))>1]
     return path
 
-def get_edge(graph,node1,node2):
-    #renvoie l'arc entre node1 et node2 dans graph, si plusieurs arcs existent on utilise l'heuristique pour choisir
-    edge = list(graph.get_edge_data(node1, node2).values())
-    if not edge:
-        raise ValueError(f"pas d'arc entre {node1} et {node2}")
-    return edge
 
-
-def astar_trace(graph,start,end):
-    path = nx.astar_path(graph, start, end, weight='weight')
-    res = []
-    for i in range(len(path)-1):
-        edge = get_edge(graph,path[i],path[i+1])
-        res.append(path[i])
-        res.append(edge)
-    res.append(path[-1])
-    return res
-
-
-def find_paths(graph, start, path=None, seen=None, depth_limit=2):
-    #explore le graph en partant de node et retourne tous les chemins de longueur distance depuis cette source
-    #ou qui ont atteint un état terminal
-    if path is None:
-        path = [start]
-    if seen is None:
-        seen = {start}
-    
-    # limite profondeur
-    if len(path)-1 >= depth_limit * 2:
-        yield path
-        return
-    
-    # etat terminal atteint
-    if start in graph.terminals:
-        yield path
-        return
-    
-    # descendant direct
-    desc = nx.descendants_at_distance(graph, start, 1)
-    for n in desc:
-        if n in seen: 
-            yield path
-        else:
-            edge = get_edge(graph, start, n)
-            new_path = path + [edge[0], n]
-            yield from find_paths(graph, n, new_path, seen.union([n]), depth_limit)
 
 #==================Politiques optimales==================
 def optimal_policy_no_plan(graph):
@@ -128,51 +82,6 @@ def optimal_policy_no_plan(graph):
         best_edge = max(edges, key=lambda edge: edge[2]['weight'])
         policy[s] = best_edge[2]['label']
     return policy
-
-
-def compute_score(state_path,graph, agg: lambda liste: np.mean(liste), choice=False):
-    #pour un chemin (etat+event) donné, calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
-    scores = []
-    for i in range(0, len(state_path)-2 ,2):
-        if choice and len(graph.out_edges(state_path[i]))<=1:
-            continue
-        edge_weight= get_edge(graph,state_path[i],state_path[i+2])[1]
-        scores.append(edge_weight)
-    return agg(scores)
-
-def perplexite_agg(liste_score):
-    assert len(liste_score)>0
-    N= len(liste_score)
-    return np.exp((1/N)* np.sum(np.log(liste_score)))
-
-
-
-def gamma_agg(liste_score,gamma=.9):
-    #aggregation qui prend en compte la position de l'événement dans le chemin, les événements plus proches du début du chemin sont plus importants que ceux proches de la fin
-    #on normalise le score pour qu'il soit compris entre 0 et 1 
-    assert len(liste_score)>0
-    N = len(liste_score)
-    for i in range(0,len(liste_score)):
-        liste_score[i] = (gamma**i) *liste_score[i]
-    if gamma == 1:
-        return (N - np.sum(liste_score))/N
-    sum_gamma = (1- gamma**(N))/(1 -gamma)
-    return (sum_gamma - np.sum(liste_score))/sum_gamma
-
-def mean_geometrique_agg(liste_score):
-    assert len(liste_score)>0
-    N = len(liste_score)
-    prod = np.prod(liste_score)
-    return (1- prod**(1/N))
-
-
-
-
-def seuil_agg(liste_score, seuil=0.4):
-    assert len(liste_score)>0
-    return 0 if all(score >= seuil for score in liste_score) else 1
-
-
 
 def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
     #politique optimale avec plannification qui choisit l'evenement qui se situe sur le chemin qui maximise 
@@ -191,8 +100,19 @@ def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
     return policy
 
 
+#================================D_opt==============================================================
 
-#=================================D_OPT============================================================
+def compute_score(path,graph, agg: lambda liste: np.mean(liste), choice=False):
+    #pour un chemin (etat+event) donné, calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
+    scores = []
+    for i in range(0, len(path)-2 ,2):
+        if choice and len(graph.out_edges(path[i]))<=1:
+            continue
+        edge_weight= get_edge(graph,path[i],path[i+2])[1]
+        scores.append(edge_weight)
+    return agg(scores)
+
+
 
 
 
@@ -204,7 +124,9 @@ def distance_pi_opt(pi,pi_opt,state_path):
 
 
 
-#=================================D_Obs============================================================
+
+
+#=================================D_obs============================================================
 def levenshtein_distance(path1, path2):
     #on ne prends pas en compte le dernier état car desavantage les scenarios valides qui n'ont pas le meme état terminal que la politique de référence
     s1 = path1[:-1]
@@ -225,6 +147,9 @@ def levenshtein_distance(path1, path2):
     return dp[n][m]/max(m,n)
 
 
+
+
+#=================================Cout total===========================================================
 def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg):
     #pi1 politique observé pi2 la politique à evaluer relativement à pi1
     path1 = get_path(graph, pi1, S0)
@@ -247,12 +172,18 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
         d_optimale = compute_score(path2,graph, agg,choice)
     return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
 
+
+#===============================Critère de sélection===========================================================
+
 def critere_selection(graph, S0, pi1,pi2, cout_max_obs, cout_max_opt, lambda1=1, lambda2=1, agg=perplexite_agg):
     res = cout(graph,levenshtein_distance, S0, pi1,pi2, lambda1=lambda1, lambda2=lambda2, agg=agg)
     cout_res = res["d_obs"]*lambda1 < cout_max_obs and res["d_opt"]*lambda2 < cout_max_opt
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
     return cout_res and path1[-1]!=path2[-1]
+
+
+#===============================Analyse des politiques===========================================================
 
 def compute_all_res(graph, S0, pi1, pi2, pi_opt,agg, lambda1=1, lambda2=1):
     res ={'L+P1' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, agg=agg),
@@ -302,25 +233,5 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
 
 
 
-def complete_expertise(graph, partial_expertise, value=1):
-    #complete une expertise partielle, ajout de la valeur par defaut pour les event non notés
-    res = {s:{} for s in graph.nodes()}
-    for state in graph.nodes():
-        for _, succ, data in graph.out_edges(state, data=True):
-            event_label = data["label"]
-            if state in partial_expertise and event_label in partial_expertise[state]:
-                res[state][event_label] = partial_expertise[state][event_label]
-            else:
-                res[state][event_label] = value
-    return res
-
-def add_expertise(graph, expertise):
-    #ajoute une expertise au graphe en modifiant les poids des arcs
-    for state in expertise.keys():
-        for event_label in expertise[state].keys():
-            for _, succ, data in graph.out_edges(state, data=True):
-                if data['label'] == event_label:
-                    data['weight'] = expertise[state][event_label]
-                    break
 
 
