@@ -100,6 +100,18 @@ def optimal_policy_plan(graph,horizon, agg= perplexite_agg):
     return policy
 
 
+def optimal_policy_plan_astar(graph):
+    #politique optimale avec astar qui choisit pour chaque état le premier événement du chemin qui maximise la fonction d'aggregation
+    policy = {}
+    augmented_graph = augment_graph(graph)
+    for s in graph.nodes():
+        if s in graph.terminals:
+            policy[s] = get_edge(graph,s,s)[0]
+            continue
+        path = astar_trace(augmented_graph, s, "temp")
+        policy[s] = path[1][0]
+    return policy
+
 #================================D_opt==============================================================
 
 def compute_score(path,graph, agg: lambda liste: np.mean(liste), choice=False):

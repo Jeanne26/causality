@@ -1,5 +1,5 @@
 
-
+import networkx as nx
 def is_terminal_state(state, graph):
     #les états terminaux sont ceux qui ont pour unique successeur eux memes
     out_edges = list(graph.out_edges(state))
@@ -73,3 +73,23 @@ def find_paths(graph, start, path=None, seen=None, depth_limit=2):
             edge = get_edge(graph, start, n)
             new_path = path + [edge[0], n]
             yield from find_paths(graph, n, new_path, seen.union([n]), depth_limit)
+
+def augment_graph(graph):
+    #ajoute un état poubelle au graph pour pouvoir appliquer des algorithmes de plus courts chemins
+    new_graph = graph.copy()
+    new_graph.add_node("temp")
+    for node in graph.terminals:
+        new_graph.add_edge(node, "temp", label="$\\varnothing$", weight=1)
+    return new_graph
+
+def astar_trace(graph,start,end):
+    #retourne le chemin de start à end dans graph en utilisant l'algorithme A*
+    path = nx.astar_path(graph, start, end, weight='weight')
+    path = nx.astar_path(graph, start, end, weight=lambda u, v, d: 1-d.get('weight', 1))
+    res = []
+    for i in range(len(path)-1):
+        edge = get_edge(graph,path[i],path[i+1])
+        res.append(path[i])
+        res.append(edge)
+    res.append(path[-1])
+    return res
