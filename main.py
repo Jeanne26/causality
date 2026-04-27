@@ -6,7 +6,7 @@ if __name__ == "__main__":
     lambda1 = 1
     lambda2 = 1
     horizon = 5
-    agg = geometrique_agg
+    agg = gamma_late
     coût_max_obs = 5
     coût_max_opt = 5
 

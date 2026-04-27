@@ -1,0 +1,42 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Définitions et hypothèses}{1}{}%
+\contentsline {section}{\numberline {2}Évaluation d'un contexte causal contrefactuel}{1}{}%
+\contentsline {subsection}{\numberline {2.1}Fonction de coût}{2}{}%
+\contentsline {subsection}{\numberline {2.2}Vraisemblance du contrefactuel}{2}{}%
+\contentsline {subsubsection}{\numberline {2.2.1}Juge expert}{2}{}%
+\contentsline {subsubsection}{\numberline {2.2.2}Construction d'une politique optimale à partir de l'expert}{3}{}%
+\contentsline {subsubsection}{\numberline {2.2.3}Évaluation de la vraisemblance à partir de la politique optimale}{4}{}%
+\contentsline {subsubsection}{\numberline {2.2.4}Exploitation directe de l'expert}{5}{}%
+\contentsline {paragraph}{Opérateur moyenne géométrique}{5}{}%
+\contentsline {paragraph}{Opérateur gamma (temporel)}{6}{}%
+\contentsline {paragraph}{Opérateur seuil}{6}{}%
+\contentsline {subsubsection}{\numberline {2.2.5}Sélection des événements à évaluer}{7}{}%
+\contentsline {subsection}{\numberline {2.3}Critère de validité}{7}{}%
+\contentsline {section}{\numberline {3}Exemple Poison}{8}{}%
+\contentsline {subsection}{\numberline {3.1}Définitions du LTS}{8}{}%
+\contentsline {subsection}{\numberline {3.2}Définition des contextes causaux}{9}{}%
+\contentsline {subsection}{\numberline {3.3}Définition des politiques optimales}{10}{}%
+\contentsline {subsection}{\numberline {3.4}Expérimentations}{10}{}%
+\contentsline {paragraph}{Priorité à des contrefactuels avec des scores d'événements consistants:}{11}{}%
+\contentsline {paragraph}{Interdiction de dépasser un seuil}{11}{}%
+\contentsline {paragraph}{Normativité en début de scénario}{11}{}%
+\contentsline {paragraph}{Normativité en fin de scénario}{12}{}%
+\contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{12}{}%
+\contentsline {section}{\numberline {A}Exemple contexte causal non valide pour la fonction de coût}{13}{}%
+\contentsline {subsection}{\numberline {A.1}Fonction $divergence$}{13}{}%
+\contentsline {subsection}{\numberline {A.2}Fonction $correct$}{13}{}%
+\contentsline {section}{\numberline {B}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{13}{}%
+\contentsline {section}{\numberline {C}Vérification des propriétés pour les opérateurs}{14}{}%
+\contentsline {subsection}{\numberline {C.1}Opérateur géométrique}{14}{}%
+\contentsline {paragraph}{Identité}{14}{}%
+\contentsline {paragraph}{Conditions aux limites}{14}{}%
+\contentsline {paragraph}{Monotonie croissante}{14}{}%
+\contentsline {subsection}{\numberline {C.2}Opérateur gamma}{14}{}%
+\contentsline {paragraph}{Identité}{14}{}%
+\contentsline {paragraph}{Conditions aux limites}{15}{}%
+\contentsline {paragraph}{Monotonie croissante}{15}{}%
+\contentsline {subsection}{\numberline {C.3}Opérateur de seuil}{15}{}%
+\contentsline {paragraph}{Identité}{15}{}%
+\contentsline {paragraph}{Conditions aux limites}{15}{}%
+\contentsline {paragraph}{Monotonie croissante}{15}{}%
+\contentsline {subsection}{\numberline {C.4}Synthèse résultats}{15}{}%
