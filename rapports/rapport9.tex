@@ -270,9 +270,9 @@ Différentes propriétés peuvent être désirables pour les opérateurs d'agré
     \end{equation}
     Cet opérateur permet une plus grande expressivité que la moyenne arithmétique. Il est plus sensible à une variance importante. Même si il reste un opérateur de compensations, pour "rattraper" un score faible, la compensation doit être plus forte qu'avec une moyenne arithmétique. Par exemple:
     \begin{itemize}
-        \item $1 - agg_{geo}([0.5,0.5,0.5]) = 0.5$
-        \item$ 1 - agg_{geo}([0.5,0.3,0.7]) = 0.53$ la moyenne arithmétique est bien de 0.5 mais, l'opérateur pénalise le faible score de 0.3
-        \item $1 - agg_{geo}([0.5,0.3,0.8]) = 0.5$ la moyenne arithmétique est de 0.53
+        \item $ agg_{geo}([0.5,0.5,0.5]) = 0.5$
+        \item$  agg_{geo}([0.5,0.3,0.7]) = 0.47$: la moyenne arithmétique est de 0.5 mais, l'opérateur géométrique pénalise le faible score de 0.3
+        \item $ agg_{geo}([0.5,0.3,0.8]) = 0.5$: la moyenne arithmétique est de 0.53.
         
     \end{itemize}
 
@@ -305,7 +305,7 @@ Différentes propriétés peuvent être désirables pour les opérateurs d'agré
     \caption{Exemple opérateur géométrique}
     \label{fig:geo}
 \end{figure}
-On observe sur la figure \ref{fig:geo} que le coût associée au chemin [ABC] est plus faible que celui du chemin [ADE] même si ce dernier possède une moyenne arithmétique plus élevée. En effet, la variance plus importante de [ADE] est pénalisée en utilisant l'opérateur géométrique. On peut imaginer des situations simple où l'on préfère faire une action neutre comme mettre du sirop dans un verre d'eau plutôt que de mettre du poison puis un antidote avant de le servir (en utilisant une norme relative au bien et au mal).
+On observe sur la figure \ref{fig:geo} que le coût associée au chemin [ABC] est plus faible que celui du chemin [ADE] même si ce dernier possède une moyenne arithmétique plus élevée. En effet, la variance plus importante de [ADE] est pénalisée en utilisant l'opérateur géométrique. On peut imaginer des situations simples où l'on préfère faire une action neutre comme mettre du sirop dans un verre d'eau plutôt que de mettre du poison puis un antidote avant de le servir (en utilisant une norme relative au bien et au mal).
     
 \paragraph{Opérateur gamma (temporel)}
 Soit $\gamma\in ]0,1]$, $\Gamma = \frac{1-\gamma^{N}}{1-\gamma}$ ($\Gamma =N $ si $\gamma=1$)
