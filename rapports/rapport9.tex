@@ -264,9 +264,10 @@ Différentes propriétés peuvent être désirables pour les opérateurs d'agré
 
 
  \paragraph{Opérateur moyenne géométrique} 
- Soit $\epsilon>0$ 
+ Soit $\epsilon>0$ qui permet de ne pas avoir à restreindre l'évaluation à des valeurs strictement supérieur à 0.
     \begin{equation}
-            agg_{geo}(s_0,s_1,\dots,s_{n-1}) =\exp\left( \frac{1}{N} \sum_{i<n} \log(\max(s_i,\epsilon ))\right) 
+            agg_{geo}(s_0,s_1,\dots,s_{n-1}) =\sqrt[n]{\prod_{i=0}^{n-1} \max (\epsilon,s_i)} 
+            % agg_{geo}(s_0,s_1,\dots,s_{n-1}) =\exp\left( \frac{1}{N} \sum_{i<n} \log(\max(s_i,\epsilon ))\right) 
     \end{equation}
     Cet opérateur permet une plus grande expressivité que la moyenne arithmétique. Il est plus sensible à une variance importante. Même si il reste un opérateur de compensations, pour "rattraper" un score faible, la compensation doit être plus forte qu'avec une moyenne arithmétique. Par exemple:
     \begin{itemize}

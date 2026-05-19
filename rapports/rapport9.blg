@@ -1,15 +1,15 @@
-[0] Config.pm:307> INFO - This is Biber 2.19
-[0] Config.pm:310> INFO - Logfile is 'rapport9.blg'
-[87] biber:340> INFO - === lun. avril 27, 2026, 16:46:41
-[105] Biber.pm:419> INFO - Reading 'rapport9.bcf'
-[163] Biber.pm:979> INFO - Found 1 citekeys in bib section 0
-[175] Biber.pm:4419> INFO - Processing section 0
-[187] Biber.pm:4610> INFO - Looking for bibtex file 'ref.bib' for section 0
-[188] bibtex.pm:1713> INFO - LaTeX decoding ...
-[190] bibtex.pm:1519> INFO - Found BibTeX data source 'ref.bib'
-[232] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
-[232] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[232] Biber.pm:4239> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'fr-FR'
-[232] Biber.pm:4245> INFO - No sort tailoring available for locale 'fr-FR'
-[234] bbl.pm:660> INFO - Writing 'rapport9.bbl' with encoding 'UTF-8'
-[235] bbl.pm:763> INFO - Output to rapport9.bbl
+[0] Config.pm:308> INFO - This is Biber 2.20
+[0] Config.pm:311> INFO - Logfile is 'rapport9.blg'
+[28] biber:340> INFO - === mar. avril 28, 2026, 11:23:19
+[36] Biber.pm:420> INFO - Reading 'rapport9.bcf'
+[60] Biber.pm:994> INFO - Found 1 citekeys in bib section 0
+[67] Biber.pm:4463> INFO - Processing section 0
+[72] Biber.pm:4654> INFO - Looking for bibtex file 'ref.bib' for section 0
+[73] bibtex.pm:1713> INFO - LaTeX decoding ...
+[74] bibtex.pm:1519> INFO - Found BibTeX data source 'ref.bib'
+[88] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[88] UCollate.pm:68> INFO - Overriding locale 'fr-FR' defaults 'variable = shifted' with 'variable = non-ignorable'
+[88] Biber.pm:4283> INFO - Sorting list 'nyt/global//global/global/global' of type 'entry' with template 'nyt' and locale 'fr-FR'
+[88] Biber.pm:4289> INFO - No sort tailoring available for locale 'fr-FR'
+[88] bbl.pm:676> INFO - Writing 'rapport9.bbl' with encoding 'UTF-8'
+[90] bbl.pm:779> INFO - Output to rapport9.bbl
