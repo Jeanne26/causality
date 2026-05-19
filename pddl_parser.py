@@ -4,7 +4,8 @@ from pddl.logic.base import And, Not, Or
 from itertools import product
 import networkx as nx
 import matplotlib.pyplot as plt
-
+import pickle
+import argparse
 #nb: domain : name, requirements, predicates, actions
 #nb: problem : name, domain, objects, init, goal
 #nb: action : name, parameters, precondition, effect
@@ -13,11 +14,17 @@ import matplotlib.pyplot as plt
 #nb: les états sont des frozenset qui contiennent les predicats qui sont vrais (si absent alors faux)
 #nb: les actions sont pas des ensemble de fluents c'est juste un seul fluent (pas de combinaison d'action)
 
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--pddl_folder', type=str, default="pddl_exemples/", help='dossier contenant les fichiers pddl')
+argparser.add_argument('--domain_file', type=str, default="bw_domain.pddl", help='nom fichier domaine')
+argparser.add_argument('--problem_file', type=str, default="bw_p0.pddl", help='nom probleme fichier')
+argparser.add_argument("--output_folder", type=str, default="graphs/", help="dossier de sortie pour les graphes")
+args = argparser.parse_args()
+PDDL_FOLDER = args.pddl_folder
+DOMAIN_FILE = args.domain_file
+PROBLEM_FILE = args.problem_file
+EXEMPLE_NAME = PROBLEM_FILE.split(".pddl")[0]
 
-problem = parse_problem("pddl_exemples/bw_p0.pddl")
-domain  = parse_domain("pddl_exemples/bw_domain.pddl")
-
-objects = list(problem.objects) 
 
 
 
@@ -55,8 +62,8 @@ def instanciate_action(actions,objets):
             instanciated_actions.append((name, precond, effect))
     return instanciated_actions
 
-actions = instanciate_action(domain.actions,objects)
-init_state = frozenset(str(p) for p in problem.init)
+
+
 def build_graph(actions, init_state):
     state = init_state
     G = nx.DiGraph()
@@ -80,26 +87,32 @@ def build_graph(actions, init_state):
     for node in G.nodes:
         G.nodes[node]['label'] = f'S{i}'
         i+=1
+    G.terminals = set()
+    #etat terminaux
+    for node in G.nodes:
+        if statisfied(problem.goal, node):
+            G.terminals.add(node)
+            G.add_edge(node, node, label = 'Goal')
     return G
 
-G = build_graph(actions, init_state)
-
-def show_graph(graph):
-    plt.figure(figsize=(8, 6))
-
-    edge_labels = nx.get_edge_attributes(graph, 'label')
-    options = {
-        "node_color": 'lightblue',
-        "node_size": 2000,
-        "font_size": 10,
-        "edge_color": 'gray',
-        "width": 1.5,
-    }
-
-    pos = nx.spring_layout(G)
-    nx.draw(G, pos, with_labels=False, **options)
-    # nx.draw_networkx_edge_labels(G, pos, font_color='red')
-    plt.show()
 
 
-show_graph(G)
+
+
+
+
+if __name__ == "__main__":
+    problem = parse_problem(PDDL_FOLDER + PROBLEM_FILE)
+    domain  = parse_domain(PDDL_FOLDER + DOMAIN_FILE)
+
+    objects = list(problem.objects) 
+
+    actions = instanciate_action(domain.actions,objects)
+    init_state = frozenset(str(p) for p in problem.init)
+    G = build_graph(actions, init_state)
+    print(f"Nombre de noeuds : {len(G.nodes)}")
+    print(f"Nombre d'arêtes : {len(G.edges)}")
+    print(f"Nombre d'états terminaux : {len(G.terminals)}")
+
+    pickle.dump(G, open(f'{args.output_folder}{EXEMPLE_NAME}.pickle', 'wb'))
+    print(f'Graphe sauvegardé dans {args.output_folder}{EXEMPLE_NAME}.pickle')
