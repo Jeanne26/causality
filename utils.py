@@ -120,7 +120,8 @@ def compute_score(path,graph, agg: lambda liste: np.mean(liste), choice=False):
     for i in range(0, len(path)-2 ,2):
         if choice and len(graph.out_edges(path[i]))<=1:
             continue
-        edge_weight= get_edge(graph,path[i],path[i+2])[1]
+        #nb: on considère que le poids est tout le temps le dernier attribut 
+        edge_weight= get_edge(graph,path[i],path[i+2])[-1]
         scores.append(edge_weight)
     return agg(scores)
 

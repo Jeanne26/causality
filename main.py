@@ -1,5 +1,6 @@
 from graphs import J_graph, P_graph, T_graph,G1
 from utils import *
+
 import pickle
 
 if __name__ == "__main__":
@@ -12,9 +13,13 @@ if __name__ == "__main__":
     coût_max_opt = 5
 
 
-
-
-    
+    G = pickle.load(open('graphs/bw_p0.pickle', 'rb'))
+    expertise =complete_expertise(G,{})
+    add_expertise(G, expertise)
+    pi1 = {}
+    G.policies = {"pi1": complete_policy(pi1, G)}
+    print(get_path(G,G.policies["pi1"],"S0"))
+    analyze_policies(G, G.policies, list(G.policies.keys()), "pi1", start_state="S0", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)    
 
     # print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max_obs={coût_max_obs}, coût_max_opt={coût_max_opt}\n")
     # print("===============================Poison=====================================\n")

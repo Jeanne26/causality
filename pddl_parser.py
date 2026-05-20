@@ -65,34 +65,48 @@ def instanciate_action(actions,objets):
 
 
 def build_graph(actions, init_state):
+    i=0
     state = init_state
     G = nx.DiGraph()
-    G.add_node(state)
-    queue = [state]
+    G.add_node("S0",predicates = state)
+    queue = ["S0"]
     visited = set()
     while queue:
-        current_state = queue.pop(0)
-        if current_state in visited:
+        current_node = queue.pop(0)
+        if current_node in visited:
             continue
-        visited.add(current_state)
+        visited.add(current_node)
+        
         for action_name, precond, effect in actions:
-            if statisfied(precond, current_state):
-                new_state = apply_effects(effect, current_state)
-                G.add_edge(current_state, new_state, label = f'A{len(G.edges)}', action= action_name)
-                if new_state not in visited:
-                    queue.append(new_state)
+            if statisfied(precond, G.nodes[current_node]["predicates"]):
+                new_state = apply_effects(effect, G.nodes[current_node]["predicates"])
 
-    #ajoute label nodes
+                #check si le noeud existe pas deja
+                existe  = next((n for n in G.nodes if G.nodes[n]["predicates"]==new_state),None)
+                if existe is None:
+                    i+=1
+                    new_node = f"S{i}"
+                    G.add_node(new_node, predicates= new_state)
+                else:
+                    new_node = existe
+
+                G.add_edge(current_node, new_node, label = f'A{len(G.edges)}', action= action_name)
+                if new_state not in visited:
+                    queue.append(new_node)
+
+    #ajoute label nodes, etat terminaux (ajout d'une arrete goal) et init
     i= 0
-    for node in G.nodes:
-        G.nodes[node]['label'] = f'S{i}'
-        i+=1
     G.terminals = set()
-    #etat terminaux
+    G.inits = {"S0"}
+
     for node in G.nodes:
-        if statisfied(problem.goal, node):
+        if statisfied(problem.goal, G.nodes[node]["predicates"]):
             G.terminals.add(node)
             G.add_edge(node, node, label = 'Goal')
+
+        i+=1
+ 
+
     return G
 
 

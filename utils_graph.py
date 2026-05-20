@@ -24,6 +24,7 @@ def get_path(graph, pi,S0):
         path.append(action)
         current_node = next_state(current_node, action, graph)
         path.append(current_node)
+        
     return path
 
 
@@ -93,3 +94,4 @@ def astar_trace(graph,start,end):
         res.append(edge)
     res.append(path[-1])
     return res
+
