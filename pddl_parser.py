@@ -6,6 +6,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pickle
 import argparse
+from utils import complete_expertise, add_expertise
 #nb: domain : name, requirements, predicates, actions
 #nb: problem : name, domain, objects, init, goal
 #nb: action : name, parameters, precondition, effect
@@ -128,5 +129,9 @@ if __name__ == "__main__":
     print(f"Nombre d'arêtes : {len(G.edges)}")
     print(f"Nombre d'états terminaux : {len(G.terminals)}")
 
+    #ajout des attributs poids
+    expertise =complete_expertise(G,{})
+    add_expertise(G, expertise)
+    
     pickle.dump(G, open(f'{args.output_folder}{EXEMPLE_NAME}.pickle', 'wb'))
     print(f'Graphe sauvegardé dans {args.output_folder}{EXEMPLE_NAME}.pickle')
