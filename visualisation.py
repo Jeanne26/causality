@@ -30,39 +30,37 @@ def show_poison():
 
 
 
-def show_graph(graph,fichier,pos=None):
+def show_graph(graph, fichier, pos=None):
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+    
+    if pos is None:
+        pos = nx.bfs_layout(graph, start="S0")
+    
+    arc_style = "arc3,rad=0.2"
+    node_options = {"node_color": "lightblue", "node_size": 500}
+    edge_options = {"edge_color": "gray", "width": 1.2, "arrows": True, "arrowsize": 20,"arrowstyle": "->"}
 
-    edge_labels = nx.get_edge_attributes(graph, 'label')
-    options = {
-        "node_color": 'lightblue',
-        "node_size": 2000,
-        "font_size": 10,
-        "edge_color": 'gray',
-        "width": 1.5,
-    }
-
-    ax[0].set_title("Labels")
-    if pos is not None:
-        nx.draw(graph, pos, ax=ax[0], with_labels=True, **options)
-        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[0], font_color='red')
-    else:
-        pos = nx.spring_layout(graph)
-        nx.draw(graph, pos, ax=ax[0], with_labels=True, **options)
-        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[0], font_color='red')
-
-    ax[1].set_title("Poids")
-    edge_labels = nx.get_edge_attributes(graph, 'weight')
-    if pos is not None:
-        nx.draw(graph, pos, ax=ax[1], with_labels=True, **options)
-        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[1], font_color='blue')
-    else:
-        nx.draw(graph, pos, ax=ax[1], with_labels=True, **options)
-        nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, ax=ax[1], font_color='blue')
+    for axis, attr, color, title in [
+        (ax[0], 'label',  'red',  "Labels"),
+        (ax[1], 'weight', 'blue', "Poids"),
+    ]:
+        axis.set_title(title)
+        nx.draw_networkx_nodes(graph, pos, ax=axis, **node_options)
+        nx.draw_networkx_labels(graph, pos, ax=axis, font_size=10)
+        nx.draw_networkx_edges(graph, pos, ax=axis, connectionstyle=arc_style, **edge_options)
+        edge_labels = nx.get_edge_attributes(graph, attr)
+        nx.draw_networkx_edge_labels(
+            graph, pos,
+            edge_labels=edge_labels,
+            ax=axis,
+            font_color=color,
+            connectionstyle=arc_style,
+        )
 
     plt.tight_layout()
     plt.savefig(f"fig/{fichier}.png")
     plt.show()
+
 
 import pickle
 

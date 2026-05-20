@@ -17,8 +17,9 @@ if __name__ == "__main__":
     expertise =complete_expertise(G,{})
     add_expertise(G, expertise)
     pi1 = {}
-    G.policies = {"pi1": complete_policy(pi1, G)}
-    print(get_path(G,G.policies["pi1"],"S0"))
+    G.policies = {"pi1": {"S0":"A0","S1":"A2","S2":"Goal"},"pi2":{"S0":"A0","S1":"A2","S2":"A4","S3":"A5","S4":"Goal"}}
+
+    print(get_path(G,G.policies["pi2"],"S0"))
     analyze_policies(G, G.policies, list(G.policies.keys()), "pi1", start_state="S0", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)    
 
     # print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max_obs={coût_max_obs}, coût_max_opt={coût_max_opt}\n")
