@@ -19,13 +19,18 @@ def next_state(state, action, graph):
 def get_path(graph, pi,S0):
     current_node = S0
     path = [current_node]
-    while current_node not in graph.terminals:
+    # while current_node not in graph.terminals:
+    while True:
+        tmp = current_node
         action = pi[current_node]
         path.append(action)
         current_node = next_state(current_node, action, graph)
+        if tmp == current_node:
+            break
         path.append(current_node)
-        
-    return path
+    
+    #on retourne jusqu'a -1 pour ne pas avoir la derniere action de boucle 
+    return path[:-1]
 
 
 def get_edge(graph,node1,node2):
