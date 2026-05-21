@@ -6,9 +6,7 @@
 
 import argparse
 import re
-from pddl import parse_domain, parse_problem
-from pddl_parser import instanciate_action, build_graph
-from utils import complete_expertise, add_expertise
+from utils import complete_policy
 import pickle
 
 
@@ -27,11 +25,19 @@ argparser = argparse.ArgumentParser()
 
 argparser.add_argument('--graph_folder', type=str, default= "graphs/", help="dossier des graphes" )
 argparser.add_argument('--plan_folder', type= str, default= "pddl_exemples/", help= "dossier des plans")
-argparser.add_argument('--exemple_name', type= str, default= "bw_p0", help="nom de l'exemple (nom partage par le fichier de plan et de graphe)")
+argparser.add_argument('--exemple_name', type= str, default= "ac_p0", help="nom de l'exemple (nom partage par le fichier de plan et de graphe)")
 
 args = argparser.parse_args()
 GRAPH_FILE = args.graph_folder + args.exemple_name +".pickle"
 PLAN_FILE = args.plan_folder + args.exemple_name+ ".plan"
+POLICIES_FOLDER = "policies/"
+
+def get_label(state_label, action, G):
+    #verifie si l'action est autorisée et renvoie son label associé
+    for u,v,dico in G.out_edges(state_label, data=True):
+        if dico['action'].lower() == action.lower():
+            return dico['label']
+    return None
 
 if __name__ == "__main__":
     G = pickle.load(open(GRAPH_FILE, 'rb'))
@@ -42,6 +48,29 @@ if __name__ == "__main__":
     plan_clean = re.findall(regex, plan_text, re.MULTILINE)
     print("Plan extrait du fichier :", PLAN_FILE)
     print("Plan :", plan_clean)
+
+
+    dic_label = {dico['action']: dico['label'] for (_,_,dico) in G.edges(data=True)}
+    
+    pi = {}
+    state = list(G.inits)[0]
+    for action in plan_clean:
+        label = get_label(state, action, G)
+        if label:
+            next_state = [v for u,v,dico in G.out_edges(state, data=True) if dico['label'] == label and u == state][0]
+            pi[state] = label
+            state = next_state
+        else:
+            print(f"action {action} non autorisée depuis l'état {state}, ({G.nodes[state]['predicates']})")
+            break
+    print(pi)
+    pi = complete_policy(pi, G)
+    with open(POLICIES_FOLDER + args.exemple_name + "_policy.pickle", 'wb') as f:
+        pickle.dump(pi, f)
+    print("politique saved dans le fichier :", POLICIES_FOLDER + args.exemple_name + "_policy.pickle")
+
+
+
 
 
 

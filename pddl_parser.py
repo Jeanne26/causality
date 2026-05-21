@@ -1,3 +1,5 @@
+import json
+
 from pddl import parse_domain, parse_problem
 from pddl.logic.base import And, Not, Or
 from itertools import product
@@ -65,6 +67,7 @@ def instanciate_action(actions,objets):
 
 def build_graph(actions, init_state):
     i=0
+    edge_counter = 0
     state = init_state
     G = nx.DiGraph()
     G.add_node("S0",predicates = state)
@@ -89,7 +92,8 @@ def build_graph(actions, init_state):
                 else:
                     new_node = existe
 
-                G.add_edge(current_node, new_node, label = f'A{len(G.edges)}', action= action_name)
+                G.add_edge(current_node, new_node, label = f'A{edge_counter}', action= action_name)
+                edge_counter += 1
                 if new_state not in visited:
                     queue.append(new_node)
 
@@ -101,7 +105,7 @@ def build_graph(actions, init_state):
     for node in G.nodes:
         if statisfied(problem.goal, G.nodes[node]["predicates"]):
             G.terminals.add(node)
-            G.add_edge(node, node, label = 'Goal')
+            G.add_edge(node, node, label = 'Goal', action = '$\\varnothing$')
 
         i+=1
  
@@ -132,4 +136,11 @@ if __name__ == "__main__":
     add_expertise(G, expertise)
     
     pickle.dump(G, open(f'{args.output_folder}{EXEMPLE_NAME}.pickle', 'wb'))
+    # for node in G.nodes:
+    #     G.nodes[node]["predicates"] = list(G.nodes[node]["predicates"])
+
+    data = nx.node_link_data(G)
+    with open(f'{args.output_folder}{EXEMPLE_NAME}.json', 'w') as f:
+        json.dump(data, f)
+
     print(f'Graphe sauvegardé dans {args.output_folder}{EXEMPLE_NAME}.pickle')

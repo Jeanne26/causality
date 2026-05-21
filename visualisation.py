@@ -55,6 +55,7 @@ def show_graph(graph, fichier, pos=None):
             ax=axis,
             font_color=color,
             connectionstyle=arc_style,
+            font_size=4
         )
 
     plt.tight_layout()
