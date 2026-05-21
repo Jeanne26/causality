@@ -1,9 +1,7 @@
 from pddl import parse_domain, parse_problem
-import pddl
 from pddl.logic.base import And, Not, Or
 from itertools import product
 import networkx as nx
-import matplotlib.pyplot as plt
 import pickle
 import argparse
 from utils import complete_expertise, add_expertise
