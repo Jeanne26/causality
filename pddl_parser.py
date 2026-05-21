@@ -136,11 +136,17 @@ if __name__ == "__main__":
     add_expertise(G, expertise)
     
     pickle.dump(G, open(f'{args.output_folder}{EXEMPLE_NAME}.pickle', 'wb'))
-    # for node in G.nodes:
-    #     G.nodes[node]["predicates"] = list(G.nodes[node]["predicates"])
+    
+    # copie du graphe pour export Gephi
+    G_export = G.copy()
+    for node in G_export.nodes:
+        for key, value in G_export.nodes[node].items():
+            if isinstance(value, frozenset):
+                G_export.nodes[node][key] = " ; ".join(sorted(value))
+            elif isinstance(value, set):
+                G_export.nodes[node][key] = " ; ".join(sorted(str(v) for v in value))
 
-    data = nx.node_link_data(G)
-    with open(f'{args.output_folder}{EXEMPLE_NAME}.json', 'w') as f:
-        json.dump(data, f)
+    # export gephi
+    nx.write_gexf(G_export, f'{args.output_folder}{EXEMPLE_NAME}.gexf')
 
     print(f'Graphe sauvegardé dans {args.output_folder}{EXEMPLE_NAME}.pickle')
