@@ -59,7 +59,7 @@ def instanciate_action(actions,objets):
             subst = {p:o for p,o in zip(params, args)}
             precond = action.precondition.instantiate(subst)
             effect = action.effect.instantiate(subst)
-            name = f"{action.name}({', '.join(str(o) for o in args)})"
+            name = f"({action.name} {' '.join(str(o) for o in args)})"
             instanciated_actions.append((name, precond, effect))
     return instanciated_actions
 
