@@ -69,7 +69,7 @@ def build_graph(actions, init_state):
     i=0
     edge_counter = 0
     state = init_state
-    G = nx.DiGraph()
+    G = nx.MultiDiGraph()
     G.add_node("S0",predicates = state)
     queue = ["S0"]
     visited = set()

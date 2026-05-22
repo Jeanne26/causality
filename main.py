@@ -13,8 +13,8 @@ if __name__ == "__main__":
     coût_max_opt = 5
 
 
-    G = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
-    print(G.edges(data=True))
+    # G = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
+    # print(G.edges(data=True))
     # expertise =complete_expertise(G,{})
     # add_expertise(G, expertise)
     # pi1 = {}
@@ -34,9 +34,9 @@ if __name__ == "__main__":
     # T_pi_opt = optimal_policy_plan(T_graph, horizon=2)
     # analyze_policies(T_graph, T_graph.policies, list(T_graph.policies.keys()), "pi1", start_state=0, agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=T_pi_opt, lambda1=lambda1, lambda2=lambda2)
     
-    # print("===============================Jardinier=====================================\n")
-    # J_pi_opt = optimal_policy_plan(J_graph, horizon=1)
-    # analyze_policies(J_graph, J_graph.policies, list(J_graph.policies.keys()), "pi3", start_state="S0", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=J_pi_opt, lambda1=lambda1, lambda2=lambda2)
+    print("===============================Jardinier=====================================\n")
+    J_pi_opt = optimal_policy_plan(J_graph, horizon=1)
+    analyze_policies(J_graph, J_graph.policies, list(J_graph.policies.keys()), "pi3", start_state="S0", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=J_pi_opt, lambda1=lambda1, lambda2=lambda2)
 
     # print("===============================G1=====================================\n")
     # G1_opt = optimal_policy_no_plan(G1)

@@ -1,6 +1,9 @@
+import math
 import networkx as nx
 import matplotlib.pyplot as plt
 from graphs import P_graph,T_graph,J_graph,G1
+import itertools as it
+
 
 def show_poison():
     pos = {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
@@ -30,39 +33,70 @@ def show_poison():
 
 
 
-def show_graph(graph, fichier, pos=None):
-    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+# https://networkx.org/documentation/stable/auto_examples/drawing/plot_multigraphs.html
+def draw_labeled_multigraph(G, attr_name, ax=None):
+    """
+    Length of connectionstyle must be at least that of a maximum number of edges
+    between pair of nodes. This number is maximum one-sided connections
+    for directed graph and maximum total connections for undirected graph.
+    """
+    # Works with arc3 and angle3 connectionstyles
+    connectionstyle = [f"arc3,rad={r}" for r in it.accumulate([0.15] * 4)]
+    # connectionstyle = [f"angle3,angleA={r}" for r in it.accumulate([30] * 4)]
+
+
+    pos = nx.bfs_layout(G, start=list(G.inits)[0])
+    nx.draw_networkx_nodes(G, pos, ax=ax,node_size =300)
+    nx.draw_networkx_labels(G, pos, font_size=8, ax=ax)
+    nx.draw_networkx_edges(
+        G, pos, edge_color="grey", connectionstyle=connectionstyle, ax=ax
+    )
+
+    labels = {
+        tuple(edge): f"{attrs[attr_name]}"
+        for *edge, attrs in G.edges(keys=True, data=True)
+    }
+    nx.draw_networkx_edge_labels(
+        G,
+        pos,
+        labels,
+        connectionstyle=connectionstyle,
+        label_pos=0.3,
+        font_color="blue",
+        bbox={"alpha": 0},
+        ax=ax,
+    )
+
+
+def visualisation(graph, attr_list, name, pos=None):
+    """
+    Affiche un MultiDiGraph dans une grille de subplots,
+    chaque subplot affichant un attribut différent sur les arêtes.
+    """
+    n_attr = len(attr_list)
+    ncols = 2  # toujours 2 colonnes
+    nrows = math.ceil(n_attr / ncols) 
     
-    if pos is None:
-        pos = nx.bfs_layout(graph, start="S0")
+    fig, axes = plt.subplots(nrows, ncols, figsize=(6 * ncols, 4 * nrows))
     
-    arc_style = "arc3,rad=0.2"
-    node_options = {"node_color": "lightblue", "node_size": 500}
-    edge_options = {"edge_color": "gray", "width": 1.2, "arrows": True, "arrowsize": 20,"arrowstyle": "->"}
+    if nrows == 1 and ncols == 1:
+        axes = [[axes]]
+    elif nrows == 1:
+        axes = [axes]
+    elif ncols == 1:
+        axes = [[ax] for ax in axes]
+    
+    axes_flat = [ax for row in axes for ax in row]  # aplatisse pour itérer facilement
 
-    for axis, attr, color, title in [
-        (ax[0], 'label',  'red',  "Labels"),
-        (ax[1], 'weight', 'blue', "Poids"),
-    ]:
-        axis.set_title(title)
-        nx.draw_networkx_nodes(graph, pos, ax=axis, **node_options)
-        nx.draw_networkx_labels(graph, pos, ax=axis, font_size=10)
-        nx.draw_networkx_edges(graph, pos, ax=axis, connectionstyle=arc_style, **edge_options)
-        edge_labels = nx.get_edge_attributes(graph, attr)
-        nx.draw_networkx_edge_labels(
-            graph, pos,
-            edge_labels=edge_labels,
-            ax=axis,
-            font_color=color,
-            connectionstyle=arc_style,
-            font_size=4
-        )
-
-    plt.tight_layout()
-    plt.savefig(f"fig/{fichier}.png")
-    plt.show()
-
-
+    for i, attr in enumerate(attr_list):
+        draw_labeled_multigraph(graph, attr, axes_flat[i])
+        axes_flat[i].set_title(attr)
+    
+    for j in range(n_attr, len(axes_flat)):
+        fig.delaxes(axes_flat[j])
+    
+    plt.suptitle(name, fontsize=16)
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
 import pickle
 
 if __name__== "__main__":
@@ -73,6 +107,21 @@ if __name__== "__main__":
 
     # show_graph(J_graph,"graphe_jardinier", pos= J_graph.positions ) 
     # show_graph(G1, None, "graphe_G1")
+    # G = pickle.load(open('tmp/ac_p0.pickle', 'rb'))
+    # print(G.edges(data=True))
+    visualisation(J_graph, ["label", "weight"], "Graphe Jardinier", pos=J_graph.positions)
+    plt.savefig("fig/graphe_jardinier.png")
+    visualisation(P_graph, ["label", "weight"], "Graphe Poison", pos={"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)})
+    plt.savefig("fig/graphe_poison.png")
+    visualisation(T_graph, ["label", "weight"], "Graphe Test", pos={0:(0,3), 1:(1,5), 2:(1,1), 3:(2,6), 4:(2,4), 5:(2,2), 6:(2,0)})
+    plt.savefig("fig/graphe_test.png")
+    visualisation(G1, ["label"], "Graphe G1")
+    plt.savefig("fig/graphe_G1.png")
+
     G = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
-    print(G.edges(data=True))
-    show_graph(G,"graph_AC" )
+    visualisation(G, ["label", "action", "weight"], "Graphe AC_p0")
+    plt.savefig("fig/graphe_ac_p0.png")
+
+    G = pickle.load(open('graphs/bw_p0.pickle', 'rb'))
+    visualisation(G, ["label", "action", "weight"], "Graphe BW_p0")
+    plt.savefig("fig/graphe_bw_p0.png")

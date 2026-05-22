@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-05-22">
+    <creator>NetworkX 3.6.1</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <attributes mode="static" class="edge">
+      <attribute id="0" title="networkx_key" type="long" />
+    </attributes>
+    <nodes>
+      <node id="VO" label="VO" />
+      <node id="vivant" label="vivant" />
+      <node id="VE" label="VE" />
+      <node id="VV" label="VV" />
+      <node id="mort" label="mort" />
+      <node id="VA" label="VA" />
+    </nodes>
+    <edges>
+      <edge source="VO" target="vivant" id="0" label="boire" weight="1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VO" target="VE" id="1" label="emp" weight="0.1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VO" target="VV" id="2" label="vider" weight="0.5">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="vivant" target="vivant" id="3" label="$\varnothing$" weight="1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VE" target="VV" id="4" label="vider" weight="0.5">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VE" target="mort" id="5" label="boire" weight="0.1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VE" target="VA" id="6" label="antidote" weight="1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VV" target="mort" id="7" label="$\varnothing$" weight="0.5">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="mort" target="mort" id="8" label="$\varnothing$" weight="1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="VA" target="vivant" id="9" label="boire" weight="1">
+        <attvalues>
+          <attvalue for="0" value="0" />
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
