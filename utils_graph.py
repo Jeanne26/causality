@@ -18,10 +18,11 @@ def next_state(state, action, graph):
 
 
 
-def get_path(graph,pi,S0):
+def get_path(graph,pi,S0,max_length=1000):
+    i=0
     current_node = S0
     path = [current_node]
-    while True:
+    while i<max_length:
         tmp = current_node
         action_label = pi[current_node]
         edges = graph.out_edges(current_node, data=True)
@@ -37,7 +38,9 @@ def get_path(graph,pi,S0):
             raise ValueError(f"{current_node}: action {action_label} non valide pour cet état")
         if tmp == current_node:
             break
-        
+        i+=1
+    if i==max_length:
+        raise ValueError(f"longueur du chemin dépasse la limite de {max_length}")
     
     #on retourne jusqu'a -1 pour ne pas avoir la derniere action de boucle 
     

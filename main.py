@@ -8,8 +8,9 @@ def load_graphs():
     P_graph = pickle.load(open('graphs/P_graph.pickle', 'rb'))
     T_graph = pickle.load(open('graphs/T_graph.pickle', 'rb'))
     G1 = pickle.load(open('graphs/G1.pickle', 'rb'))
-
-    return J_graph, P_graph, T_graph, G1
+    AC = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
+    BW = pickle.load(open('graphs/bw_p0.pickle', 'rb'))
+    return J_graph, P_graph, T_graph, G1, AC, BW
 
 if __name__ == "__main__":
 
@@ -20,16 +21,17 @@ if __name__ == "__main__":
     coût_max_obs = 5
     coût_max_opt = 5
 
+    J_graph, P_graph, T_graph, G1, AC, BW = load_graphs()
 
-    # G = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
-    # print(G.edges(data=True))
-    # expertise =complete_expertise(G,{})
-    # add_expertise(G, expertise)
-    # pi1 = {}
-    # G.policies = {"pi1": {"S0":"A0","S1":"A2","S2":"Goal"},"pi2":{"S0":"A0","S1":"A2","S2":"A4","S3":"A5","S4":"Goal"}}
+    
 
-    # print(get_path(G,G.policies["pi2"],"S0"))
-    # analyze_policies(G, G.policies, list(G.policies.keys()), "pi1", start_state="S0", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)    
+ 
+    # BW.policies = {"pi1": {"S0":"A0","S1":"A2","S2":"BWoal"},"pi2":{"S0":"A0","S1":"A2","S2":"A3","S3":"A5","S4":"BWoal"}}
+    
+    # analyze_policies(BW, BW.policies, list(BW.policies.keys()), "pi1", start_state="S0", aBWBW_func=aBWBW, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)
+
+
+
 
     # print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max_obs={coût_max_obs}, coût_max_opt={coût_max_opt}\n")
     # print("===============================Poison=====================================\n")
