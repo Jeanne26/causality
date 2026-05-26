@@ -1,0 +1,10 @@
+;;!domain: bw
+;;!problem: bw-simple
+
+0.00000: (unstack a b)
+0.00100: (put-down a)
+0.00200: (pick-up b)
+0.00300: (stack b a)
+
+; Makespan: 0.003
+; Metric: 0.003

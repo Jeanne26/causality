@@ -22,20 +22,24 @@ if __name__ == "__main__":
     coût_max_opt = 5
 
     J_graph, P_graph, T_graph, G1, AC, BW = load_graphs()
-    p1 = pickle.load(open('policies/ac_p0_0_policy.pickle', 'rb'))
-    #load policies
-    AC.policies ={}
-    for i in range(0,6):
-        with open(f'policies/ac_p0_{i}_policy.pickle', 'rb') as f:
-            AC.policies[f'pi{i}'] = pickle.load(f)
-            AC.policies[f'pi{i}'] = complete_policy(AC.policies[f'pi{i}'], AC)
+    # print("===============================AC=====================================\n")
+    # AC.policies ={}
+    # for i in range(0,6):
+    #     with open(f'policies/ac_p0_{i}_policy.pickle', 'rb') as f:
+    #         AC.policies[f'pi{i}'] = pickle.load(f)
+    #         AC.policies[f'pi{i}'] = complete_policy(AC.policies[f'pi{i}'], AC)
 
     
-    analyze_policies(AC,AC.policies, list(AC.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)
-
-    # analyze_policies(BW, BW.policies, list(BW.policies.keys()), "pi1", start_state="S0", aBWBW_func=aBWBW, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)
+    # analyze_policies(AC,AC.policies, list(AC.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)
 
 
+    print("===============================BW=====================================\n")
+    BW.policies ={}
+    for i in range(0,5):
+        with open(f'policies/bw_p0/bw_p0_plan_policy_{i}.pickle', 'rb') as f:
+            BW.policies[f'pi{i}'] = pickle.load(f)
+            BW.policies[f'pi{i}'] = complete_policy(BW.policies[f'pi{i}'], BW)
+    analyze_policies(BW,BW.policies, list(BW.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)    
 
 
     # print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max_obs={coût_max_obs}, coût_max_opt={coût_max_opt}\n")

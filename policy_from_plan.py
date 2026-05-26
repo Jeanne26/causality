@@ -12,20 +12,11 @@ import pickle
 
 
 argparser = argparse.ArgumentParser()
-# argparser.add_argument('--pddl_folder', type=str, default="pddl_exemples/", help='dossier contenant les fichiers pddl')
-# argparser.add_argument('--domain_file', type=str, default="bw_domain.pddl", help='nom fichier domaine')
-# argparser.add_argument('--problem_file', type=str, default="bw_p0.pddl", help='nom probleme fichier')
-# argparser.add_argument("--output_folder", type=str, default="graphs/", help="dossier de sortie pour les graphes")
-# args = argparser.parse_args()
-# PDDL_FOLDER = args.pddl_folder
-# DOMAIN_FILE = args.domain_file
-# PROBLEM_FILE = args.problem_file
-# EXEMPLE_NAME = PROBLEM_FILE.split(".pddl")[0]
-# PLAN_FILE = PROBLEM_FILE.split(".pddl")[0]+".plan"
 
-argparser.add_argument('--graph_file', type=str, default= "graphs/ac_p0.pickle", help="fichier du graphe" )
-argparser.add_argument('--plan_folder', type= str, default= "pddl_exemples/ac_p0_plan", help="folder de plans ")
-argparser.add_argument('--output_folder', type=str, default="policies/ac_p0/", help='dossier de sortie pour les politiques')
+
+argparser.add_argument('--graph_file', type=str, default= "graphs/bw_p0.pickle", help="fichier du graphe" )
+argparser.add_argument('--plan_folder', type= str, default= "pddl_exemples/bw_p0_plan", help="folder de plans ")
+argparser.add_argument('--output_folder', type=str, default="policies/bw_p0/", help='dossier de sortie pour les politiques')
 
 args = argparser.parse_args()
 GRAPH_FILE = args.graph_file
