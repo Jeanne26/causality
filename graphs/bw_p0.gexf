@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
-  <meta lastmodifieddate="2026-05-22">
+  <meta lastmodifieddate="2026-05-26">
     <creator>NetworkX 3.6.1</creator>
   </meta>
   <graph defaultedgetype="directed" mode="static" name="">
@@ -45,27 +45,27 @@
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S1" target="S0" id="1" label="A1" weight="1">
-        <attvalues>
-          <attvalue for="1" value="(stack a b)" />
-          <attvalue for="2" value="0" />
-        </attvalues>
-      </edge>
-      <edge source="S1" target="S2" id="2" label="A2" weight="1">
+      <edge source="S1" target="S2" id="1" label="A1" weight="1">
         <attvalues>
           <attvalue for="1" value="(put-down a)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S2" target="S3" id="3" label="A3" weight="1">
+      <edge source="S1" target="S0" id="2" label="A2" weight="1">
         <attvalues>
-          <attvalue for="1" value="(pick-up b)" />
+          <attvalue for="1" value="(stack a b)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S2" target="S1" id="4" label="A4" weight="1">
+      <edge source="S2" target="S1" id="3" label="A3" weight="1">
         <attvalues>
           <attvalue for="1" value="(pick-up a)" />
+          <attvalue for="2" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="S2" target="S3" id="4" label="A4" weight="1">
+        <attvalues>
+          <attvalue for="1" value="(pick-up b)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
@@ -75,15 +75,15 @@
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S3" target="S4" id="6" label="A5" weight="1">
+      <edge source="S3" target="S2" id="6" label="A5" weight="1">
         <attvalues>
-          <attvalue for="1" value="(stack b a)" />
+          <attvalue for="1" value="(put-down b)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S3" target="S2" id="7" label="A6" weight="1">
+      <edge source="S3" target="S4" id="7" label="A6" weight="1">
         <attvalues>
-          <attvalue for="1" value="(put-down b)" />
+          <attvalue for="1" value="(stack b a)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
