@@ -6,7 +6,7 @@ def perplexite_agg(liste_score):
     return np.exp(-(1/N)* np.sum(np.log(liste_score)))
 
 
-def gamma_agg(liste_score,gamma=0.24):
+def gamma_agg(liste_score,gamma=0.58):
     #aggregation qui prend en compte la position de l'événement dans le chemin, les événements plus proches du début du chemin sont plus importants que ceux proches de la fin
     #on normalise le score pour qu'il soit compris entre 0 et 1 
     assert len(liste_score)>0

@@ -114,19 +114,24 @@ def optimal_policy_plan_astar(graph):
 
 #================================D_opt==============================================================
 
+# def compute_score(path,graph, agg: lambda liste: np.mean(liste), choice=False):
+#     #pour un chemin (etat+event) donné, calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
+#     scores = []
+#     for i in range(0, len(path)-2 ,2):
+#         if choice and len(graph.out_edges(path[i]))<=1:
+#             continue
+#         #nb: on considère que le poids est tout le temps le dernier attribut 
+#         edge= get_edge(graph,path[i],path[i+2])[-1]
+#         scores.append(edge["weight"])
+#     return agg(scores)
+
+
 def compute_score(path,graph, agg: lambda liste: np.mean(liste), choice=False):
     #pour un chemin (etat+event) donné, calcul le score du chemin en utilisant les poids des arcs et une fonction d'aggreg
     scores = []
-    for i in range(0, len(path)-2 ,2):
-        if choice and len(graph.out_edges(path[i]))<=1:
-            continue
-        #nb: on considère que le poids est tout le temps le dernier attribut 
-        edge_weight= get_edge(graph,path[i],path[i+2])[-1]
-        scores.append(edge_weight)
+    for action in range(1, len(path)-1 ,2):
+        scores.append(path[action]['weight'])
     return agg(scores)
-
-
-
 
 
 def distance_pi_opt(pi,pi_opt,state_path):
@@ -193,7 +198,7 @@ def critere_selection(graph, S0, pi1,pi2, cout_max_obs, cout_max_opt, lambda1=1,
     cout_res = res["d_obs"]*lambda1 < cout_max_obs and res["d_opt"]*lambda2 < cout_max_opt
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
-    return cout_res and path1[-1]!=path2[-1]
+    return cout_res and path1[-1]!=path2[-2]
 
 
 #===============================Analyse des politiques===========================================================
@@ -235,6 +240,7 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
         policies.sort(key=lambda x: x[1])
         for policy_name,cout in policies:
             path = get_path(graph, policies_dict[policy_name], start_state)
+            path = [path[i]["label"] if isinstance(path[i],dict) else path[i] for i in range(0,len(path))]
             print(f"Policy: {policy_name}, Cost: {cout:.2f}, Path: {path}")
         print("==========================================================================================")
     

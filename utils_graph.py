@@ -22,7 +22,8 @@ def get_path(graph, pi,S0):
     # while current_node not in graph.terminals:
     while True:
         tmp = current_node
-        action = pi[current_node]
+        # action = pi[current_node]
+        action = graph.edges[current_node, next_state(current_node, pi[current_node], graph)]
         path.append(action)
         current_node = next_state(current_node, action, graph)
         if tmp == current_node:
@@ -31,6 +32,31 @@ def get_path(graph, pi,S0):
     
     #on retourne jusqu'a -1 pour ne pas avoir la derniere action de boucle 
     return path[:-1]
+
+def get_path(graph,pi,S0):
+    current_node = S0
+    path = [current_node]
+    while True:
+        tmp = current_node
+        action_label = pi[current_node]
+        edges = graph.out_edges(current_node, data=True)
+        action = None
+        for _, succ, data in edges:
+            if data['label']==action_label:
+                action = data
+                path.append(action)
+                path.append(succ)
+                current_node = succ
+                break
+        if action is None:
+            raise ValueError(f"{current_node}: action {action_label} non valide pour cet état")
+        if tmp == current_node:
+            break
+        
+    
+    #on retourne jusqu'a -1 pour ne pas avoir la derniere action de boucle 
+    
+    return path[:-2]
 
 
 def get_edge(graph,node1,node2):
