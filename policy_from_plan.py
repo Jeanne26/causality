@@ -23,14 +23,14 @@ argparser = argparse.ArgumentParser()
 # EXEMPLE_NAME = PROBLEM_FILE.split(".pddl")[0]
 # PLAN_FILE = PROBLEM_FILE.split(".pddl")[0]+".plan"
 
-argparser.add_argument('--graph_folder', type=str, default= "graphs/", help="dossier des graphes" )
-argparser.add_argument('--plan_folder', type= str, default= "pddl_exemples/", help= "dossier des plans")
-argparser.add_argument('--exemple_name', type= str, default= "ac_p0", help="nom de l'exemple (nom partage par le fichier de plan et de graphe)")
+argparser.add_argument('--graph_file', type=str, default= "graphs/ac_p0.pickle", help="fichier du graphe" )
+argparser.add_argument('--plan_file', type= str, default= "pddl_exemples/ac_p0.plan", help="fichier de plan ")
 
 args = argparser.parse_args()
-GRAPH_FILE = args.graph_folder + args.exemple_name +".pickle"
-PLAN_FILE = args.plan_folder + args.exemple_name+ ".plan"
+GRAPH_FILE = args.graph_file
+PLAN_FILE = args.plan_file
 POLICIES_FOLDER = "policies/"
+OUTPUT_NAME = PLAN_FILE.split(".plan")[0].split("/")[-1]
 
 def get_label(state_label, action, G):
     #verifie si l'action est autorisée et renvoie son label associé
@@ -63,11 +63,13 @@ if __name__ == "__main__":
         else:
             print(f"action {action} non autorisée depuis l'état {state}, ({G.nodes[state]['predicates']})")
             break
-    print(pi)
-    pi = complete_policy(pi, G)
-    with open(POLICIES_FOLDER + args.exemple_name + "_policy.pickle", 'wb') as f:
+    assert next_state in G.terminals, f"le plan ne mène pas à un état terminal, dernier état atteint : {next_state} ({G.nodes[next_state]['predicates']})"
+    pi[next_state] = "Goal"
+
+    # pi = complete_policy(pi, G)
+    with open(POLICIES_FOLDER + OUTPUT_NAME + "_policy.pickle", 'wb') as f:
         pickle.dump(pi, f)
-    print("politique saved dans le fichier :", POLICIES_FOLDER + args.exemple_name + "_policy.pickle")
+    print("politique saved dans le fichier :", POLICIES_FOLDER + OUTPUT_NAME + "_policy.pickle")
 
 
 

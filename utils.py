@@ -14,6 +14,7 @@ def complete_policy(pi, graph):
             out_edges = list(graph.out_edges(node, data=True))
             if len(out_edges)==1:
                 res_pi[node] = out_edges[0][2]['label']
+
             elif len(out_edges)>1:
                 best_action= max(out_edges,key=lambda edge:edge[2]['weight'])
                 res_pi[node]= best_action[2]['label']

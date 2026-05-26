@@ -1,0 +1,14 @@
+;;!domain: air-cargo
+;;!problem: ac_p0
+
+0.00000: (load c2 p2 jfk)
+0.00100: (load c1 p1 sfo)
+0.00200: (fly p2 jfk sfo)
+0.00300: (unload c2 p2 sfo)
+0.00400: (fly p2 sfo jfk)
+0.00500: (fly p2 jfk sfo)
+0.00600: (fly p1 sfo jfk)
+0.00700: (unload c1 p1 jfk)
+
+; Makespan: 0.007
+; Metric: 0.007
