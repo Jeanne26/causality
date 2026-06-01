@@ -147,9 +147,6 @@ def distance_pi_opt(pi,pi_opt,state_path):
 
 #=================================D_obs============================================================
 def levenshtein_distance(path1, path2):
-    print("======")
-    print(path1)
-    print(path2)
     #on ne prends pas en compte le dernier état car desavantage les scenarios valides qui n'ont pas le meme état terminal que la politique de référence
     s1 = path1[:-1]
     s2 = path2[:-1]
@@ -176,15 +173,17 @@ def levenshtein_distance_event(states1,states2,events1,events2,graph):
         for j in range(m+1):
             if i ==0:
                 dp[i][j]=j
+                
             elif j ==0:
                 dp[i][j]=i
             elif events1[i-1]==events2[j-1]:
                 dp[i,j]= dp[i-1][j-1]
             else:
-                cout_sub = 1/len(graph.out_edges[states1][])
+                cout_sub = 1/len(graph.edges(states1[i]))
                 dp[i,j] = min(1+ dp[i-1][j], 1+ dp[i][j-1], dp[i-1][j-1]+cout_sub)
+    return dp[n][m]/max(m,n)
 #=================================Cout total===========================================================
-def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg,):
+def cout(graph, S0, pi1,pi2,lambda1=1,lambda2=1, lambda3 =1, choice= False,pi_opt = None,agg = perplexite_agg,d_obs =levenshtein_distance,d_obs_event = levenshtein_distance_event):
     #pi1 politique observé pi2 la politique à evaluer relativement à pi1
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
@@ -196,7 +195,7 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
     
 
     d_observation = d_obs(states1,states2)
-
+    d_observation_event = d_obs_event(states1,states2,extract_sigma_event(path1),extract_sigma_event(path2),graph)
     if pi_opt:
         if choice:
             d_optimale = distance_pi_opt(pi2, pi_opt, states2_choice)
@@ -204,13 +203,13 @@ def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = No
             d_optimale = distance_pi_opt(pi2, pi_opt, states2)
     else:
         d_optimale = compute_score(path2,graph, agg,choice)
-    return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale}
+    return {"cout":lambda1*d_observation + lambda2*d_optimale+lambda3*d_observation_event,"d_obs":d_observation,"d_opt":d_optimale,"d_obs_e":d_observation_event}
 
 
 #===============================Critère de sélection===========================================================
 
 def critere_selection(graph, S0, pi1,pi2, cout_max_obs, cout_max_opt, lambda1=1, lambda2=1, agg=perplexite_agg):
-    res = cout(graph,levenshtein_distance, S0, pi1,pi2, lambda1=lambda1, lambda2=lambda2, agg=agg)
+    res = cout(graph, S0, pi1,pi2, lambda1=lambda1, lambda2=lambda2, agg=agg,d_obs =levenshtein_distance)
     cout_res = res["d_obs"]*lambda1 < cout_max_obs and res["d_opt"]*lambda2 < cout_max_opt
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
@@ -220,10 +219,10 @@ def critere_selection(graph, S0, pi1,pi2, cout_max_obs, cout_max_opt, lambda1=1,
 #===============================Analyse des politiques===========================================================
 
 def compute_all_res(graph, S0, pi1, pi2, pi_opt,agg, lambda1=1, lambda2=1):
-    res ={'L+P1' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, agg=agg),
-          'L+P2' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=False, agg=agg),
-          'L+D1' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, pi_opt=pi_opt, agg=agg),
-          'L+D2' :cout(graph,levenshtein_distance,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=False, pi_opt=pi_opt, agg=agg)}
+    res ={'L+P1' :cout(graph,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, agg=agg,d_obs =levenshtein_distance),
+          'L+P2' :cout(graph,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=False, agg=agg,d_obs =levenshtein_distance),
+          'L+D1' :cout(graph,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=True, pi_opt=pi_opt, agg=agg,d_obs =levenshtein_distance),
+          'L+D2' :cout(graph,S0,pi1,pi2,lambda1=lambda1,lambda2=lambda2,choice=False, pi_opt=pi_opt, agg=agg,d_obs =levenshtein_distance)}
     return res
 
 
@@ -265,6 +264,7 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
         print(f"Configuration : {config}")
         valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max_obs, cout_max_opt, lambda1=lambda1, lambda2=lambda2, agg=agg_func)]
         print(f"Politiques valides: {', '.join(valid_policies)}\n")
+
 
 
 
