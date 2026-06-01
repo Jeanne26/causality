@@ -3,8 +3,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from graphs import P_graph,T_graph,J_graph,G1
 import itertools as it
-
-
+import numpy as np
+import pickle
+from utils import cout
+from agg_operators import *
 def show_poison():
     pos = {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
     edge_labels = nx.get_edge_attributes(P_graph, 'label')
@@ -97,7 +99,50 @@ def visualisation(graph, attr_list, name, pos=None):
     
     plt.suptitle(name, fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.96])
-import pickle
+
+def show_res(res_dico):
+    if not res_dico:
+        return
+    
+
+    policies = list(res_dico.keys())
+    components = [k for k in next(iter(res_dico.values())).keys() if k != "cout"]
+
+    x = np.arange(len(policies))
+    width = 0.6
+
+    _, ax = plt.subplots(figsize=(max(8, len(policies) * 1.2), 5))
+    bottom = np.zeros(len(policies), dtype=float)
+
+    for comp in components:
+        values = np.array([float(res_dico[policy].get(comp, 0.0)) for policy in policies], dtype=float)
+        bars = ax.bar(x, values, width, bottom=bottom, label=comp)
+        for i, (bar, val) in enumerate(zip(bars, values)):
+            if val != 0:
+                y = bottom[i] + (val / 2)
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    y,
+                    f"{val:.2f}",
+                    ha="center",
+                    va="center",
+                    fontsize=8,
+                    color="black",
+                )
+        bottom += values
+
+    totals = np.array([float(res_dico[policy].get("cout", 0.0)) for policy in policies], dtype=float)
+    for i, total in enumerate(totals):
+        ax.text(x[i], total, f"{total:.2f}", ha="center", va="bottom", fontsize=9)
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(policies)
+    ax.set_ylabel("Coût")
+    ax.set_title("Décomposition du coût par politique")
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
 
 if __name__== "__main__":
     # pos_poison=  {"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)}
@@ -109,19 +154,22 @@ if __name__== "__main__":
     # show_graph(G1, None, "graphe_G1")
     # G = pickle.load(open('tmp/ac_p0.pickle', 'rb'))
     # print(G.edges(data=True))
-    visualisation(J_graph, ["label", "weight"], "Graphe Jardinier", pos=J_graph.positions)
-    plt.savefig("fig/graphe_jardinier.png")
-    visualisation(P_graph, ["label", "weight"], "Graphe Poison", pos={"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)})
-    plt.savefig("fig/graphe_poison.png")
-    visualisation(T_graph, ["label", "weight"], "Graphe Test", pos={0:(0,3), 1:(1,5), 2:(1,1), 3:(2,6), 4:(2,4), 5:(2,2), 6:(2,0)})
-    plt.savefig("fig/graphe_test.png")
-    visualisation(G1, ["label"], "Graphe G1")
-    plt.savefig("fig/graphe_G1.png")
+    # visualisation(J_graph, ["label", "weight"], "Graphe Jardinier", pos=J_graph.positions)
+    # plt.savefig("fig/graphe_jardinier.png")
+    # visualisation(P_graph, ["label", "weight"], "Graphe Poison", pos={"VO":(0,2),"vivant":(1,4),"VE":(1,2),"VV":(1,0),"VA":(2,3),"mort":(2,1)})
+    # plt.savefig("fig/graphe_poison.png")
+    # visualisation(T_graph, ["label", "weight"], "Graphe Test", pos={0:(0,3), 1:(1,5), 2:(1,1), 3:(2,6), 4:(2,4), 5:(2,2), 6:(2,0)})
+    # plt.savefig("fig/graphe_test.png")
+    # visualisation(G1, ["label"], "Graphe G1")
+    # plt.savefig("fig/graphe_G1.png")
 
-    G = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
-    visualisation(G, ["label", "action", "weight"], "Graphe AC_p0")
-    plt.savefig("fig/graphe_ac_p0.png")
+    # G = pickle.load(open('graphs/ac_p0.pickle', 'rb'))
+    # visualisation(G, ["label", "action", "weight"], "Graphe AC_p0")
+    # plt.savefig("fig/graphe_ac_p0.png")
 
-    G = pickle.load(open('graphs/bw_p0.pickle', 'rb'))
-    visualisation(G, ["label", "action", "weight"], "Graphe BW_p0")
-    plt.savefig("fig/graphe_bw_p0.png")
+    # G = pickle.load(open('graphs/bw_p0.pickle', 'rb'))
+    # visualisation(G, ["label", "action", "weight"], "Graphe BW_p0")
+    # plt.savefig("fig/graphe_bw_p0.png")
+
+    pass
+    
