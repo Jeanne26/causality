@@ -20,9 +20,11 @@
 \usepackage{xcolor}
 \usepackage[french]{babel}
 \usepackage{booktabs}
+\usepackage{listings}
+\usepackage{minipage-marginpar}
 
 \newcommand*{\longDefiningEquals}{\stackrel{\text{def}}{=\joinrel=}}
-\title{Rapport semaine 9}
+\title{Rapport}
 % \date{}
 
 \usepackage[
@@ -90,6 +92,74 @@ On définit dans un premier temps l'ensemble des objets nécessaire à l'évalua
     \item $expert\_judge_\tau: \mathds{S} \times 2 ^{\mathds{E}}\to \lbrack 0, 1\rbrack$ fonction d'évaluation experte, définie partiellement sur l'ensemble des couples $(S,E)$ tel que $\exists S'\in\mathds{S},(S,E,S')\in \tau$. Cette fonction attribue à chaque paire une valeur comprise entre 0 et 1 relative à une norme (statistique ou prescriptive). Ces valeurs sont fixées de manière subjective.
 
 \end{itemize}
+
+\section{Exemple de transition d'un framework RAC vers LTS: PDDL}
+
+Les LTS ne sont pas à proprement vu comme un langage pour le domaine du Raisonnement sur l'Action et le changement (RAC) mais, comme dit dans \cite{sarmiento_formalising_2025} leur utilisation permet d'unifier des raisonnement sur différents frameworks ainsi que de lever certaines ambiguités. Tous formalisme pouvant être représenté sous forme de LTS bénéficie ainsi des réflexions et observation de ce travail. Pour illustrer la possibilité de transition nous allons développer sur la traduction d'un problème PDDL vers LTS. La représentation LTS permet de travailler sur la comparaison de contexte causal contrefactuel mais on laisse le travail de recherche et de résolution de problème de plannification aux outils prééxistants. En effet la complexité exponentielle d'un LTS en fonction du nombre d'état et d'action n'est pas adapté à la recherche de politique.
+
+
+\subsection{Rappel PDDL}
+
+Un problème de planification est décrit en PDDL par deux types de fichiers. Le premier définit le domaine de planification il contient la déclaration des types, des actions (effets et préconditions) ainsi que les axiomes et les règles du domaine. Le second fichier définit le problème il indique les objets, les constantes spécifiques ainsi que la situation de départ et l'objectif. Un exemple se trouve en annexe \ref{ex_pddl}
+
+
+\subsection{Construction d'un LTS à partir d'un problème PDDL}
+Pour construire un LTS à partir d'un couple de fichier domaine/problème on commence par instancier toutes les actions possibles à partir de leur définitions et des objets du problèmes, ce processus est explicité dans l'exemple ci-dessous.
+
+\hfill
+\begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
+                   commentstyle=\color{gray}\itshape,
+                   keywordstyle=\bfseries]
+def instantiate(actions, objects):
+    instanciated = []
+    for action in actions:
+        params = action.parameters
+        for args in product(objects, repeat=len(params)):
+            subst = dict(zip(params, args))
+            name, precond,effect =  action.apply(subst)  
+            instanciated.append((name, precond, effect))
+    return instanciated
+\end{lstlisting}
+\hfill
+
+Une fois l'ensemble des actions instanciées avant de pouvoir cosntruire le LTS on définit la fonction de satisfactions de préconditions qui pour un ensemble de préconditions et un état représenté par un ensemble de fluent vérifie si les préconditions sont respectées dans l'état. Cette fonction gère les précondition négative, disjonctive et conjonctive.
+
+\hfill
+\begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
+                   commentstyle=\color{gray}\itshape,
+                   keywordstyle=\bfseries]
+def statisfied(preconditions,etat):
+    if isinstance(preconditions, And):
+        return all(statisfied(p,etat) for p in preconditions)
+    if isinstance(preconditions, Not):
+        return not statisfied(preconditions,etat)
+    if isinstance(preconditions, Or):
+        return any(statisfied(p,etat) for p in preconditions)
+    return precondition in etat
+
+\end{lstlisting}
+\hfill
+
+La second fonction qui est nécessaire avant celle de construction du graphe est la fonction d'application des effets positifs et négatifs d'une actions dans un etat.
+\hfill
+
+\begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
+                   commentstyle=\color{gray}\itshape,
+                   keywordstyle=\bfseries]
+def apply_effects(effects,state):
+    new_state = state
+    for f in effects:
+        if isinstance(f, Not):
+            new_state.discard(eff) # effet negatif
+        else:
+            new_state.add(eff) #effet positif
+    return new_state
+
+\end{lstlisting}
+\hfill
+
+
+\subsection{Remarques et limites}
 
 \section{Évaluation d'un contexte causal contrefactuel}
 
@@ -827,6 +897,79 @@ Les résultats présents dans la table \ref{tab:dist_pol} indique qu'avec cette 
 
 \newpage
 \appendix
+
+\section{Exemple PDDL}\label{ex_pddl}
+Exemple d'instanciation de problème PDDL issus de \url{https://github.com/arii/planning_exercises/tree/master}. 
+
+\subsection*{Domain Definition}
+    \begin{lstlisting}[language=Lisp]
+(define (domain air-cargo)
+  (:requirements :strips)
+  (:predicates 
+    (In ?obj ?place)
+    (At ?obj ?place)
+    (Cargo ?obj)
+    (Plane ?obj)
+    (Airport ?obj))
+
+  (:action LOAD
+    :parameters (?c ?p ?a)
+    :precondition (and (At ?c ?a) 
+                       (At ?p ?a)
+                       (Cargo ?c)
+                       (Plane ?p)
+                       (Airport ?a))
+    :effect (and (not (At ?c ?a)) (In ?c ?p)))
+
+  (:action UNLOAD
+    :parameters (?c ?p ?a)
+    :precondition (and (In ?c ?p)
+                       (At ?p ?a)
+                       (Cargo ?c)
+                       (Plane ?p)
+                       (Airport ?a))
+    :effect (and (not (In ?c ?p)) (At ?c ?a)))
+
+  (:action FLY
+    :parameters (?p ?from ?to)
+    :precondition (and (At ?p ?from)
+                       (Plane ?p) 
+                       (Airport ?from)
+                       (Airport ?to))
+    :effect (and (not (At ?p ?from)) (At ?p ?to))))
+    \end{lstlisting}
+
+\subsection*{Définition du problème}
+    \begin{lstlisting}[language=Lisp]
+; PDDL instance problem for the Air cargo transport
+; Plane P1 is at SFO and plane P2 is at JFK.
+; Move cargo C1 from SFO to JFK
+; and cargo C2 from JFK to SFO.
+
+(define (problem ac_p0)
+
+  (:domain air-cargo)
+  
+  (:objects
+    C1 C2   ; cargo objects
+    P1 P2   ; plane objects
+    SFO JFK ; airports
+  )
+	
+  (:init
+    ; types
+    (Cargo C1) (Cargo C2)
+    (Plane P1) (Plane P2)
+    (Airport SFO) (Airport JFK)
+
+    ; locations
+    (At C1 SFO) (At C2 JFK)
+    (At P1 SFO) (At P2 JFK))
+
+  (:goal (and (At C1 JFK) (At C2 SFO))))
+    \end{lstlisting}
+
+
 \section{Exemple contexte causal non valide pour la fonction de coût}
 Soit le LTS $\langle \mathds{S},\tau \rangle$ avec $$\mathds{S} = \{S_0,S_1,S_2,S_3\} \quad \tau = \{(S_0,a,S_1),(S_0,b,S_2),(S_2,c,S_3),(S_2,d,S_4),(S_1,\emptyset,S_1),(S_3,\emptyset,S_3),(S_4,\emptyset,S_4)\}$$:
 
