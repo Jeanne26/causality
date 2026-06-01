@@ -38,9 +38,17 @@ if __name__ == "__main__":
         with open(f'policies/bw_p0/bw_p0_plan_policy_{i}.pickle', 'rb') as f:
             BW.policies[f'pi{i}'] = pickle.load(f)
             BW.policies[f'pi{i}'] = complete_policy(BW.policies[f'pi{i}'], BW)
-    analyze_policies(BW,BW.policies, list(BW.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)    
+    # analyze_policies(BW,BW.policies, list(BW.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)    
 
-
+    
+    p1 = get_path(BW,BW.policies["pi0"],"S0")
+    p2 = get_path(BW,BW.policies["pi1"],"S0")
+    
+    print(levenshtein_distance_event(extract_sigma_state(p1),
+                                     extract_sigma_state(p2),
+                                     extract_sigma_event(p1),
+                                     extract_sigma_event(p2),
+                                     BW))
     # print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max_obs={coût_max_obs}, coût_max_opt={coût_max_opt}\n")
     # print("===============================Poison=====================================\n")
 

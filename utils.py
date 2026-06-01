@@ -176,13 +176,15 @@ def levenshtein_distance_event(states1,states2,events1,events2,graph):
         for j in range(m+1):
             if i ==0:
                 dp[i][j]=j
+                
             elif j ==0:
                 dp[i][j]=i
             elif events1[i-1]==events2[j-1]:
                 dp[i,j]= dp[i-1][j-1]
             else:
-                cout_sub = 1/len(graph.out_edges[states1][])
+                cout_sub = 1/len(graph.edges(states1[i]))
                 dp[i,j] = min(1+ dp[i-1][j], 1+ dp[i][j-1], dp[i-1][j-1]+cout_sub)
+    return dp[n][m]/max(m,n)
 #=================================Cout total===========================================================
 def cout(graph,d_obs, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg,):
     #pi1 politique observé pi2 la politique à evaluer relativement à pi1
