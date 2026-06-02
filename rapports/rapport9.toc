@@ -46,3 +46,4 @@
 \contentsline {paragraph}{Conditions aux limites}{19}{}%
 \contentsline {paragraph}{Monotonie croissante}{20}{}%
 \contentsline {subsection}{\numberline {D.4}Synthèse résultats}{20}{}%
+\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{20}{}%
