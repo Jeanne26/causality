@@ -4,44 +4,46 @@
 \contentsline {subsection}{\numberline {2.1}Rappel PDDL}{2}{}%
 \contentsline {subsection}{\numberline {2.2}Construction d'un LTS à partir d'un problème PDDL}{2}{}%
 \contentsline {subsection}{\numberline {2.3}Remarques et limites}{3}{}%
-\contentsline {section}{\numberline {3}Évaluation d'un contexte causal contrefactuel}{3}{}%
-\contentsline {subsection}{\numberline {3.1}Fonction de coût}{3}{}%
-\contentsline {subsection}{\numberline {3.2}Vraisemblance du contrefactuel}{3}{}%
-\contentsline {subsubsection}{\numberline {3.2.1}Juge expert}{4}{}%
-\contentsline {subsubsection}{\numberline {3.2.2}Construction d'une politique optimale à partir de l'expert}{4}{}%
-\contentsline {subsubsection}{\numberline {3.2.3}Évaluation de la vraisemblance à partir de la politique optimale}{5}{}%
-\contentsline {subsubsection}{\numberline {3.2.4}Exploitation directe de l'expert}{6}{}%
-\contentsline {paragraph}{Opérateur moyenne géométrique}{6}{}%
-\contentsline {paragraph}{Opérateur gamma (temporel)}{7}{}%
-\contentsline {paragraph}{Opérateur seuil}{8}{}%
-\contentsline {subsubsection}{\numberline {3.2.5}Sélection des événements à évaluer}{8}{}%
-\contentsline {subsection}{\numberline {3.3}Critère de validité}{9}{}%
-\contentsline {section}{\numberline {4}Exemple Poison}{9}{}%
-\contentsline {subsection}{\numberline {4.1}Définitions du LTS}{9}{}%
-\contentsline {subsection}{\numberline {4.2}Définition des contextes causaux}{10}{}%
-\contentsline {subsection}{\numberline {4.3}Définition des politiques optimales}{11}{}%
-\contentsline {subsection}{\numberline {4.4}Expérimentations}{11}{}%
-\contentsline {paragraph}{Priorité à des contrefactuels avec des scores d'événements consistants:}{12}{}%
-\contentsline {paragraph}{Interdiction de dépasser un seuil}{12}{}%
-\contentsline {paragraph}{Normativité en début de scénario}{13}{}%
-\contentsline {paragraph}{Normativité en fin de scénario}{13}{}%
-\contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{13}{}%
-\contentsline {section}{\numberline {A}Exemple PDDL}{15}{}%
-\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{16}{}%
-\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{16}{}%
-\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{16}{}%
-\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{17}{}%
-\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{17}{}%
-\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{17}{}%
-\contentsline {paragraph}{Identité}{17}{}%
-\contentsline {paragraph}{Conditions aux limites}{17}{}%
-\contentsline {paragraph}{Monotonie croissante}{18}{}%
-\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{18}{}%
-\contentsline {paragraph}{Identité}{18}{}%
-\contentsline {paragraph}{Conditions aux limites}{18}{}%
-\contentsline {paragraph}{Monotonie croissante}{18}{}%
-\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{18}{}%
+\contentsline {section}{\numberline {3}Évaluation d'un contexte causal contrefactuel}{4}{}%
+\contentsline {subsection}{\numberline {3.1}Fonction de coût}{4}{}%
+\contentsline {subsection}{\numberline {3.2}Vraisemblance du contrefactuel}{5}{}%
+\contentsline {subsubsection}{\numberline {3.2.1}Juge expert}{5}{}%
+\contentsline {subsubsection}{\numberline {3.2.2}Construction d'une politique optimale à partir de l'expert}{6}{}%
+\contentsline {subsubsection}{\numberline {3.2.3}Évaluation de la vraisemblance à partir de la politique optimale}{7}{}%
+\contentsline {subsubsection}{\numberline {3.2.4}Exploitation directe de l'expert}{7}{}%
+\contentsline {paragraph}{Opérateur moyenne géométrique}{8}{}%
+\contentsline {paragraph}{Opérateur gamma (temporel)}{8}{}%
+\contentsline {paragraph}{Opérateur seuil}{9}{}%
+\contentsline {subsubsection}{\numberline {3.2.5}Sélection des événements à évaluer}{9}{}%
+\contentsline {subsection}{\numberline {3.3}Extension de la fonction de coût: distance entre événements}{9}{}%
+\contentsline {subsection}{\numberline {3.4}Critère de validité}{10}{}%
+\contentsline {section}{\numberline {4}Exemple Poison}{10}{}%
+\contentsline {subsection}{\numberline {4.1}Définitions du LTS}{10}{}%
+\contentsline {subsection}{\numberline {4.2}Définition des contextes causaux}{11}{}%
+\contentsline {subsection}{\numberline {4.3}Définition des politiques optimales}{12}{}%
+\contentsline {subsection}{\numberline {4.4}Expérimentations}{13}{}%
+\contentsline {paragraph}{Priorité à des contrefactuels avec des scores d'événements consistants:}{13}{}%
+\contentsline {paragraph}{Interdiction de dépasser un seuil}{13}{}%
+\contentsline {paragraph}{Normativité en début de scénario}{14}{}%
+\contentsline {paragraph}{Normativité en fin de scénario}{14}{}%
+\contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{14}{}%
+\contentsline {section}{\numberline {A}Exemple PDDL}{16}{}%
+\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{17}{}%
+\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{17}{}%
+\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{17}{}%
+\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{18}{}%
+\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{18}{}%
+\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{18}{}%
 \contentsline {paragraph}{Identité}{18}{}%
 \contentsline {paragraph}{Conditions aux limites}{18}{}%
 \contentsline {paragraph}{Monotonie croissante}{19}{}%
-\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{19}{}%
+\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{19}{}%
+\contentsline {paragraph}{Identité}{19}{}%
+\contentsline {paragraph}{Conditions aux limites}{19}{}%
+\contentsline {paragraph}{Monotonie croissante}{19}{}%
+\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{19}{}%
+\contentsline {paragraph}{Identité}{19}{}%
+\contentsline {paragraph}{Conditions aux limites}{19}{}%
+\contentsline {paragraph}{Monotonie croissante}{20}{}%
+\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{20}{}%
+\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{20}{}%

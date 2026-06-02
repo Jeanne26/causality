@@ -16,110 +16,130 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2}Exemple de transition d'un framework RAC vers LTS: PDDL}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Rappel PDDL}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Construction d'un LTS à partir d'un problème PDDL}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Remarques et limites}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Évaluation d'un contexte causal contrefactuel}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Fonction de coût}{3}{}\protected@file@percent }
-\newlabel{cout}{{1}{3}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Vraisemblance du contrefactuel}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Juge expert}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces LTS obtenu pour le problème simple de block world. Avec S0 =\{'clear a', 'on a b', 'on table b', 'arm-empty'\}, S1 =\{'on table b', 'clear b', 'holding a'\}, S2 =\{'on table b','arm empty'', 'clear b','clear a', 'on table a'\}, S3 =\{'holding b','on table a', 'clear a'\}, S4 =\{'on b a', 'on table a', 'arm empty', 'clear b'\}}}{3}{}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{graph_prob}{{\caption@xref {graph_prob}{ on input line 226}}{4}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Exemple de LTS contraint à des distributions de probabilités. Pour les états B et C chaque événement sortant est normativement équivalent aux autres. Les arcs sortant de l'état B sont pénalisés par leur nombre.}}{4}{}\protected@file@percent }
-\newlabel{fig:placeholder}{{1}{4}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Construction d'une politique optimale à partir de l'expert}{4}{}\protected@file@percent }
-\newlabel{pi_instan}{{4}{4}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Exemple de LTS évalué par un expert qui représente un cas limite pour une politique sans planification. Étiquetage des arcs du graphe de la forme "événement:score"}}{5}{}\protected@file@percent }
-\newlabel{fig:instant_cas_lim}{{2}{5}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Évaluation de la vraisemblance à partir de la politique optimale}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Exploitation directe de l'expert}{6}{}\protected@file@percent }
-\newlabel{exploit_direct}{{3.2.4}{6}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Opérateur moyenne géométrique}{6}{}\protected@file@percent }
-\newlabel{fig:lts_geo}{{3a}{7}{}{}{}}
-\newlabel{sub@fig:lts_geo}{{a}{7}{}{}{}}
-\newlabel{fig:Coûts}{{3b}{7}{}{}{}}
-\newlabel{sub@fig:Coûts}{{b}{7}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Exemple opérateur géométrique}}{7}{}\protected@file@percent }
-\newlabel{fig:geo}{{3}{7}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Opérateur gamma (temporel)}{7}{}\protected@file@percent }
-\newlabel{fig:lts_gamma}{{4a}{7}{}{}{}}
-\newlabel{sub@fig:lts_gamma}{{a}{7}{}{}{}}
-\newlabel{fig:Coûts}{{4b}{7}{}{}{}}
-\newlabel{sub@fig:Coûts}{{b}{7}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Exemple opérateurs gamma}}{7}{}\protected@file@percent }
-\newlabel{fig:gamma}{{4}{7}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Opérateur seuil}{8}{}\protected@file@percent }
-\newlabel{fig:lts_gamma}{{5a}{8}{}{}{}}
-\newlabel{sub@fig:lts_gamma}{{a}{8}{}{}{}}
-\newlabel{fig:Coûts}{{5b}{8}{}{}{}}
+\newlabel{fig:exemple graphe BW}{{1}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Remarques et limites}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Évaluation d'un contexte causal contrefactuel}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Fonction de coût}{4}{}\protected@file@percent }
+\newlabel{cout}{{1}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Vraisemblance du contrefactuel}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Juge expert}{5}{}\protected@file@percent }
+\newlabel{graph_prob}{{\caption@xref {graph_prob}{ on input line 289}}{5}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Exemple de LTS contraint à des distributions de probabilités. Pour les états B et C chaque événement sortant est normativement équivalent aux autres. Les arcs sortant de l'état B sont pénalisés par leur nombre.}}{5}{}\protected@file@percent }
+\newlabel{fig:placeholder}{{2}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Construction d'une politique optimale à partir de l'expert}{6}{}\protected@file@percent }
+\newlabel{pi_instan}{{4}{6}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Exemple de LTS évalué par un expert qui représente un cas limite pour une politique sans planification. Étiquetage des arcs du graphe de la forme "événement:score"}}{6}{}\protected@file@percent }
+\newlabel{fig:instant_cas_lim}{{3}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Évaluation de la vraisemblance à partir de la politique optimale}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Exploitation directe de l'expert}{7}{}\protected@file@percent }
+\newlabel{exploit_direct}{{3.2.4}{7}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Opérateur moyenne géométrique}{8}{}\protected@file@percent }
+\newlabel{fig:lts_geo}{{4a}{8}{}{}{}}
+\newlabel{sub@fig:lts_geo}{{a}{8}{}{}{}}
+\newlabel{fig:Coûts}{{4b}{8}{}{}{}}
 \newlabel{sub@fig:Coûts}{{b}{8}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Exemple opérateurs de seuil}}{8}{}\protected@file@percent }
-\newlabel{fig:seuil}{{5}{8}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Sélection des événements à évaluer}{8}{}\protected@file@percent }
-\newlabel{fig:lts_gamma}{{6a}{8}{}{}{}}
-\newlabel{sub@fig:lts_gamma}{{a}{8}{}{}{}}
-\newlabel{tab:couts_global}{{6b}{8}{}{}{}}
-\newlabel{sub@tab:couts_global}{{b}{8}{}{}{}}
-\newlabel{tab:couts_choix}{{6c}{8}{}{}{}}
-\newlabel{sub@tab:couts_choix}{{c}{8}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Évaluation sur les choix}}{8}{}\protected@file@percent }
-\newlabel{fig:choix}{{6}{8}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Critère de validité}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Exemple Poison}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Définitions du LTS}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Définition des contextes causaux}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Définition des politiques optimales}{11}{}\protected@file@percent }
-\newlabel{pol_opti}{{16}{11}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Expérimentations}{11}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Politique optimale: les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale}}{12}{}\protected@file@percent }
-\newlabel{fig:placeholder}{{7}{12}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Priorité à des contrefactuels avec des scores d'événements consistants:}{12}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Résultats pour la priorité à la normativité}}{12}{}\protected@file@percent }
-\newlabel{tab:prio_normativite}{{1}{12}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Interdiction de dépasser un seuil}{12}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Résultats pour la priorité à la normativité}}{12}{}\protected@file@percent }
-\newlabel{tab:res_seuil}{{2}{12}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Normativité en début de scénario}{13}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Priorité à la normativité en début de scénario}}{13}{}\protected@file@percent }
-\newlabel{tab:res_gamma}{{3}{13}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Normativité en fin de scénario}{13}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Priorité à la normativité en fin de scénario}}{13}{}\protected@file@percent }
-\newlabel{tab:res_gamma_late}{{4}{13}{}{}{}}
-\@writefile{toc}{\contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{13}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Résultats distance à la politique optimale}}{13}{}\protected@file@percent }
-\newlabel{tab:dist_pol}{{5}{13}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Exemple PDDL}{15}{}\protected@file@percent }
-\newlabel{ex_pddl}{{A}{15}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{16}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Exemple de LTS}}{16}{}\protected@file@percent }
-\newlabel{fig:placeholder}{{8}{16}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{16}{}\protected@file@percent }
-\newlabel{ex_div}{{B.1}{16}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{16}{}\protected@file@percent }
-\newlabel{ex_corr}{{B.2}{16}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{17}{}\protected@file@percent }
-\newlabel{astar}{{C}{17}{}{}{}}
-\newlabel{fig:diag-a}{{9a}{17}{}{}{}}
-\newlabel{sub@fig:diag-a}{{a}{17}{}{}{}}
-\newlabel{fig:diag-b}{{9b}{17}{}{}{}}
-\newlabel{sub@fig:diag-b}{{b}{17}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Construction du graphe pour l'application d'un algorithme de plus court chemin}}{17}{}\protected@file@percent }
-\newlabel{fig:lts astar}{{9}{17}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{17}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{17}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Identité}{17}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{17}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{18}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{18}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Identité}{18}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{18}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{18}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{18}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Exemple opérateur géométrique}}{8}{}\protected@file@percent }
+\newlabel{fig:geo}{{4}{8}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Opérateur gamma (temporel)}{8}{}\protected@file@percent }
+\newlabel{fig:lts_gamma}{{5a}{9}{}{}{}}
+\newlabel{sub@fig:lts_gamma}{{a}{9}{}{}{}}
+\newlabel{fig:Coûts}{{5b}{9}{}{}{}}
+\newlabel{sub@fig:Coûts}{{b}{9}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Exemple opérateurs gamma}}{9}{}\protected@file@percent }
+\newlabel{fig:gamma}{{5}{9}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Opérateur seuil}{9}{}\protected@file@percent }
+\newlabel{fig:lts_gamma}{{6a}{9}{}{}{}}
+\newlabel{sub@fig:lts_gamma}{{a}{9}{}{}{}}
+\newlabel{fig:Coûts}{{6b}{9}{}{}{}}
+\newlabel{sub@fig:Coûts}{{b}{9}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Exemple opérateurs de seuil}}{9}{}\protected@file@percent }
+\newlabel{fig:seuil}{{6}{9}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}Sélection des événements à évaluer}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Extension de la fonction de coût: distance entre événements}{9}{}\protected@file@percent }
+\newlabel{fig:lts_gamma}{{7a}{10}{}{}{}}
+\newlabel{sub@fig:lts_gamma}{{a}{10}{}{}{}}
+\newlabel{tab:couts_global}{{7b}{10}{}{}{}}
+\newlabel{sub@tab:couts_global}{{b}{10}{}{}{}}
+\newlabel{tab:couts_choix}{{7c}{10}{}{}{}}
+\newlabel{sub@tab:couts_choix}{{c}{10}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Évaluation sur les choix}}{10}{}\protected@file@percent }
+\newlabel{fig:choix}{{7}{10}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Critère de validité}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Exemple Poison}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Définitions du LTS}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Définition des contextes causaux}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Définition des politiques optimales}{12}{}\protected@file@percent }
+\newlabel{pol_opti}{{16}{12}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Politique optimale: les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale}}{13}{}\protected@file@percent }
+\newlabel{fig:placeholder}{{8}{13}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Expérimentations}{13}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Priorité à des contrefactuels avec des scores d'événements consistants:}{13}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Résultats pour la priorité à la normativité}}{13}{}\protected@file@percent }
+\newlabel{tab:prio_normativite}{{1}{13}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Interdiction de dépasser un seuil}{13}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Résultats pour la priorité à la normativité}}{14}{}\protected@file@percent }
+\newlabel{tab:res_seuil}{{2}{14}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Normativité en début de scénario}{14}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Priorité à la normativité en début de scénario}}{14}{}\protected@file@percent }
+\newlabel{tab:res_gamma}{{3}{14}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Normativité en fin de scénario}{14}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Priorité à la normativité en fin de scénario}}{14}{}\protected@file@percent }
+\newlabel{tab:res_gamma_late}{{4}{14}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{14}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Résultats distance à la politique optimale}}{15}{}\protected@file@percent }
+\newlabel{tab:dist_pol}{{5}{15}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Exemple PDDL}{16}{}\protected@file@percent }
+\newlabel{ex_pddl}{{A}{16}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{17}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Exemple de LTS}}{17}{}\protected@file@percent }
+\newlabel{fig:placeholder}{{9}{17}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{17}{}\protected@file@percent }
+\newlabel{ex_div}{{B.1}{17}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{17}{}\protected@file@percent }
+\newlabel{ex_corr}{{B.2}{17}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{18}{}\protected@file@percent }
+\newlabel{astar}{{C}{18}{}{}{}}
+\newlabel{fig:diag-a}{{10a}{18}{}{}{}}
+\newlabel{sub@fig:diag-a}{{a}{18}{}{}{}}
+\newlabel{fig:diag-b}{{10b}{18}{}{}{}}
+\newlabel{sub@fig:diag-b}{{b}{18}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Construction du graphe pour l'application d'un algorithme de plus court chemin}}{18}{}\protected@file@percent }
+\newlabel{fig:lts astar}{{10}{18}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{18}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Identité}{18}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{18}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{19}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Synthèse des propriétés des opérateurs d'agrégation}}{19}{}\protected@file@percent }
-\newlabel{tab:synthese_agg}{{6}{19}{}{}{}}
-\abx@aux@read@bbl@mdfivesum{ADA96C69AE7A34F9200320FC00B512BD}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Identité}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Identité}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{19}{}\protected@file@percent }
+\abx@aux@cite{0}{kominsky_causal_2015}
+\abx@aux@segm{0}{0}{kominsky_causal_2015}
+\abx@aux@cite{0}{mcgill_mutability_2000}
+\abx@aux@segm{0}{0}{mcgill_mutability_2000}
+\abx@aux@cite{0}{reuter_good_2014}
+\abx@aux@segm{0}{0}{reuter_good_2014}
+\abx@aux@cite{0}{henne_counterfactual_2021}
+\abx@aux@segm{0}{0}{henne_counterfactual_2021}
+\abx@aux@cite{0}{icard_normality_2017}
+\abx@aux@segm{0}{0}{icard_normality_2017}
+\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{20}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Synthèse des propriétés des opérateurs d'agrégation}}{20}{}\protected@file@percent }
+\newlabel{tab:synthese_agg}{{6}{20}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{20}{}\protected@file@percent }
+\newlabel{scienceco}{{E}{20}{}{}{}}
+\abx@aux@read@bbl@mdfivesum{EBCFAA19E2BFB8DB6413DF8462BBE19B}
+\abx@aux@defaultrefcontext{0}{henne_counterfactual_2021}{nyt/global//global/global}
+\abx@aux@defaultrefcontext{0}{icard_normality_2017}{nyt/global//global/global}
+\abx@aux@defaultrefcontext{0}{kominsky_causal_2015}{nyt/global//global/global}
+\abx@aux@defaultrefcontext{0}{mcgill_mutability_2000}{nyt/global//global/global}
+\abx@aux@defaultrefcontext{0}{reuter_good_2014}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{sarmiento_formalising_2025}{nyt/global//global/global}
-\gdef \@abspage@last{22}
+\gdef \@abspage@last{23}
