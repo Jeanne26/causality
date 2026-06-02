@@ -100,7 +100,7 @@ Les LTS ne sont pas à proprement vu comme un langage pour le domaine du Raisonn
 
 \subsection{Rappel PDDL}
 
-Un problème de planification est décrit en PDDL par deux types de fichiers. Le premier définit le domaine de planification il contient la déclaration des types, des actions (effets et préconditions) ainsi que les axiomes et les règles du domaine. Le second fichier définit le problème il indique les objets, les constantes spécifiques ainsi que la situation de départ et l'objectif. Un exemple se trouve en annexe \ref{ex_pddl}
+Un problème de planification est décrit en PDDL par deux types de fichiers. Le premier définit le domaine de planification il contient la déclaration des types, des actions (effets et préconditions) ainsi que les axiomes et les règles du domaine. Le second fichier définit le problème, il indique les objets, les constantes spécifiques ainsi que la situation de départ et l'objectif. Un exemple se trouve en annexe \ref{ex_pddl}
 
 
 \subsection{Construction d'un LTS à partir d'un problème PDDL}
@@ -122,25 +122,25 @@ def instantiate(actions, objects):
 \end{lstlisting}
 \hfill
 
-Une fois l'ensemble des actions instanciées avant de pouvoir cosntruire le LTS on définit la fonction de satisfactions de préconditions qui pour un ensemble de préconditions et un état représenté par un ensemble de fluent vérifie si les préconditions sont respectées dans l'état. Cette fonction gère les précondition négative, disjonctive et conjonctive.
+Une fois l'ensemble de toutes les actions instanciées, avant de pouvoir cosntruire le LTS, on définit la fonction de satisfactions de préconditions. Pour un ensemble de préconditions et un état représenté par un ensemble de fluents, elle vérifie si les préconditions sont respectées dans l'état. Cette fonction gère les précondition négative, disjonctive et conjonctive.
 
 \hfill
 \begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
                    commentstyle=\color{gray}\itshape,
                    keywordstyle=\bfseries]
 def statisfied(preconditions,etat):
-    if isinstance(preconditions, And):
+    if preconditions conjonctives:
         return all(statisfied(p,etat) for p in preconditions)
-    if isinstance(preconditions, Not):
+    if preconditions negative:
         return not statisfied(preconditions,etat)
-    if isinstance(preconditions, Or):
+    if preconditions disjonctives:
         return any(statisfied(p,etat) for p in preconditions)
     return precondition in etat
 
 \end{lstlisting}
 \hfill
 
-La second fonction qui est nécessaire avant celle de construction du graphe est la fonction d'application des effets positifs et négatifs d'une actions dans un etat.
+La seconde fonction qui est nécessaire avant celle de construction du graphe est la fonction d'application des effets positifs et négatifs d'une actions dans un etat.
 \hfill
 
 \begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
@@ -158,8 +158,71 @@ def apply_effects(effects,state):
 \end{lstlisting}
 \hfill
 
+Avec ces trois fonctions on peut maintenant définir la fonction de construction du LTS associé au problème PDDL. Un état est défini par l'ensemble des prédicats qui sont vrais dans ce dernier. On utilise une pile pour progresser dans la construction du graphe, à chaque nouvel état on observe parmis toutes les actions possibles lesquelles sont applicables en fonction de leur préconditions. Si une action est applicable on ajoute une nouvelle arête qui a pour état d'arrivée soit un état préexistant soit un nouvel état que l'on ajoute à la pile. Les états finaux sont les états dans lesquelles les conditions de l'objectif sont respectés. Pour les distinguer des autres états une arête réflexive est ajoutée. 
+
+\hfill
+\begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
+                   commentstyle=\color{gray}\itshape,
+                   keywordstyle=\bfseries]
+def build_graph(actions, init_state, goals):
+    state = init_state
+    G = graph
+    G.add_node(state)
+    queue = [state]
+    visited = {}
+    while queue:
+        current_node = queue.pop(0)
+        if current_node in visited:
+            continue
+        visited.add(current_node)
+
+        for preconditions, effects in actions:
+            if satisfied(preconditions, current_node):
+                new_node = apply_effect(effects, current_node)
+
+            exist = new_node in G.nodes
+            if not exist:
+                G.add_node(new_node)
+            else:
+                continue
+            
+            G.add_edge(current_node, new_node)
+
+            if new_node not in visited:
+                queue.append(visited)
+    
+    for node in G.nodes:
+        if satisfied(goals, node):
+            G.add_edge(node,node, action = '$\\varnothing')
+
+\end{lstlisting}
+\hfill
+
+On obtient pour l'exemple \ref{ex_pddl} le graphe suivant:
+
+\begin{figure}[h!]
+    \[
+        \xymatrix @R=0.1em @C=5em {
+            *++[o][F-]{S0} \ar@/_/[r]_{unstack\ a\ b} & 
+            *++[o][F-]{S1} \ar@/_/[l]_{stack\ a\ b} \ar@/_/[r]_{put\ down\ a} &
+            *++[o][F-]{S2} \ar@/_/[l]_{pick\ up\ a} \ar@/_/[r]_{pick\ up\ b} \ar@(r,u)[]_{\varnothing} &
+            *++[o][F-]{S3} \ar@/_/[l]_{put\ down\ b} \ar@/_/[r]_{stack\ b\ a} &
+            *++[o][F-]{S4} \ar@/_/[l]_{unstack\ b} \ar@(r,u)[]_{\varnothing}
+        }
+    \]
+    \centering
+    \captionsetup{width=0.8\textwidth}
+    \caption{LTS obtenu pour le problème simple de block world. Avec S0 =\{'clear a', 'on a b', 'on table b', 'arm-empty'\}, S1 =\{'on table b', 'clear b', 'holding a'\}, S2 =\{'on table b','arm empty'', 'clear b','clear a', 'on table a'\}, S3 =\{'holding b','on table a', 'clear a'\}, S4 =\{'on b a', 'on table a', 'arm empty', 'clear b'\}}
+    \label{fig:exemple graphe BW}
+\end{figure}
 
 \subsection{Remarques et limites}
+
+Les LTS obtenus ne représentent pas l'ensemble des états possibles du monde, seul les états accessibles depuis l'état initial, respectant les fonctions de précondition y figurent. Pour enrichir ces graphes il serait potentiellement intéressant de construire pour un même domaine et objectif,  différents graphes selon différents états de départ et les fusionner afin de pouvoir travailler notamment sur des contextes contrefactuels avec des états de départ qui diffèrent. Cependant les LTS correspondent à une sémantique et non pas à de vrais outils de travail, leur utilité pour des applications concrètes reste limitée et ils seront surtout utilisés de manière formelle pour raisonner. Pour des applications à des exemples simples ils permettent une meilleur visualisation, on considère donc suffisant un parser simple comme présenté ci-dessus. L'idée de cette section étant principalement d'expliciter la faisabilité d'une transition d'un framework RAC vers des LTS, de possibles améliorations sont laissées en suspends car ne représentant pas le coeur du travail. On peut par exemple noter que ce parser ne gère que des problème PDDL contenant uniquement le requirement STRIPS. 
+
+Il est possible de continuer de tirer parti de PDDL et de ses solveurs pour extraire de manière automatique des politiques qui nous permettent par la suite de travailler sur des contextes causaux. Pour construire la politique on avance dans le graphe depuis l'état de départ en attribuant à chaque état dans lequel on se trouve l'action associée dans le plan. Ces politiques partielles peuvent ensuite être complétées aléatoirement ou selon une heuristique.
+
+
 
 \section{Évaluation d'un contexte causal contrefactuel}
 
@@ -529,6 +592,11 @@ On peut vouloir agréger l'ensemble des scores d'un chemin causal (comme fait ju
 \end{figure}
 
  Comme on l'observe sur la Figure \ref{fig:choix}, considérer seulement les événements avec une alternative modifie complètement les résultats, on évalue la qualité des choix pris durant un scénario et non plus le scénario dans sa globalité. Lorsque l'on évalue la normativité totale c'est le chemin bleu qui minimise le coût, hors ce scénario pour l'unique choix possible qu'il a, a effectué le pire choix. Contrairement à ce dernier, le chemin rouge sur les deux événements qui présentent une alternative prends les événements qui maximise le score. En réduisant les événements à considérer c'est le chemin rouge qui minimise le coût.
+
+\subsection{Extension de la fonction de coût: distance entre événements}
+
+La distance à l'observation est essentielle pour évaluer les contextes causaux contrefactuels, actuellement le terme $d\_obs$ est l'unique terme qui nous permet d'évaluer cette distance. Ce terme est calculé comme la distance de Levenshtein sur la trace d'état d'un contexte causal, hors dans des multigraphes cette distance peut être insuffisante. 
+
 \subsection{Critère de validité}
 Le critère permet de filtrer les contrefactuels non valides. Un contexte causal contrefactuel et considéré comme valide par rapport au contexte causal observé si l'état terminal de la trace du contrefactuel est différent de celui de l'observation et que son coût est inférieur à un seuil fixé.
 
