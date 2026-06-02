@@ -65,7 +65,7 @@ def instanciate_action(actions,objets):
 
 
 
-def build_graph(actions, init_state):
+def build_graph(actions, init_state, goal):
     i=0
     edge_counter = 0
     state = init_state
@@ -103,7 +103,7 @@ def build_graph(actions, init_state):
     G.inits = {"S0"}
 
     for node in G.nodes:
-        if statisfied(problem.goal, G.nodes[node]["predicates"]):
+        if statisfied(goal, G.nodes[node]["predicates"]):
             G.terminals.add(node)
             G.add_edge(node, node, label = 'Goal', action = '$\\varnothing$')
 
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
     actions = instanciate_action(domain.actions,objects)
     init_state = frozenset(str(p) for p in problem.init)
-    G = build_graph(actions, init_state)
+    G = build_graph(actions, init_state, problem.goal)
     print(f"Nombre de noeuds : {len(G.nodes)}")
     print(f"Nombre d'arêtes : {len(G.edges)}")
     print(f"Nombre d'états terminaux : {len(G.terminals)}")
