@@ -203,6 +203,7 @@ def cout(graph, S0, pi1,pi2,lambda1=1,lambda2=1, lambda3 =1, choice= False,pi_op
             d_optimale = distance_pi_opt(pi2, pi_opt, states2)
     else:
         d_optimale = compute_score(path2,graph, agg,choice)
+    # return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale,}
     return {"cout":lambda1*d_observation + lambda2*d_optimale+lambda3*d_observation_event,"d_obs":d_observation,"d_opt":d_optimale,"d_obs_e":d_observation_event}
 
 
@@ -213,7 +214,7 @@ def critere_selection(graph, S0, pi1,pi2, cout_max_obs, cout_max_opt, lambda1=1,
     cout_res = res["d_obs"]*lambda1 < cout_max_obs and res["d_opt"]*lambda2 < cout_max_opt
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
-    return cout_res and path1[-1]!=path2[-2]
+    return cout_res and path1[-1]!=path2[-1]
 
 
 #===============================Analyse des politiques===========================================================
