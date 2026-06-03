@@ -47,3 +47,6 @@
 \contentsline {paragraph}{Monotonie croissante}{20}{}%
 \contentsline {subsection}{\numberline {D.4}Synthèse résultats}{20}{}%
 \contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{20}{}%
+\contentsline {subsection}{\numberline {E.1}Mutabilité et Propensité des facteurs}{20}{}%
+\contentsline {subsection}{\numberline {E.2}Impact des normes sur le raisonnement contrefactuel}{21}{}%
+\contentsline {subsection}{\numberline {E.3}Impact du temps sur le raisonnement contrefactuel}{21}{}%

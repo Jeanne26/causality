@@ -21,26 +21,30 @@
   \datalist[entry]{nyt/global//global/global}
     \entry{henne_counterfactual_2021}{article}{}
       \name{author}{4}{}{%
-        {{hash=b2832705029e5ac3ae562fe445bffa35}{%
+        {{un=0,uniquepart=base,hash=b2832705029e5ac3ae562fe445bffa35}{%
            family={Henne},
            familyi={H\bibinitperiod},
            given={Paul},
-           giveni={P\bibinitperiod}}}%
-        {{hash=0cadb760d68a5859c962a0e05c004a3c}{%
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0cadb760d68a5859c962a0e05c004a3c}{%
            family={Kulesza},
            familyi={K\bibinitperiod},
            given={Aleksandra},
-           giveni={A\bibinitperiod}}}%
-        {{hash=0df4e7fe4a15c02d8c19d1b009e27193}{%
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0df4e7fe4a15c02d8c19d1b009e27193}{%
            family={Perez},
            familyi={P\bibinitperiod},
            given={Karla},
-           giveni={K\bibinitperiod}}}%
-        {{hash=ce158a88d8877739e9e2f5e84d22b984}{%
+           giveni={K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=ce158a88d8877739e9e2f5e84d22b984}{%
            family={Houcek},
            familyi={H\bibinitperiod},
            given={Augustana},
-           giveni={A\bibinitperiod}}}%
+           giveni={A\bibinitperiod},
+           givenun=0}}%
       }
       \strng{namehash}{c85e9c939f7cfdad85c72e16d9be57c8}
       \strng{fullhash}{bf84033547060de49a119e2d41aa4424}
@@ -50,6 +54,8 @@
       \strng{authorfullhash}{bf84033547060de49a119e2d41aa4424}
       \field{sortinit}{H}
       \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{People tend to judge more recent events, relative to earlier ones, as the cause of some particular outcome. For instance, people are more inclined to judge that the last basket, rather than the first, caused the team to win the basketball game. This recency effect, however, reverses in cases of overdetermination: people judge that earlier events, rather than more recent ones, caused the outcome when the event is individually sufficient but not individually necessary for the outcome. In five experiments (N = 5507), we find evidence for the recency effect and the primacy effect for causal judgment. Traditionally, these effects have been a problem for counterfactual views of causal judgment. However, we argue that an extension of a recent counterfactual model of causal judgment explains both the recency and the primacy effect. In line with the predictions of our extended counterfactual model, we also find that, regardless of causal structure, people tend to imagine the counterfactual alternative to the more recent event rather than to the earlier one. Moreover, manipulating this tendency affects causal judgments in the ways predicted by this extended model: asking participants to imagine the counterfactual alternative to the earlier event weakens the interaction between recency and causal structure, and asking participants to imagine the counterfactual alternative to the more recent event strengthens the interaction between recency and causal structure. We discuss these results in relation to work on counterfactual thinking, causal modeling, and late-preemption.}
@@ -81,21 +87,24 @@
     \endentry
     \entry{icard_normality_2017}{article}{}
       \name{author}{3}{}{%
-        {{hash=4d3fbfc24072595eee43f3a976f09e9e}{%
+        {{un=0,uniquepart=base,hash=4d3fbfc24072595eee43f3a976f09e9e}{%
            family={Icard},
            familyi={I\bibinitperiod},
            given={Thomas\bibnamedelima F.},
-           giveni={T\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-        {{hash=fe9832328514d5b8f229f43d71d278ba}{%
+           giveni={T\bibinitperiod\bibinitdelim F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fe9832328514d5b8f229f43d71d278ba}{%
            family={Kominsky},
            familyi={K\bibinitperiod},
            given={Jonathan\bibnamedelima F.},
-           giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-        {{hash=66a5dc06a12dc2bed8b51cee8f08fa75}{%
+           giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=66a5dc06a12dc2bed8b51cee8f08fa75}{%
            family={Knobe},
            familyi={K\bibinitperiod},
            given={Joshua},
-           giveni={J\bibinitperiod}}}%
+           giveni={J\bibinitperiod},
+           givenun=0}}%
       }
       \strng{namehash}{a0a4b4c7506c91c1edf83480bb71d968}
       \strng{fullhash}{a0a4b4c7506c91c1edf83480bb71d968}
@@ -105,6 +114,8 @@
       \strng{authorfullhash}{a0a4b4c7506c91c1edf83480bb71d968}
       \field{sortinit}{I}
       \field{sortinithash}{8d291c51ee89b6cd86bf5379f0b151d8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Cognition}
@@ -129,31 +140,36 @@
     \endentry
     \entry{kominsky_causal_2015}{article}{}
       \name{author}{5}{}{%
-        {{hash=fe9832328514d5b8f229f43d71d278ba}{%
+        {{un=0,uniquepart=base,hash=fe9832328514d5b8f229f43d71d278ba}{%
            family={Kominsky},
            familyi={K\bibinitperiod},
            given={Jonathan\bibnamedelima F.},
-           giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-        {{hash=4915e969e796aa2c0a263cb6fbdb2870}{%
+           giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=4915e969e796aa2c0a263cb6fbdb2870}{%
            family={Phillips},
            familyi={P\bibinitperiod},
            given={Jonathan},
-           giveni={J\bibinitperiod}}}%
-        {{hash=e7984042ee7d500f82c1c171b2054899}{%
+           giveni={J\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=e7984042ee7d500f82c1c171b2054899}{%
            family={Gerstenberg},
            familyi={G\bibinitperiod},
            given={Tobias},
-           giveni={T\bibinitperiod}}}%
-        {{hash=efbafa30e59d6829929a7bd553487abb}{%
+           giveni={T\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=efbafa30e59d6829929a7bd553487abb}{%
            family={Lagnado},
            familyi={L\bibinitperiod},
            given={David},
-           giveni={D\bibinitperiod}}}%
-        {{hash=66a5dc06a12dc2bed8b51cee8f08fa75}{%
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=66a5dc06a12dc2bed8b51cee8f08fa75}{%
            family={Knobe},
            familyi={K\bibinitperiod},
            given={Joshua},
-           giveni={J\bibinitperiod}}}%
+           giveni={J\bibinitperiod},
+           givenun=0}}%
       }
       \strng{namehash}{16aee53303f3460cdadcb9e0055c47b9}
       \strng{fullhash}{4921a42582f2ab1dc225ca10847575a2}
@@ -163,6 +179,8 @@
       \strng{authorfullhash}{4921a42582f2ab1dc225ca10847575a2}
       \field{sortinit}{K}
       \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{When agents violate norms, they are typically judged to be more of a cause of resulting outcomes. In this paper, we suggest that norm violations also affect the causality attributed to other agents, a phenomenon we refer to as “causal superseding.” We propose and test a counterfactual reasoning model of this phenomenon in four experiments. Experiments 1 and 2 provide an initial demonstration of the causal superseding effect and distinguish it from previously studied effects. Experiment 3 shows that this causal superseding effect is dependent on a particular event structure, following a prediction of our counterfactual model. Experiment 4 demonstrates that causal superseding can occur with violations of non-moral norms. We propose a model of the superseding effect based on the idea of counterfactual sufficiency.}
@@ -194,16 +212,18 @@
     \endentry
     \entry{mcgill_mutability_2000}{article}{}
       \name{author}{2}{}{%
-        {{hash=a7856542c0c8ce07e484ec92f854df15}{%
+        {{un=0,uniquepart=base,hash=a7856542c0c8ce07e484ec92f854df15}{%
            family={McGill},
            familyi={M\bibinitperiod},
            given={Ann\bibnamedelima L.},
-           giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
-        {{hash=908cea982df059c59397f70ea5fe7c17}{%
+           giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=908cea982df059c59397f70ea5fe7c17}{%
            family={Tenbrunsel},
            familyi={T\bibinitperiod},
            given={Ann\bibnamedelima E.},
-           giveni={A\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+           giveni={A\bibinitperiod\bibinitdelim E\bibinitperiod},
+           givenun=0}}%
       }
       \strng{namehash}{02c4383ca3d3f4bebbfd652cf6c1f80b}
       \strng{fullhash}{02c4383ca3d3f4bebbfd652cf6c1f80b}
@@ -213,6 +233,8 @@
       \strng{authorfullhash}{02c4383ca3d3f4bebbfd652cf6c1f80b}
       \field{sortinit}{M}
       \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Journal of Personality and Social Psychology}
@@ -235,80 +257,14 @@
       \verb https://sci-hub.fr/10.1037/0022-3514.79.5.677
       \endverb
     \endentry
-    \entry{reuter_good_2014}{article}{}
-      \name{author}{4}{}{%
-        {{hash=5708c9707e511021c6e129ff21f25703}{%
-           family={Reuter},
-           familyi={R\bibinitperiod},
-           given={Kevin},
-           giveni={K\bibinitperiod}}}%
-        {{hash=5d25c3d8894a0d450dd8703dea0f0770}{%
-           family={Kirfel},
-           familyi={K\bibinitperiod},
-           given={Lara},
-           giveni={L\bibinitperiod}}}%
-        {{hash=d54fac7bc87839c84414246dd3ea8a14}{%
-           family={Riel},
-           familyi={R\bibinitperiod},
-           given={Raphael},
-           giveni={R\bibinitperiod},
-           prefix={van},
-           prefixi={v\bibinitperiod}}}%
-        {{hash=228478f447b5c70123f94972bc9f2dda}{%
-           family={Barlassina},
-           familyi={B\bibinitperiod},
-           given={Luca},
-           giveni={L\bibinitperiod}}}%
-      }
-      \list{language}{1}{%
-        {English}%
-      }
-      \list{publisher}{1}{%
-        {Frontiers}%
-      }
-      \strng{namehash}{a21153af19e1ee26792cd8bf0570099c}
-      \strng{fullhash}{b0c154d29a6e70240c483143b82b9513}
-      \strng{bibnamehash}{a21153af19e1ee26792cd8bf0570099c}
-      \strng{authorbibnamehash}{a21153af19e1ee26792cd8bf0570099c}
-      \strng{authornamehash}{a21153af19e1ee26792cd8bf0570099c}
-      \strng{authorfullhash}{b0c154d29a6e70240c483143b82b9513}
-      \field{sortinit}{R}
-      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{shorttitle}
-      \field{abstract}{Causal selection is the cognitive process through which one or more elements in a complex causal structure are singled out as actual causes of a certain effect. In this paper, we report on an experiment in which we investigated the role of moral and temporal factors in causal selection. Our results are as follows. First, when presented with a temporal chain in which two human agents perform the same action one after the other, subjects tend to judge the later agent to be the actual cause. Second, the impact of temporal location on causal selection is almost canceled out if the later agent did not violate a norm while the former did. We argue that this is due to the impact that judgments of norm violation have on causal selection—even if the violated norm has nothing to do with the obtaining effect. Third, moral judgments about the effect influence causal selection even in the case in which agents could not have foreseen the effect and did not intend to bring it about. We discuss our findings in connection to recent theories of the role of moral judgment in causal reasoning, on the one hand, and to probabilistic models of temporal location, on the other.}
-      \field{issn}{1664-1078}
-      \field{journaltitle}{Frontiers in Psychology}
-      \field{month}{11}
-      \field{shorttitle}{The good, the bad, and the timely}
-      \field{title}{The good, the bad, and the timely: how temporal order and moral judgment influence causal selection}
-      \field{urlday}{6}
-      \field{urlmonth}{5}
-      \field{urlyear}{2026}
-      \field{volume}{5}
-      \field{year}{2014}
-      \field{urldateera}{ce}
-      \verb{doi}
-      \verb 10.3389/fpsyg.2014.01336
-      \endverb
-      \verb{file}
-      \verb Full Text PDF:/home/jeanne/snap/zotero-snap/common/Zotero/storage/LB498TCJ/Reuter et al. - 2014 - The good, the bad, and the timely how temporal order and moral judgment influence causal selection.pdf:application/pdf
-      \endverb
-      \verb{urlraw}
-      \verb https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01336/full
-      \endverb
-      \verb{url}
-      \verb https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2014.01336/full
-      \endverb
-      \keyw{causal selection,causation,moral judgment,norm violation,temporal location}
-    \endentry
     \entry{sarmiento_formalising_2025}{article}{}
       \name{author}{1}{}{%
-        {{hash=ff94eccc84ade25edec403baa4c99f5e}{%
+        {{un=0,uniquepart=base,hash=ff94eccc84ade25edec403baa4c99f5e}{%
            family={Sarmiento},
            familyi={S\bibinitperiod},
            given={Camilo},
-           giveni={C\bibinitperiod}}}%
+           giveni={C\bibinitperiod},
+           givenun=0}}%
       }
       \list{language}{1}{%
         {en}%
@@ -321,6 +277,8 @@
       \strng{authorfullhash}{ff94eccc84ade25edec403baa4c99f5e}
       \field{sortinit}{S}
       \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{In the Knowledge Representation and Reasoning field, causality has mainly been used to determine the effects of actions. However, in legal or ethical reasoning, causality is used to determine the causal origin of a consequence. Such a posteriori reasoning is the focus of the Actual Causality field which has been extensively studied by lawyers, philosophers, mathematicians, and computer scientists. While most of the situations are easy to solve, there are several overdetermination cases that are far from trivial and that are still a source of disagreements in the field. Recent works have undertaken to adapt causality results into languages for Reasoning about Action and Change (RAC). In this paper, we aim to provide means to effectively address overdetermination issues to researchers seeking to incorporate actual causality into their RAC methods. To do so, we propose a definition of overdetermination in a Labelled Transition System and we formalise and enrich the existing typology of classical cases of overdetermination within this formalisation. The formal typology obtained enables the description of axiomatic properties of RAC methods that deal with overdetermination. To illustrate this, we describe the properties of a recent RAC formalisation of causality in light of this typology. We think that this way of doing can be generalised to all causality RAC formalisations.}
