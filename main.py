@@ -4,6 +4,7 @@ from utils import *
 import pickle
 from visualisation import show_res
 
+
 def load_graphs():
     J_graph = pickle.load(open('graphs/J_graph.pickle', 'rb'))
     P_graph = pickle.load(open('graphs/P_graph.pickle', 'rb'))
@@ -60,13 +61,32 @@ if __name__ == "__main__":
 
     analyze_policies(P_graph, P_graph.policies,list(P_graph.policies.keys()), "pi1", start_state="VO", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=P_pi_opt, lambda1=lambda1, lambda2=lambda2)
     res_dico = {}
+    #L+P1
     for p in P_graph.policies:
-        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p], agg = gamma_late)
+        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p], agg = gamma_late, choice= True)
     del res_dico["pi1"]
     show_res(res_dico)    
     
+    res_dico = {}
+    #L+P2
+    for p in P_graph.policies:
+        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p],agg = gamma_late, choice = True )
+    del res_dico["pi1"]
+    show_res(res_dico)    
     
+    #L+D1
+    for p in P_graph.policies:
+        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p], pi_opt=P_pi_opt, choice= True)
+    del res_dico["pi1"]
+    show_res(res_dico)   
     
+    #L+D2
+    for p in P_graph.policies:
+        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p], pi_opt=P_pi_opt, choice= False)
+    del res_dico["pi1"]
+    show_res(res_dico)   
+    
+
     # print("===============================Test=====================================\n")
     # T_pi_opt = optimal_policy_plan(T_graph, horizon=2)
     # analyze_policies(T_graph, T_graph.policies, list(T_graph.policies.keys()), "pi1", start_state=0, agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=T_pi_opt, lambda1=lambda1, lambda2=lambda2)

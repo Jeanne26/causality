@@ -221,7 +221,7 @@ On obtient pour l'exemple \ref{ex_pddl} le graphe suivant:
 
 Les LTS obtenus ne représentent pas l'ensemble des états possibles du monde, seul les états accessibles depuis l'état initial, respectant les fonctions de précondition y figurent. Pour enrichir ces graphes il serait potentiellement intéressant de construire pour un même domaine et objectif,  différents graphes selon différents états de départ et les fusionner afin de pouvoir travailler notamment sur des contextes contrefactuels avec des états de départ qui diffèrent. Cependant les LTS correspondent à une sémantique et non pas à de vrais outils de travail, leur utilité pour des applications concrètes reste limitée et ils seront surtout utilisés de manière formelle pour raisonner. Pour des applications à des exemples simples ils permettent une meilleur visualisation, on considère donc suffisant un parser simple comme présenté ci-dessus. L'idée de cette section étant principalement d'expliciter la faisabilité d'une transition d'un framework RAC vers des LTS, de possibles améliorations sont laissées en suspends car ne représentant pas le coeur du travail. On peut par exemple noter que ce parser ne gère que des problème PDDL contenant uniquement le requirement STRIPS. 
 
-Il est possible de continuer de tirer parti de PDDL et de ses solveurs pour extraire de manière automatique des politiques qui nous permettent par la suite de travailler sur des contextes causaux. Pour construire la politique on avance dans le graphe depuis l'état de départ en attribuant à chaque état dans lequel on se trouve l'action associée dans le plan. Ces politiques partielles peuvent ensuite être complétées aléatoirement ou selon une heuristique.
+Il est possible de continuer de tirer parti de PDDL et de ses solveurs pour extraire de manière automatique des politiques qui nous permettent par la suite de travailler sur des contextes causaux. Pour construire la politique on avance dans le graphe depuis l'état de départ en attribuant à chaque état dans lequel on se trouve l'action associée dans le plan. Si besoin ces politiques partielles peuvent ensuite être complétées aléatoirement ou selon une heuristique.
 
 
 
@@ -272,7 +272,46 @@ Avec:
     Voir exemple \ref{ex_corr}.
 
 \end{itemize}
- % \subsection{Distance à l'observation}
+
+\subsection{Distance à l'observation: coûts des opérations}
+
+Des travaux en sciences cognitives ont montré l'impact des notions de propensité (vraisemblance d'obtenir un effet sachant qu'un événement se produit) et de mutabilité (facilité avec laquelle on peut imaginer qu'un événement ai été différent) des événements lors du processus de raisonnement contrefactuel pour la sélection causale (voir \ref{mut_prop}). Notre cadre est pour l'instant déterministe donc nous laissons de côté la notion de propensité. Mais il reste intéressant d'intégrer la mutabilité, notamment pour le calcul de distance à l'observation. 
+
+
+On souhaite modifier le coût de l'opération de substitution d'un état dans la distance de Levenshtein, c'est à dire que lorsque l'on cherche à déterminer le coût de transformation de la trace observé vers la trace contrefactuelle on souhaite que la substitution d'un événement très peu mutable ai un coût de substitution plus élevé que pour un événement très mutable. Pour cela la première chose à faire est de définir formellement la notion de mutablité dans notre framework. 
+
+Soit un événement $E$ qui se produit dans un état $S$ d'un LTS défini par $<\mathds{S},\tau>$ de la façon suivante:
+\begin{equation}
+    mutabilite(E,S) =\#\{(S,E',S')\in \tau\}
+\end{equation}
+
+La mutabilité corresponds ainsi au nombre d'arcs sortants de l'état de départ d'un événement. Pour un état donné, s'il possède un grand nombre d'arcs sortants on considère ses événements possibles comme très mutables (on peut facilement imaginer qu'un autre événement ai eu lieu).
+
+La distance de Levenshtein est calculée non pas sur les événements mais sur les états, on adapte donc cette définition. Le coût de subsitution d'un état de la trace observé par un autre état corresponds à l'inverse de la mutabilité de l'état le précédent dans la trace observée. Et la mutabilité d'un état corresponds à son nombre d'arcs sortants.
+
+
+\begin{figure}[h!]
+    \centering
+    \[
+        \xymatrix @R=0.3em @C=5em{
+                & *++[o][F-]{B} \ar[ddr] \ar@[red]@{->}@< -4pt>[ddr] \ar@[blue]@{->}@< +4pt>[rdd]& & *++[o][F-]{E} \ar[rdd] \ar@[red]@{->}@< +4pt>[rdd]& \\
+                & & & *++[o][F-]{F} & \\
+            *++[o][F-]{A} \ar[ruu] \ar@[blue]@{->}@< +4pt>[ruu] \ar[rdd] \ar@[green]@{->}@< -4pt>[ddr] \ar@[red]@{->}@< -4pt>[ruu] & & *++[o][F-]{D} \ar[ruu] \ar[ru] \ar[rd] \ar@[blue]@{->}@< +4pt>[rd] \ar@[green]@{->}@< -4pt>[dr] \ar[rdd] \ar@[red]@{->}@< +4pt>[ruu]& & *++[o][F-]{I} \\
+                & & & *++[o][F-]{G} \ar[ru] \ar@[blue]@{->}@< +4pt>[ru] \ar@[green]@{->}@< -4pt>[ru]& \\
+                & *++[o][F-]{C} \ar[ruu] \ar@[green]@{->}@< -4pt>[ruu] & & *++[o][F-]{H} &
+        }
+    \]
+    \captionsetup{width = 0.8\textwidth}
+
+    \caption{Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $0+0+0+\frac{1}{4}+0$ et celle entre la trace bleue et la trace verte est de $0+\frac{1}{2}+0+0+0$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}
+    \label{cout_sub}
+\end{figure}
+
+On observe dans l'exemple \ref{cout_sub} l'intêret de modifier le coût de substitution en fonction de la mutabilité si il avait été fixé à un la distance à l'observation pour les traces rouge et bleue aurait été la même. Mais on considère maintenant plus proche une trace contrefactuelle si elle diffère en des états très mutables de la trace observée.
+
+Cette définition et intégration de la mutabilité dans la distance à l'observation reste une première piste et peut présenter de potentielles limitations. En effet cette définition dépends de la modélisation du monde (le LTS) que nous choisissons de ne pas remettre en question. De plus la question posée par ce nouveau coût de substitution est: "à quel point il est coûteux de remplacer l'événement observé" alors que l'on pourrait plutôt souhaiter répondre à la question "à quel point il est coûteux de remplacer l'événement observé par l'événement spécifique du scénario contrefactuel".
+
+
  \subsection{Vraisemblance du contrefactuel}
  Pour évaluer la vraisemblance (fonction $v$) du contexte causal contrefactuel on se base sur l'évaluation extérieure d'un juge expert, comme définie dans la partie \ref{def}. Cette évaluation permet d'attribuer un score compris entre 0 et 1 à chaque couple état/événement d'un LTS. Un score de 1 corresponds à un respect total de la norme, un score de 0 à un non respect total de la norme. 
  À partir des scores on évalue la vraisemblance du contrefactuel soit en l'exploitant directement, soit en construisant à partir de ces derniers une politique optimale.
@@ -594,9 +633,6 @@ On peut vouloir agréger l'ensemble des scores d'un chemin causal (comme fait ju
 
  Comme on l'observe sur la Figure \ref{fig:choix}, considérer seulement les événements avec une alternative modifie complètement les résultats, on évalue la qualité des choix pris durant un scénario et non plus le scénario dans sa globalité. Lorsque l'on évalue la normativité totale c'est le chemin bleu qui minimise le coût, hors ce scénario pour l'unique choix possible qu'il a, a effectué le pire choix. Contrairement à ce dernier, le chemin rouge sur les deux événements qui présentent une alternative prends les événements qui maximise le score. En réduisant les événements à considérer c'est le chemin rouge qui minimise le coût.
 
-\subsection{Extension de la fonction de coût: distance entre événements}
-
-La distance à l'observation est essentielle pour évaluer les contextes causaux contrefactuels, actuellement le terme $d\_obs$ est l'unique terme qui nous permet d'évaluer cette distance. Ce terme est calculé comme la distance de Levenshtein sur la trace d'état d'un contexte causal, hors dans des multigraphes cette distance peut être insuffisante. L'ajout de ce terme est aussi motivé par l'intégration de résultats en science cognitive sur la question de la séléction causale (voir section \ref{scienceco} de l'annexe).
 
 \subsection{Critère de validité}
 Le critère permet de filtrer les contrefactuels non valides. Un contexte causal contrefactuel et considéré comme valide par rapport au contexte causal observé si l'état terminal de la trace du contrefactuel est différent de celui de l'observation et que son coût est inférieur à un seuil fixé.
@@ -1224,7 +1260,7 @@ La propriété de monotonie croissante est respectée.
 
 De nombreuses recherches en sciences cognitives ont été menées pour tenter de modéliser la façon dont nous concevont et préféront certains scénarios contrefactuels par rapport à d'autres. Ces mécanismes sont influencés par différents critères tel que la structure causale, le temps, les normes, la valeur de l'effet produit... Même si certains études portent, plus ou moins implicitement, sur la notion de responsabilité causale plus que sur le concept de sélection causale, des définitions et concept peuvent être utiles pour définir et orienter les critères d'évaluation ou encore de construction de scénarios contrefactuels. Ci-dessous une liste non-exhaustive de notions trouvées dans la littérature pouvant être potentiellement integrées à notre cadre.
 
-\subsection{Mutabilité et Propensité des facteurs}
+\subsection{Mutabilité et Propensité des facteurs}\label{mut_prop}
 Les notions de mutabilité (à quel point il est simple d'imaginer qu'un facteur ai pu être différent) et de propensité (la vraisemblance qu'un effet ai lieu sachant une cause) jouent selon \cite{kominsky_causal_2015} et \cite{mcgill_mutability_2000} un rôle essentiel dans le raisonnement contrefactuel. Le travail de \cite{kominsky_causal_2015} vise à mettre en évidence dans le processus d'évaluation causale d'un événement A, l'importance de la mutabilité et de la propensité d'un événement B nécessaire à la production de l'effet (structure causale conjointe). D'autres part dans \cite{kominsky_causal_2015} le travail porte cette fois ci sur le phénomène de causal superseding qui est décrit comme: le phénomène selon lequel la violation d'une norme par un agent diminue la causalité attribuée à un autre agent. Même si cet effet sort de notre cadre par son aspect multiagents, on trouve des résultats similaire à \cite{mcgill_mutability_2000}. Ils avancent eux aussi, que selon leur modèle un facteur causal est vu comme plus faible lorsqu"un autre facteur est plus mutable , mais uniquement si ce facteur est très susceptible de produire l'effet.
 
 \subsection{Impact des normes sur le raisonnement contrefactuel}

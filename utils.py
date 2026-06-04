@@ -249,7 +249,7 @@ def analyze_policies(graph, policies_dict, policy_names,baseline_policy_name, st
         valid_policies = [name for name in policy_names if name != baseline_policy_name and critere_selection(graph, start_state, baseline_policy, policies_dict[name], cout_max_obs, cout_max_opt, lambda1=lambda1, lambda2=lambda2, agg=agg_func)]
         print(f"Politiques valides: {', '.join(valid_policies)}\n")
 
-
+    print(results)
 
 
 
