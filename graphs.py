@@ -115,3 +115,4 @@ if __name__=="__main__":
     nx.write_gexf(J_graph, 'graphs/J_graph.gexf')
     pickle.dump(G1, open('graphs/G1.pickle', 'wb'))
     nx.write_gexf(G1, 'graphs/G1.gexf')
+

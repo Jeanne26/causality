@@ -25,22 +25,22 @@ if __name__ == "__main__":
     J_graph, P_graph, T_graph, G1, AC, BW = load_graphs()
     
     
-    print("===============================AC=====================================\n")
-    AC.policies ={}
-    for i in range(0,6):
-        with open(f'policies/ac_p0/ac_p0_plan_policy_{i}.pickle', 'rb') as f:
-            AC.policies[f'pi{i}'] = pickle.load(f)
-            AC.policies[f'pi{i}'] = complete_policy(AC.policies[f'pi{i}'], AC)
-    # analyze_policies(AC,AC.policies, list(AC.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)
-    res_dico = {}
-    for p in AC.policies:
-        res_dico[p] = cout(AC,"S0",AC.policies["pi0"],AC.policies[p], agg = gamma_late)
-    del res_dico["pi0"]
-    show_res(res_dico)
+    # print("===============================AC=====================================\n")
+    # AC.policies ={}
+    # for i in range(0,6):
+    #     with open(f'policies/ac_p0/ac_p0_plan_policy_{i}.pickle', 'rb') as f:
+    #         AC.policies[f'pi{i}'] = pickle.load(f)
+    #         AC.policies[f'pi{i}'] = complete_policy(AC.policies[f'pi{i}'], AC)
+    # # analyze_policies(AC,AC.policies, list(AC.policies.keys()),"pi0","S0",agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=None, lambda1=lambda1, lambda2=lambda2)
+    # res_dico = {}
+    # for p in AC.policies:
+    #     res_dico[p] = cout(AC,"S0",AC.policies["pi0"],AC.policies[p], agg = gamma_late)
+    # del res_dico["pi0"]
+    # show_res(res_dico)
 
-    for p in AC.policies:
-        print(p)
-        print(extract_sigma_state(get_path(AC,AC.policies[p],"S0")))
+    # for p in AC.policies:
+    #     print(p)
+    #     print(extract_sigma_state(get_path(AC,AC.policies[p],"S0")))
 
 
     # print("===============================BW=====================================\n")
@@ -54,11 +54,18 @@ if __name__ == "__main__":
     
 
     # print(f"Parametres : lambda1={lambda1}, lambda2={lambda2}, horizon={horizon}, agg={agg.__name__}, coût_max_obs={coût_max_obs}, coût_max_opt={coût_max_opt}\n")
-    # print("===============================Poison=====================================\n")
+    print("===============================Poison=====================================\n")
 
-    # P_pi_opt = optimal_policy_no_plan(P_graph)
+    P_pi_opt = optimal_policy_no_plan(P_graph)
 
-    # analyze_policies(P_graph, P_graph.policies,list(P_graph.policies.keys()), "pi1", start_state="VO", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=P_pi_opt, lambda1=lambda1, lambda2=lambda2)
+    analyze_policies(P_graph, P_graph.policies,list(P_graph.policies.keys()), "pi1", start_state="VO", agg_func=agg, horizon=horizon, cout_max_obs=coût_max_obs, cout_max_opt=coût_max_opt, pi_opt=P_pi_opt, lambda1=lambda1, lambda2=lambda2)
+    res_dico = {}
+    for p in P_graph.policies:
+        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p], agg = gamma_late)
+    del res_dico["pi1"]
+    show_res(res_dico)    
+    
+    
     
     # print("===============================Test=====================================\n")
     # T_pi_opt = optimal_policy_plan(T_graph, horizon=2)

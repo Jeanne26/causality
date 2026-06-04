@@ -146,10 +146,7 @@ def distance_pi_opt(pi,pi_opt,state_path):
 
 
 #=================================D_obs============================================================
-def levenshtein_distance(path1, path2):
-    #on ne prends pas en compte le dernier état car desavantage les scenarios valides qui n'ont pas le meme état terminal que la politique de référence
-    s1 = path1[:-1]
-    s2 = path2[:-1]
+def levenshtein_distance(s1, s2,graph):
     n,m= len(s1), len(s2)
     dp = np.zeros((n+1,m+1))
     for i in range(n+1):
@@ -161,29 +158,17 @@ def levenshtein_distance(path1, path2):
             elif s1[i-1] == s2[j-1]: 
                 dp[i][j] = dp[i-1][j-1]
             else:
-                dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) # insertion, deletion, substitution
-
+                if i>=2:
+                    cout_sub = 1/len(graph.edges(s1[i-2]))
+                else:
+                    cout_sub=1
+                dp[i][j] =   min(1+dp[i-1][j],1+ dp[i][j-1], dp[i-1][j-1]+cout_sub) # insertion, deletion, substitution
     return dp[n][m]/max(m,n)
 
 
-def levenshtein_distance_event(states1,states2,events1,events2,graph):
-    n,m = len(events1), len(events2)
-    dp = np.zeros((n+1, m+1))
-    for i in range(n+1):
-        for j in range(m+1):
-            if i ==0:
-                dp[i][j]=j
-                
-            elif j ==0:
-                dp[i][j]=i
-            elif events1[i-1]==events2[j-1]:
-                dp[i,j]= dp[i-1][j-1]
-            else:
-                cout_sub = 1/len(graph.edges(states1[i]))
-                dp[i,j] = min(1+ dp[i-1][j], 1+ dp[i][j-1], dp[i-1][j-1]+cout_sub)
-    return dp[n][m]/max(m,n)
+
 #=================================Cout total===========================================================
-def cout(graph, S0, pi1,pi2,lambda1=1,lambda2=1, lambda3 =1, choice= False,pi_opt = None,agg = perplexite_agg,d_obs =levenshtein_distance,d_obs_event = levenshtein_distance_event):
+def cout(graph, S0, pi1,pi2,lambda1=1,lambda2=1, choice= False,pi_opt = None,agg = perplexite_agg,d_obs =levenshtein_distance):
     #pi1 politique observé pi2 la politique à evaluer relativement à pi1
     path1 = get_path(graph, pi1, S0)
     path2 = get_path(graph, pi2, S0)
@@ -194,8 +179,7 @@ def cout(graph, S0, pi1,pi2,lambda1=1,lambda2=1, lambda3 =1, choice= False,pi_op
         states2_choice = extract_sigma_state_choice(path2, graph)
     
 
-    d_observation = d_obs(states1,states2)
-    d_observation_event = d_obs_event(states1,states2,extract_sigma_event(path1),extract_sigma_event(path2),graph)
+    d_observation = d_obs(states1,states2,graph)
     if pi_opt:
         if choice:
             d_optimale = distance_pi_opt(pi2, pi_opt, states2_choice)
@@ -203,8 +187,7 @@ def cout(graph, S0, pi1,pi2,lambda1=1,lambda2=1, lambda3 =1, choice= False,pi_op
             d_optimale = distance_pi_opt(pi2, pi_opt, states2)
     else:
         d_optimale = compute_score(path2,graph, agg,choice)
-    # return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale,}
-    return {"cout":lambda1*d_observation + lambda2*d_optimale+lambda3*d_observation_event,"d_obs":d_observation,"d_opt":d_optimale,"d_obs_e":d_observation_event}
+    return {"cout":lambda1*d_observation + lambda2*d_optimale,"d_obs":d_observation,"d_opt":d_optimale,}
 
 
 #===============================Critère de sélection===========================================================
