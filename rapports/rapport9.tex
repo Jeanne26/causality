@@ -96,7 +96,7 @@ On définit dans un premier temps l'ensemble des objets nécessaire à l'évalua
 
 \section{Exemple de transition d'un framework RAC vers LTS: PDDL}
 
-Les LTS ne sont pas à proprement vu comme un langage pour le domaine du Raisonnement sur l'Action et le changement (RAC) mais, comme dit dans \cite{sarmiento_formalising_2025} leur utilisation permet d'unifier des raisonnement sur différents frameworks ainsi que de lever certaines ambiguités. Tous formalisme pouvant être représenté sous forme de LTS bénéficie ainsi des réflexions et observation de ce travail. Pour illustrer la possibilité de transition nous allons développer sur la traduction d'un problème PDDL vers LTS. La représentation LTS permet de travailler sur la comparaison de contexte causal contrefactuel mais on laisse le travail de recherche et de résolution de problème de plannification aux outils prééxistants. En effet la complexité exponentielle d'un LTS en fonction du nombre d'état et d'action n'est pas adapté à la recherche de politique.
+Les LTS ne constitue pas directement un langage pour le domaine du Raisonnement sur l'Action et le changement (RAC) mais, comme dit dans \cite{sarmiento_formalising_2025} leur utilisation permet d'unifier des raisonnement sur différents frameworks ainsi que de lever certaines ambiguités. Tout formalisme pouvant être représenté sous forme de LTS bénéficie ainsi des réflexions et observation de ce travail. Pour illustrer la possibilité de transition nous allons développer sur la traduction d'un problème PDDL vers LTS. La représentation LTS permet de travailler sur la comparaison de contexte causal contrefactuel mais on laisse le travail de recherche et de résolution de problème de plannification aux outils prééxistants. En effet la complexité exponentielle d'un LTS en fonction du nombre d'état et d'action n'est pas adapté à la recherche de politique.
 
 
 \subsection{Rappel PDDL}
@@ -105,7 +105,7 @@ Un problème de planification est décrit en PDDL par deux types de fichiers. Le
 
 
 \subsection{Construction d'un LTS à partir d'un problème PDDL}
-Pour construire un LTS à partir d'un couple de fichier domaine/problème on commence par instancier toutes les actions possibles à partir de leur définitions et des objets du problèmes, ce processus est explicité dans l'exemple ci-dessous.
+Pour construire un LTS à partir d'un couple de fichier domaine/problème on commence par instancier toutes les actions possibles à partir de leur définitions et des objets du problèmes, ce processus est explicité dans ci-dessous.
 
 \hfill
 \begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
@@ -116,32 +116,32 @@ def instantiate(actions, objects):
     for action in actions:
         params = action.parameters
         for args in product(objects, repeat=len(params)):
-            subst = dict(zip(params, args))
-            name, precond,effect =  action.apply(subst)  
+            val = dict(zip(params, args))
+            name, precond,effect =  action.apply(val)  
             instanciated.append((name, precond, effect))
     return instanciated
 \end{lstlisting}
 \hfill
 
-Une fois l'ensemble de toutes les actions instanciées, avant de pouvoir cosntruire le LTS, on définit la fonction de satisfactions de préconditions. Pour un ensemble de préconditions et un état représenté par un ensemble de fluents, elle vérifie si les préconditions sont respectées dans l'état. Cette fonction gère les précondition négative, disjonctive et conjonctive.
+Une fois l'ensemble de toutes les actions instanciées, avant de pouvoir cosntruire le LTS, on définit la fonction de satisfaction de préconditions. Pour un ensemble de préconditions et un état représenté par un ensemble de fluents, elle vérifie si les préconditions sont respectées dans l'état. Cette fonction gère les préconditions négatives, disjonctives et conjonctives.
 
 \hfill
 \begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
                    commentstyle=\color{gray}\itshape,
                    keywordstyle=\bfseries]
-def statisfied(preconditions,etat):
+def statisfied(preconditions,state):
     if preconditions conjonctives:
-        return all(statisfied(p,etat) for p in preconditions)
-    if preconditions negative:
-        return not statisfied(preconditions,etat)
+        return all(statisfied(p,state) for p in preconditions)
+    if preconditions negatives:
+        return not statisfied(preconditions,state)
     if preconditions disjonctives:
-        return any(statisfied(p,etat) for p in preconditions)
-    return precondition in etat
+        return any(statisfied(p,state) for p in preconditions)
+    return precondition in state
 
 \end{lstlisting}
 \hfill
 
-La seconde fonction qui est nécessaire avant celle de construction du graphe est la fonction d'application des effets positifs et négatifs d'une actions dans un etat.
+La seconde fonction qui est nécessaire avant celle de construction du graphe est la fonction d'application des effets positifs et négatifs d'une action dans un état.
 \hfill
 
 \begin{lstlisting}[language=Python, basicstyle=\small\ttfamily,
@@ -151,9 +151,9 @@ def apply_effects(effects,state):
     new_state = state
     for f in effects:
         if isinstance(f, Not):
-            new_state.discard(eff) # effet negatif
+            new_state.discard(f) # effet negatif
         else:
-            new_state.add(eff) #effet positif
+            new_state.add(f) #effet positif
     return new_state
 
 \end{lstlisting}
@@ -219,7 +219,7 @@ On obtient pour l'exemple \ref{ex_pddl} le graphe suivant:
 
 \subsection{Remarques et limites}
 
-Les LTS obtenus ne représentent pas l'ensemble des états possibles du monde, seul les états accessibles depuis l'état initial, respectant les fonctions de précondition y figurent. Pour enrichir ces graphes il serait potentiellement intéressant de construire pour un même domaine et objectif,  différents graphes selon différents états de départ et les fusionner afin de pouvoir travailler notamment sur des contextes contrefactuels avec des états de départ qui diffèrent. Cependant les LTS correspondent à une sémantique et non pas à de vrais outils de travail, leur utilité pour des applications concrètes reste limitée et ils seront surtout utilisés de manière formelle pour raisonner. Pour des applications à des exemples simples ils permettent une meilleur visualisation, on considère donc suffisant un parser simple comme présenté ci-dessus. L'idée de cette section étant principalement d'expliciter la faisabilité d'une transition d'un framework RAC vers des LTS, de possibles améliorations sont laissées en suspends car ne représentant pas le coeur du travail. On peut par exemple noter que ce parser ne gère que des problème PDDL contenant uniquement le requirement STRIPS. 
+Les LTS obtenus ne représentent pas l'ensemble des états possibles du monde, seul les états accessibles depuis l'état initial, respectant les fonctions de précondition y figurent. Pour enrichir ces graphes il serait potentiellement intéressant de construire pour un même domaine et objectif,  différents graphes selon différents états de départ et les fusionner afin de pouvoir travailler notamment sur des contextes contrefactuels avec des états de départ qui diffèrent (peut être potentiellement très coûteux). Cependant les LTS correspondent à une sémantique et non pas à de vrais outils de travail, leur utilité pour des applications concrètes reste limitée et ils seront surtout utilisés de manière formelle pour raisonner. Pour des applications à des exemples simples ils permettent une meilleur visualisation, on considère donc suffisant un parser simple comme présenté ci-dessus. L'idée de cette section étant principalement d'expliciter la faisabilité d'une transition d'un framework RAC vers des LTS, de possibles améliorations sont laissées en suspends car ne représentant pas le coeur du travail. On peut par exemple noter que ce parser ne gère que des problème PDDL contenant uniquement le requirement STRIPS. 
 
 Il est possible de continuer de tirer parti de PDDL et de ses solveurs pour extraire de manière automatique des politiques qui nous permettent par la suite de travailler sur des contextes causaux. Pour construire la politique on avance dans le graphe depuis l'état de départ en attribuant à chaque état dans lequel on se trouve l'action associée dans le plan. Si besoin ces politiques partielles peuvent ensuite être complétées aléatoirement ou selon une heuristique.
 
@@ -278,7 +278,7 @@ Avec:
 Des travaux en sciences cognitives ont montré l'impact des notions de propensité (vraisemblance d'obtenir un effet sachant qu'un événement se produit) et de mutabilité (facilité avec laquelle on peut imaginer qu'un événement ai été différent) des événements lors du processus de raisonnement contrefactuel pour la sélection causale (voir \ref{mut_prop}). Notre cadre est pour l'instant déterministe donc nous laissons de côté la notion de propensité. Mais il reste intéressant d'intégrer la mutabilité, notamment pour le calcul de distance à l'observation. 
 
 
-On souhaite modifier le coût de l'opération de substitution d'un état dans la distance de Levenshtein, c'est à dire que lorsque l'on cherche à déterminer le coût de transformation de la trace observé vers la trace contrefactuelle on souhaite que la substitution d'un événement très peu mutable ai un coût de substitution plus élevé que pour un événement très mutable. Pour cela la première chose à faire est de définir formellement la notion de mutablité dans notre framework. 
+On souhaite modifier le coût de l'opération de substitution d'un état dans la distance de Levenshtein, c'est à dire que lorsque l'on cherche à déterminer le coût de transformation de la trace observée vers la trace contrefactuelle, on souhaite que la substitution d'un événement très peu mutable ai un coût de substitution plus élevé que pour un événement très mutable. Pour cela la première chose à faire est de définir formellement la notion de mutablité dans notre framework. 
 
 Soit un événement $E$ qui se produit dans un état $S$ d'un LTS défini par $<\mathds{S},\tau>$ de la façon suivante:
 \begin{equation}
@@ -303,7 +303,7 @@ La distance de Levenshtein est calculée non pas sur les événements mais sur l
     \]
     \captionsetup{width = 0.8\textwidth}
 
-    \caption{Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $0+0+0+\frac{1}{4}+0$ et celle entre la trace bleue et la trace verte est de $0+\frac{1}{2}+0+0+0$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}
+    \caption{Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $\frac{1}{4}$ et celle entre la trace bleue et la trace verte est de $\frac{1}{2}$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}
     \label{cout_sub}
 \end{figure}
 
@@ -872,7 +872,7 @@ On note $\forall S\in \mathds{S},\quad \pi^{opt1}_\tau(S) =\pi^{opt2}_\tau(S)$. 
 
 \subsection{Expérimentations}
 
-En fonction de la configuration choisie (extraction d'une politique optimale, exploitation direct, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance à priori des contraintes que l'on souhaite appliquer lors de l'évaluation des elles permet de guider le classement. 
+En fonction de la configuration choisie (extraction d'une politique optimale, exploitation direct, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance à priori des contraintes que l'on souhaite appliquer lors de l'évaluation permet de guider le classement. 
 
 Dans les exemples suivant on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$, on fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$ (avec cette valeur la validité ne dépends que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel).
 
@@ -887,18 +887,18 @@ On obtient les résultats suivant:
 \hline
 CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
 \hline\hline
-1 & $\chi_2$ & 0.5 & 0.0 & 0.5 &  $[VO,boire, Vivant]$ & \checkmark \\
+1 & $\chi_2$ & 0.67 & 0.0 & 0.67 &  $[VO,boire, Vivant]$ & \checkmark \\
 \hline
-3 & $\chi_3$ & 0.5 & 0.5 & 1 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
-4 & $\chi_4$ & 0.33 & 0.71 & 1.04 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ &\texttimes \\
-2 & $\chi_5$ & 0.33 & 0.54 & 0.87 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
+3 & $\chi_3$ & 0.33 & 0.5 & 0.83 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+4 & $\chi_4$ & 0.25 & 0.71 & 0.96 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ &\texttimes \\
+2 & $\chi_5$ & 0.50 & 0.54 & 1.04 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
 \hline
 \end{tabular}
 \caption{Résultats pour la priorité à la normativité}
 \label{tab:prio_normativite}
 \end{table}
 
-On observe dans la table \ref{tab:prio_normativite} que le contexte contrefactuel avec le coût minimal est le contexte $\chi2$ sa distance à l'observation est de 0.5 et sa vraisemblance de 0 (l'unique événement $boire$ à un score de 1). Ce contrefactuel est suivi du contexte $\chi_5$, plus proche de l'observation (coût de 0.33) mais le scénario associé contient l'événement $empoisonner$ qui fait augmenter le coût. Les deux premiers contrefactuels $\chi_2$ et $\chi_5$ sont valides.
+On observe dans la table \ref{tab:prio_normativite} que le contexte contrefactuel avec le coût minimal est le contexte $\chi2$ sa distance à l'observation est de 0.67 et sa vraisemblance de 0 (l'unique événement $boire$ a un score de 1). Ce contrefactuel est suivi du contexte $\chi_5$, plus proche de l'observation (coût de 0.5) mais le scénario associé contient l'événement $empoisonner$ qui fait augmenter le coût. Les deux premiers contrefactuels $\chi_2$ et $\chi_5$ sont valides.
 
 
 
@@ -912,11 +912,11 @@ On utilise l'opérateur d'agrégation avec un seuil fixé à $\lambda = 0.2$ pou
 \hline
 CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ &  trace & valide \\
 \hline\hline
-1 & $\chi_2$ & 0.5 & 0.0 & 0.5 & $[VO,boire, Vivant]$ &  \checkmark \\
+2 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ &  \checkmark \\
 \hline
-2 & $\chi_3$ & 0.5 & 0.0 & 0.5 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
-3 & $\chi_4$ & 0.33 & 1.0 & 1.33 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
-4 & $\chi_5$ & 0.33 & 1.0 & 0.33 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \texttimes \\
+1 & $\chi_3$ & 0.33 & 0.0 & 0.33 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+3 & $\chi_4$ & 0.25 & 1.0 & 1.25 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+4 & $\chi_5$ & 0.50 & 1.0 & 1.50 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \texttimes \\
 \hline
 \end{tabular}
 \caption{Résultats pour la priorité à la normativité}
@@ -934,18 +934,19 @@ On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avant
 \hline
 CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
 \hline\hline
-1 & $\chi_2$ & 0.5 & 0.0 & 0.5 & $[VO,boire, Vivant]$ & \checkmark \\
+1 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ & \checkmark \\
 \hline
-2 & $\chi_3$ & 0.5 & 0.5 & 1.0 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
-4 & $\chi_4$ & 0.33 & 0.81 & 1.14 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
-3 & $\chi_5$ & 0.33 & 0.69 & 1.02 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
+2 & $\chi_3$ & 0.33 & 0.5 & 0.83 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+3 & $\chi_4$ & 0.25 & 0.80 & 1.05 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+4 & $\chi_5$ & 0.50 & 0.69 & 1.19 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
 \hline
 \end{tabular}
 \caption{Priorité à la normativité en début de scénario}
 \label{tab:res_gamma}
 \end{table}
 
-On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût corresponds à $\chi_2$ qui a la premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possède en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. Le contexte $\chi_5$ a un coût plus faible que $\chi_4$ car, on baisse l'impact des événements en fin de scénario mais il reste présent ce qui permet une forme de compensation ($\chi_5$ utilise l'$antidote$).
+On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût corresponds à $\chi_2$ qui a la premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possède en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. 
+
 
 \paragraph{Normativité en fin de scénario}
 
@@ -957,18 +958,18 @@ On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la norma
 \hline
 CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
 \hline\hline
-2 & $\chi_2$ & 0.5 & 0.0 & 0.5 & $[VO,boire, Vivant]$ & \checkmark \\
-4 &$\chi_3$ & 0.5 & 0.5 & 1.0 & $[VO,vider, VV,\emptyset,Mort]$ &  \texttimes \\
-3 & $\chi_4$ & 0.33 & 0.81 & 0.85 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+2 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ & \checkmark \\
+4 &$\chi_3$ & 0.33 & 0.5 & 0.83 & $[VO,vider, VV,\emptyset,Mort]$ &  \texttimes \\
+3 & $\chi_4$ & 0.25 & 0.52 & 0.77 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
 \hline
-1 & $\chi_5$ & 0.33 & 0.04 & 0.38 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \checkmark \\
+1 & $\chi_5$ & 0.50 & 0.04 & 0.54 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \checkmark \\
 \hline\hline
 \end{tabular}
 \caption{Priorité à la normativité en fin de scénario}
 \label{tab:res_gamma_late}
 \end{table}
 
-La table des résultats \ref{tab:res_gamma_late} montre que dans cette configuration c'est $\chi_5$ qui a le coût le plus faible, malgré l'empoisonnement on s'éloigne de l'observation le plus tard possible. On remarque que $\chi_3$ est le contexte causal le plus pénalisé avec cette configuration même si il n'y a pas d'empoisonnement dans ce dernier, cela est du au coût de $d\_obs$.
+La table des résultats \ref{tab:res_gamma_late} montre que dans cette configuration c'est $\chi_5$ qui a le coût le plus faible, malgré l'empoisonnement on s'éloigne de l'observation le plus tard possible.
 
 \paragraph{Normativité du contrefactuel avec distance à une politique optimale}
 On choisit pour cette configuration de calculer la distance à la politique optimal définie par \ref{pol_opti}. Le choix est fait de ne considérer que les événements pour lesquelles une alternative existe.
@@ -979,11 +980,11 @@ On choisit pour cette configuration de calculer la distance à la politique opti
 \hline
 CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
 \hline
-1 & $\chi_2$ & 0.5 & 0.0 & 0.5 & $[VO,boire, Vivant]$ & \checkmark \\
+1 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ & \checkmark \\
 \hline
-4 & $\chi_3$ & 0.5 & 1.0 & 1.5 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
-3 & $\chi_4$ & 0.33 & 1.0 & 1.33 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
-2 & $\chi_5$ & 0.33 & 0.5 & 0.83 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
+4 & $\chi_3$ & 0.33 & 1.0 & 1.33 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+3 & $\chi_4$ & 0.25 & 1.0 & 1.25 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+2 & $\chi_5$ & 0.50 & 0.5 & 1.0 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
 \hline
 \end{tabular}
 \caption{Résultats distance à la politique optimale}
@@ -1258,17 +1259,17 @@ La propriété de monotonie croissante est respectée.
 
 \section{Digression sur le concept de sélection causale dans le domaine des sciences cognitives}\label{scienceco}
 
-De nombreuses recherches en sciences cognitives ont été menées pour tenter de modéliser la façon dont nous concevont et préféront certains scénarios contrefactuels par rapport à d'autres. Ces mécanismes sont influencés par différents critères tel que la structure causale, le temps, les normes, la valeur de l'effet produit... Même si certains études portent, plus ou moins implicitement, sur la notion de responsabilité causale plus que sur le concept de sélection causale, des définitions et concept peuvent être utiles pour définir et orienter les critères d'évaluation ou encore de construction de scénarios contrefactuels. Ci-dessous une liste non-exhaustive de notions trouvées dans la littérature pouvant être potentiellement integrées à notre cadre.
+De nombreuses recherches en sciences cognitives ont été menées pour tenter de modéliser la façon dont nous concevont et préféront certains scénarios contrefactuels par rapport à d'autres. Ces mécanismes sont influencés par différents critères tel que la structure causale, le temps, les normes, la valeur de l'effet produit... Même si certaines études portent, plus ou moins implicitement, sur la notion de responsabilité causale plus que sur le concept de sélection causale, des définitions et concept peuvent être utiles pour définir et orienter les critères d'évaluation ou encore de construction de scénarios contrefactuels. Ci-dessous une liste non-exhaustive de notions trouvées dans la littérature pouvant être potentiellement integrées à notre cadre.
 
 \subsection{Mutabilité et Propensité des facteurs}\label{mut_prop}
-Les notions de mutabilité (à quel point il est simple d'imaginer qu'un facteur ai pu être différent) et de propensité (la vraisemblance qu'un effet ai lieu sachant une cause) jouent selon \cite{kominsky_causal_2015} et \cite{mcgill_mutability_2000} un rôle essentiel dans le raisonnement contrefactuel. Le travail de \cite{kominsky_causal_2015} vise à mettre en évidence dans le processus d'évaluation causale d'un événement A, l'importance de la mutabilité et de la propensité d'un événement B nécessaire à la production de l'effet (structure causale conjointe). D'autres part dans \cite{kominsky_causal_2015} le travail porte cette fois ci sur le phénomène de causal superseding qui est décrit comme: le phénomène selon lequel la violation d'une norme par un agent diminue la causalité attribuée à un autre agent. Même si cet effet sort de notre cadre par son aspect multiagents, on trouve des résultats similaire à \cite{mcgill_mutability_2000}. Ils avancent eux aussi, que selon leur modèle un facteur causal est vu comme plus faible lorsqu"un autre facteur est plus mutable , mais uniquement si ce facteur est très susceptible de produire l'effet.
+Les notions de mutabilité (à quel point il est simple d'imaginer qu'un facteur ai pu être différent) et de propensité (la vraisemblance qu'un effet ai lieu sachant une cause) jouent selon \cite{kominsky_causal_2015} et \cite{mcgill_mutability_2000} un rôle essentiel dans le raisonnement contrefactuel. Le premier article vise à mettre en évidence dans le processus d'évaluation causale d'un événement A, l'importance de la mutabilité et de la propensité d'un événement B nécessaire à la production de l'effet (structure causale conjointe). D'autres part dans \cite{kominsky_causal_2015} le travail porte cette fois ci sur le phénomène de causal superseding qui est décrit comme: le phénomène selon lequel la violation d'une norme par un agent diminue la causalité attribuée à un autre agent. Même si cet effet sort de notre cadre par son aspect multiagents, on trouve des résultats similaire à \cite{mcgill_mutability_2000}. Ils avancent eux aussi, que selon leur modèle un facteur causal est vu comme plus faible lorsqu"un autre facteur est plus mutable , mais uniquement si ce facteur est très susceptible de produire l'effet.
 
 \subsection{Impact des normes sur le raisonnement contrefactuel}
-Dans \cite {icard_normality_2017} une mesure de force de causalité (correspondant à un compromis suffisance/nécessité) est présentée et permet de modéliser les effets de la normalité sur le jugement causal. Dans ce travail aucune volonté de distinction de types de normes (statistiques et prescriptive) n'est appliquée et ils travaillent dans un cadre non déterministe ne faisant pas de différence entre les états et les événements. Cette mesure n'est donc pas directement applicable à notre cadre mais les effets discutés présentent des intêrets potentiels. Une différence des effets de la normalité est faite selon la structure causale. Dans les cas conjonctifs on observe un effet d'\textit{abnormal inflation} décrit par le fait qu'une cause soit considérée comme plus causale si elle est anormale par rapport au cas où elle est normale. Le second effet pour les structures conjonctives est l'effet de \textit{supersession}: un facteur est considéré comme plus causal lorsque les autres facteurs sont normaux. Dans le cas disjonctifs on observe l'effet d' \textit{abnormal deflation}: une cause est considéré comme plus causale lorsque qu'elle est normale que lorsqu'elle ne l'est pas. Et enfin toujours dans le cas disjonctif l'effet de \textit{no supersession with disjunction} qui avance qu'une cause  est tout aussi enclin à être jugée comme causale lorsqu'une seconde cause est normale que lorsqu'elle est anormale.
+Dans \cite {icard_normality_2017} une mesure de force de causalité (correspondant à un compromis suffisance/nécessité) est présentée et permet de modéliser les effets de la normalité sur le jugement causal. Dans ce travail aucune volonté de distinction de types de normes (statistique ou prescriptive) n'est appliquée et ils travaillent dans un cadre non déterministe ne faisant pas de différence entre les états et les événements. Cette mesure n'est donc pas directement applicable à notre cadre mais les effets discutés présentent des intêrets potentiels. Une différence des effets de la normalité est faite selon la structure causale. Dans les cas conjonctifs on observe un effet d'\textit{abnormal inflation} décrit par le fait qu'une cause soit considérée comme plus causale si elle est anormale par rapport au cas où elle est normale. Le second effet pour les structures conjonctives est l'effet de \textit{supersession}: un facteur est considéré comme plus causal lorsque les autres facteurs sont normaux. Dans le cas disjonctifs on observe l'effet d' \textit{abnormal deflation}: une cause est considéré comme plus causale lorsque qu'elle est normale que lorsqu'elle ne l'est pas. Et enfin toujours dans le cas disjonctif l'effet de \textit{no supersession with disjunction} qui avance qu'une cause  est tout aussi enclin à être jugée comme causale lorsqu'une seconde cause est normale, que lorsqu'elle est anormale.
 
 \subsection{Impact du temps sur le raisonnement contrefactuel}
 
-Dans \cite{henne_counterfactual_2021}, les chercheurs s'intéressent à l'influence qu'a la position temporelle d'un événement dans une séquence causale sur le jugement de sa responsabilité, et comment le raisonnement contrefactuel peut expliquer ces effets. Le premier effet discuté et l'effet de récence (dans un match on juge plutôt le dernier but comme la cause de la victoire plutôt que le dernier). Mais ils observent que dans des cas de surdétermination et plus particulièrement de préemption tardive, cet effet s'inverse: si chaque effet est suffisant alors la causalité est attribuée à l'événement le plus ancien. Ils étendent le \textit{necessity-sufficiency model}présenté dans \cite{icard_normality_2017}, qui avance que plus un événement fait une différence dans une simulation contrefactuelle plus il est vu comme causal, en introduisant l'hypothèse selon laquelle les gens sont plus enclins à imaginer des contrefactuelles autour de l'événement le plus récent (quelle que soit la structure). Avec cette extension du modèle causal, le mécanisme est toujours le même (simuler le contrefactuel de l'événement le plus récent) mais c'est la structure causale qui détermine ce que la pensée contrefactuelle révèle. Dans un cas elle indique que l'événement causal est le plus récent et dans l'autre c'est le plus ancien.
+Dans \cite{henne_counterfactual_2021}, le travail porte sur l'influence qu'a la position temporelle d'un événement dans une séquence causale sur le jugement de sa responsabilité, et comment le raisonnement contrefactuel peut expliquer ces effets. Le premier effet discuté et l'effet de récence (dans un match on juge plutôt le dernier but comme la cause de la victoire plutôt que le dernier). Mais ils observent que dans des cas de surdétermination et plus particulièrement de préemption tardive, cet effet s'inverse: si chaque effet est suffisant alors la causalité est attribuée à l'événement le plus ancien. Ils étendent le \textit{necessity-sufficiency model}présenté dans \cite{icard_normality_2017}, qui avance que plus un événement fait une différence dans une simulation contrefactuelle plus il est vu comme causal, en introduisant l'hypothèse selon laquelle les gens sont plus enclins à imaginer des contrefactuelles autour de l'événement le plus récent (quelle que soit la structure). Avec cette extension du modèle causal, le mécanisme est toujours le même (simuler le contrefactuel de l'événement le plus récent) mais c'est la structure causale qui détermine ce que la pensée contrefactuelle révèle. Dans un cas elle indique que l'événement causal est le plus récent et dans l'autre c'est le plus ancien.
 
 
 

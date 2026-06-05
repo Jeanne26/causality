@@ -25,7 +25,7 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Fonction de coût}{4}{}\protected@file@percent }
 \newlabel{cout}{{1}{4}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Distance à l'observation: coûts des opérations}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $0+0+0+\frac  {1}{4}+0$ et celle entre la trace bleue et la trace verte est de $0+\frac  {1}{2}+0+0+0$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $\frac  {1}{4}$ et celle entre la trace bleue et la trace verte est de $\frac  {1}{2}$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}}{5}{}\protected@file@percent }
 \newlabel{cout_sub}{{2}{5}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Vraisemblance du contrefactuel}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Juge expert}{6}{}\protected@file@percent }
@@ -93,78 +93,75 @@
 \@writefile{toc}{\contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{15}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Résultats distance à la politique optimale}}{15}{}\protected@file@percent }
 \newlabel{tab:dist_pol}{{5}{15}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Exemple PDDL}{17}{}\protected@file@percent }
-\newlabel{ex_pddl}{{A}{17}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{18}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Exemple de LTS}}{18}{}\protected@file@percent }
-\newlabel{fig:placeholder}{{10}{18}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{18}{}\protected@file@percent }
-\newlabel{ex_div}{{B.1}{18}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{18}{}\protected@file@percent }
-\newlabel{ex_corr}{{B.2}{18}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{19}{}\protected@file@percent }
-\newlabel{astar}{{C}{19}{}{}{}}
-\newlabel{fig:diag-a}{{11a}{19}{}{}{}}
-\newlabel{sub@fig:diag-a}{{a}{19}{}{}{}}
-\newlabel{fig:diag-b}{{11b}{19}{}{}{}}
-\newlabel{sub@fig:diag-b}{{b}{19}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Construction du graphe pour l'application d'un algorithme de plus court chemin}}{19}{}\protected@file@percent }
-\newlabel{fig:lts astar}{{11}{19}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Exemple PDDL}{16}{}\protected@file@percent }
+\newlabel{ex_pddl}{{A}{16}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{17}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Exemple de LTS}}{17}{}\protected@file@percent }
+\newlabel{fig:placeholder}{{10}{17}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{17}{}\protected@file@percent }
+\newlabel{ex_div}{{B.1}{17}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{17}{}\protected@file@percent }
+\newlabel{ex_corr}{{B.2}{17}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{18}{}\protected@file@percent }
+\newlabel{astar}{{C}{18}{}{}{}}
+\newlabel{fig:diag-a}{{11a}{18}{}{}{}}
+\newlabel{sub@fig:diag-a}{{a}{18}{}{}{}}
+\newlabel{fig:diag-b}{{11b}{18}{}{}{}}
+\newlabel{sub@fig:diag-b}{{b}{18}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Construction du graphe pour l'application d'un algorithme de plus court chemin}}{18}{}\protected@file@percent }
+\newlabel{fig:lts astar}{{11}{18}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Identité}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{18}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{19}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Identité}{19}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Identité}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Identité}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Identité}{19}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Conditions aux limites}{19}{}\protected@file@percent }
 \abx@aux@cite{0}{kominsky_causal_2015}
 \abx@aux@segm{0}{0}{kominsky_causal_2015}
 \abx@aux@cite{0}{mcgill_mutability_2000}
 \abx@aux@segm{0}{0}{mcgill_mutability_2000}
-\abx@aux@cite{0}{kominsky_causal_2015}
-\abx@aux@segm{0}{0}{kominsky_causal_2015}
 \abx@aux@cite{0}{kominsky_causal_2015}
 \abx@aux@segm{0}{0}{kominsky_causal_2015}
 \abx@aux@cite{0}{mcgill_mutability_2000}
 \abx@aux@segm{0}{0}{mcgill_mutability_2000}
 \abx@aux@cite{0}{icard_normality_2017}
 \abx@aux@segm{0}{0}{icard_normality_2017}
-\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{21}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{21}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Synthèse des propriétés des opérateurs d'agrégation}}{21}{}\protected@file@percent }
-\newlabel{tab:synthese_agg}{{6}{21}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{21}{}\protected@file@percent }
-\newlabel{scienceco}{{E}{21}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Mutabilité et Propensité des facteurs}{21}{}\protected@file@percent }
-\newlabel{mut_prop}{{E.1}{21}{}{}{}}
-\abx@aux@page{2}{21}
-\abx@aux@page{3}{21}
-\abx@aux@page{4}{21}
-\abx@aux@page{5}{21}
-\abx@aux@page{6}{21}
+\@writefile{toc}{\contentsline {paragraph}{Monotonie croissante}{20}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{20}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Synthèse des propriétés des opérateurs d'agrégation}}{20}{}\protected@file@percent }
+\newlabel{tab:synthese_agg}{{6}{20}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{20}{}\protected@file@percent }
+\newlabel{scienceco}{{E}{20}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1}Mutabilité et Propensité des facteurs}{20}{}\protected@file@percent }
+\newlabel{mut_prop}{{E.1}{20}{}{}{}}
+\abx@aux@page{2}{20}
+\abx@aux@page{3}{20}
+\abx@aux@page{4}{20}
+\abx@aux@page{5}{20}
 \abx@aux@cite{0}{henne_counterfactual_2021}
 \abx@aux@segm{0}{0}{henne_counterfactual_2021}
 \abx@aux@cite{0}{icard_normality_2017}
 \abx@aux@segm{0}{0}{icard_normality_2017}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Impact des normes sur le raisonnement contrefactuel}{22}{}\protected@file@percent }
-\abx@aux@page{7}{22}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.3}Impact du temps sur le raisonnement contrefactuel}{22}{}\protected@file@percent }
-\abx@aux@page{8}{22}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2}Impact des normes sur le raisonnement contrefactuel}{21}{}\protected@file@percent }
+\abx@aux@page{6}{21}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.3}Impact du temps sur le raisonnement contrefactuel}{21}{}\protected@file@percent }
+\abx@aux@page{7}{21}
+\abx@aux@page{8}{21}
 \abx@aux@page{9}{22}
-\abx@aux@page{10}{23}
-\abx@aux@page{11}{23}
-\abx@aux@page{12}{23}
-\abx@aux@page{13}{23}
-\abx@aux@page{14}{23}
+\abx@aux@page{10}{22}
+\abx@aux@page{11}{22}
+\abx@aux@page{12}{22}
+\abx@aux@page{13}{22}
 \abx@aux@read@bbl@mdfivesum{C281CD6479D532448A110685F43A713F}
 \abx@aux@defaultrefcontext{0}{henne_counterfactual_2021}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{icard_normality_2017}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{kominsky_causal_2015}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{mcgill_mutability_2000}{nyt/global//global/global}
 \abx@aux@defaultrefcontext{0}{sarmiento_formalising_2025}{nyt/global//global/global}
-\gdef \@abspage@last{25}
+\gdef \@abspage@last{24}

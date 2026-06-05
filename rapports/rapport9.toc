@@ -27,26 +27,26 @@
 \contentsline {paragraph}{Normativité en début de scénario}{15}{}%
 \contentsline {paragraph}{Normativité en fin de scénario}{15}{}%
 \contentsline {paragraph}{Normativité du contrefactuel avec distance à une politique optimale}{15}{}%
-\contentsline {section}{\numberline {A}Exemple PDDL}{17}{}%
-\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{18}{}%
-\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{18}{}%
-\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{18}{}%
-\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{19}{}%
-\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{19}{}%
-\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{19}{}%
+\contentsline {section}{\numberline {A}Exemple PDDL}{16}{}%
+\contentsline {section}{\numberline {B}Exemple contexte causal non valide pour la fonction de coût}{17}{}%
+\contentsline {subsection}{\numberline {B.1}Fonction $divergence$}{17}{}%
+\contentsline {subsection}{\numberline {B.2}Fonction $correct$}{17}{}%
+\contentsline {section}{\numberline {C}Construction d'une politique optimale avec planification et l'utilisation de l'algorithme A*}{18}{}%
+\contentsline {section}{\numberline {D}Vérification des propriétés pour les opérateurs}{18}{}%
+\contentsline {subsection}{\numberline {D.1}Opérateur géométrique}{18}{}%
+\contentsline {paragraph}{Identité}{18}{}%
+\contentsline {paragraph}{Conditions aux limites}{18}{}%
+\contentsline {paragraph}{Monotonie croissante}{19}{}%
+\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{19}{}%
+\contentsline {paragraph}{Identité}{19}{}%
+\contentsline {paragraph}{Conditions aux limites}{19}{}%
+\contentsline {paragraph}{Monotonie croissante}{19}{}%
+\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{19}{}%
 \contentsline {paragraph}{Identité}{19}{}%
 \contentsline {paragraph}{Conditions aux limites}{19}{}%
 \contentsline {paragraph}{Monotonie croissante}{20}{}%
-\contentsline {subsection}{\numberline {D.2}Opérateur gamma}{20}{}%
-\contentsline {paragraph}{Identité}{20}{}%
-\contentsline {paragraph}{Conditions aux limites}{20}{}%
-\contentsline {paragraph}{Monotonie croissante}{20}{}%
-\contentsline {subsection}{\numberline {D.3}Opérateur de seuil}{20}{}%
-\contentsline {paragraph}{Identité}{20}{}%
-\contentsline {paragraph}{Conditions aux limites}{20}{}%
-\contentsline {paragraph}{Monotonie croissante}{21}{}%
-\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{21}{}%
-\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{21}{}%
-\contentsline {subsection}{\numberline {E.1}Mutabilité et Propensité des facteurs}{21}{}%
-\contentsline {subsection}{\numberline {E.2}Impact des normes sur le raisonnement contrefactuel}{22}{}%
-\contentsline {subsection}{\numberline {E.3}Impact du temps sur le raisonnement contrefactuel}{22}{}%
+\contentsline {subsection}{\numberline {D.4}Synthèse résultats}{20}{}%
+\contentsline {section}{\numberline {E}Digression sur le concept de sélection causale dans le domaine des sciences cognitives}{20}{}%
+\contentsline {subsection}{\numberline {E.1}Mutabilité et Propensité des facteurs}{20}{}%
+\contentsline {subsection}{\numberline {E.2}Impact des normes sur le raisonnement contrefactuel}{21}{}%
+\contentsline {subsection}{\numberline {E.3}Impact du temps sur le raisonnement contrefactuel}{21}{}%
