@@ -1,8 +1,7 @@
 \documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+\usepackage{graphicx}
 \usepackage{dsfont}
 \usepackage{amsmath}
-\usepackage{ dsfont }
 \usepackage[all]{xy}
 \usepackage{appendix}
 \usepackage{stmaryrd} 
@@ -13,11 +12,11 @@
 \usepackage{amssymb}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{amssymb}% http://ctan.org/pkg/amssymb
-\usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage{pifont}
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
 \usepackage{xcolor}
+\usepackage{csquotes}
 \usepackage[french]{babel}
 \usepackage{booktabs}
 \usepackage{listings}
@@ -25,14 +24,8 @@
 
 \newcommand*{\longDefiningEquals}{\stackrel{\text{def}}{=\joinrel=}}
 \title{Rapport}
-% \date{}
+\author{}
 
-% \usepackage[
-%    backend=biber,        % compilateur par défaut pour biblatex
-%    sorting=nyt,          % trier par nom, année, titre
-%    citestyle=numeric, % style de citation auteur-année
-%    bibstyle=numeric,  % style de bibliographie alphabétique
-% ]{biblatex}
 \usepackage[style=authoryear, backend=biber]{biblatex}
 \addbibresource{ref.bib}
 
@@ -49,7 +42,7 @@
 
 
 \section{Définitions et hypothèses}\label{def}
-On définit dans un premier temps l'ensemble des objets nécessaire à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article AMAAS \cite{sarmiento2025formalising}, d'autres ont été légérement modifiées et certaines ont été rajoutées spécifiquement pour l'étude.
+On définit dans un premier temps l'ensemble des objets nécessaire à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article AMAAS \cite{sarmiento_formalising_2025}, d'autres ont été légérement modifiées et certaines ont été rajoutées spécifiquement pour l'étude.
 \begin{itemize}
     \item $\mathds{F}$: ensemble de fluents qui décrivent l’environnement
     
@@ -79,7 +72,10 @@ On définit dans un premier temps l'ensemble des objets nécessaire à l'évalua
         \end{equation*}
     \item $\mathds{A} \subseteq \mathds{S}$: ensemble des états terminaux d'un LTS $\langle\mathds{S},\tau\rangle$
         \begin{equation*}
-            \mathds{A} = \{ S \mid S\in \mathds{S}, (S,\emptyset,S) \in \tau  \textit{ et }  \forall E\neq \emptyset,  \nexists S'\in \mathds{S}, (S,E,S')\in\tau\} \quad et \quad \forall S \notin \mathds{A}, \forall E \in 2^{\mathds{E}}, \quad (S,E,S)\notin \tau
+        \begin{aligned}
+            \mathds{A} &= \{ S \mid S\in \mathds{S},\ (S,\emptyset,S) \in \tau \textit{ et } \forall E\neq \emptyset,\ \nexists S'\in \mathds{S},\ (S,E,S')\in\tau\} \\
+                    &\quad \text{et} \quad \forall S \notin \mathds{A},\ \forall E \in 2^{\mathds{E}},\ (S,E,S)\notin \tau
+        \end{aligned}
         \end{equation*}
     \item $\mathds{T}$: ensemble des pas de temps
     
@@ -1256,7 +1252,6 @@ La propriété de monotonie croissante est respectée.
 \end{table}
 
 
-
 \section{Digression sur le concept de sélection causale dans le domaine des sciences cognitives}\label{scienceco}
 
 De nombreuses recherches en sciences cognitives ont été menées pour tenter de modéliser la façon dont nous concevont et préféront certains scénarios contrefactuels par rapport à d'autres. Ces mécanismes sont influencés par différents critères tel que la structure causale, le temps, les normes, la valeur de l'effet produit... Même si certaines études portent, plus ou moins implicitement, sur la notion de responsabilité causale plus que sur le concept de sélection causale, des définitions et concept peuvent être utiles pour définir et orienter les critères d'évaluation ou encore de construction de scénarios contrefactuels. Ci-dessous une liste non-exhaustive de notions trouvées dans la littérature pouvant être potentiellement integrées à notre cadre.
@@ -1270,8 +1265,6 @@ Dans \cite {icard_normality_2017} une mesure de force de causalité (corresponda
 \subsection{Impact du temps sur le raisonnement contrefactuel}
 
 Dans \cite{henne_counterfactual_2021}, le travail porte sur l'influence qu'a la position temporelle d'un événement dans une séquence causale sur le jugement de sa responsabilité, et comment le raisonnement contrefactuel peut expliquer ces effets. Le premier effet discuté et l'effet de récence (dans un match on juge plutôt le dernier but comme la cause de la victoire plutôt que le dernier). Mais ils observent que dans des cas de surdétermination et plus particulièrement de préemption tardive, cet effet s'inverse: si chaque effet est suffisant alors la causalité est attribuée à l'événement le plus ancien. Ils étendent le \textit{necessity-sufficiency model}présenté dans \cite{icard_normality_2017}, qui avance que plus un événement fait une différence dans une simulation contrefactuelle plus il est vu comme causal, en introduisant l'hypothèse selon laquelle les gens sont plus enclins à imaginer des contrefactuelles autour de l'événement le plus récent (quelle que soit la structure). Avec cette extension du modèle causal, le mécanisme est toujours le même (simuler le contrefactuel de l'événement le plus récent) mais c'est la structure causale qui détermine ce que la pensée contrefactuelle révèle. Dans un cas elle indique que l'événement causal est le plus récent et dans l'autre c'est le plus ancien.
-
-
 
 
 
