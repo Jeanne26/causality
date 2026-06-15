@@ -40,6 +40,18 @@
 \newpage
 \setcounter{page}{1}
 
+\section{Introduction}
+
+Le raisonnement contrefactuel correspond à la capacité de se représenter ce qui aurait pu se passer si les choses avaient été différentes. Ce concept se trouve à l'intersection du domaine de la causalité et de l'explicabilité. En XAI (Explainable Artificial Intelligence), les explications contrefactuelles correspondent à proposer un changement minimal (selon différents critères possibles) qui permet de changer la sortie d'un système. Concernant la causalité, le raisonnement contrefactuel y tient une place centrale (notamment avec les traveaux de Halpern et Pearl), on cherche à identifier les facteurs déterminants d'une situation et à évaluer leur contribution dans la situation finale.
+
+Le travail proposé s'inscrit dans la continuité du cadre introduit dans \cite{sarmiento_formalising_2025} qui propose un formalisme général basé surdes systèmes à transitions d'état étiquetés (LTS) qui correspondent à des graphes orientés. Une trajectoire dans un LTS est entièrement déterminée par une politique déterministe qui associe à chaque état (sommet du graphe) un événement à exécuter (arête du graphe). L'objectif de ce travail est d'évaluer des contextes causaux contrefactuels, qui correspondent à des trajectoires alternatives à une trajectoire observée, selon deux axes: leur proximité à l'observation et leur vraisemblance. Sur la question de vraisemblance on souhaite dans ce travail introduire une forme d'acceptabilité des contrefactuelles relative à des normes prescriptive ou statistiques, pour cela les arêtes des graphes sont augmentées par un attribut de coût relatif à des normes, fourni par un expert.
+
+Pour répondre à cette problèmatique une fonction de coût modulaire est proposée, dont les composantes peuvent être adaptés en fonction de l'application et des contraintes d'un problème concret. Cette modularité s'appuie notamment sur des traveaux en sciences cognitives qui s'intéressent elles aussi au raisonnement contrefactuel. 
+
+Ce rapport est organisé de la façon suivante: dans un première partie  nous reprenons et adaptons les définitions et hypothèses formelles du cadre proposé par \cite{sarmiento_formalising_2025}. Puis nous introduisont la fonction de coût et sa modularité (choix des différentes composantes, opérateurs, évaluation normative...). Dans une seconde partie plus applicative, nous développons une pipeline pour des applications concrètes. La première étape corresponds à l'introduction d'un parser PDDL vers LTS afin de justifier la possibilité de travail dans le cadre formel introduit. Puis nous appliquons notre formule à un exemple concret qui permet d'illuster les différences introduites en fonction  de la configuration du coût.
+
+
+
 
 \section{Définitions et hypothèses}\label{def}
 On définit dans un premier temps l'ensemble des objets nécessaire à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article AMAAS \cite{sarmiento_formalising_2025}, d'autres ont été légérement modifiées et certaines ont été rajoutées spécifiquement pour l'étude.
@@ -73,7 +85,7 @@ On définit dans un premier temps l'ensemble des objets nécessaire à l'évalua
     \item $\mathds{A} \subseteq \mathds{S}$: ensemble des états terminaux d'un LTS $\langle\mathds{S},\tau\rangle$
         \begin{equation*}
         \begin{aligned}
-            \mathds{A} &= \{ S \mid S\in \mathds{S},\ (S,\emptyset,S) \in \tau \textit{ et } \forall E\neq \emptyset,\ \nexists S'\in \mathds{S},\ (S,E,S')\in\tau\} \\
+            \mathds{A} &= \{ S \mid S\in \mathds{S},\ (S,\emptyset,S) \in \tau \} \\
                     &\quad \text{et} \quad \forall S \notin \mathds{A},\ \forall E \in 2^{\mathds{E}},\ (S,E,S)\notin \tau
         \end{aligned}
         \end{equation*}
@@ -1265,8 +1277,6 @@ Dans \cite {icard_normality_2017} une mesure de force de causalité (corresponda
 \subsection{Impact du temps sur le raisonnement contrefactuel}
 
 Dans \cite{henne_counterfactual_2021}, le travail porte sur l'influence qu'a la position temporelle d'un événement dans une séquence causale sur le jugement de sa responsabilité, et comment le raisonnement contrefactuel peut expliquer ces effets. Le premier effet discuté et l'effet de récence (dans un match on juge plutôt le dernier but comme la cause de la victoire plutôt que le dernier). Mais ils observent que dans des cas de surdétermination et plus particulièrement de préemption tardive, cet effet s'inverse: si chaque effet est suffisant alors la causalité est attribuée à l'événement le plus ancien. Ils étendent le \textit{necessity-sufficiency model}présenté dans \cite{icard_normality_2017}, qui avance que plus un événement fait une différence dans une simulation contrefactuelle plus il est vu comme causal, en introduisant l'hypothèse selon laquelle les gens sont plus enclins à imaginer des contrefactuelles autour de l'événement le plus récent (quelle que soit la structure). Avec cette extension du modèle causal, le mécanisme est toujours le même (simuler le contrefactuel de l'événement le plus récent) mais c'est la structure causale qui détermine ce que la pensée contrefactuelle révèle. Dans un cas elle indique que l'événement causal est le plus récent et dans l'autre c'est le plus ancien.
-
-
 
 
 \newpage
