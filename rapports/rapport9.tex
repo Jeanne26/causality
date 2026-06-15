@@ -24,7 +24,8 @@
 \usepackage{booktabs}
 \usepackage{listings}
 \usepackage{minipage-marginpar}
-
+\usepackage{enumitem}
+\setlist[itemize,1]{label=\textbullet}
 \newcommand*{\longDefiningEquals}{\stackrel{\text{def}}{=\joinrel=}}
 \title{Rapport}
 \author{}
@@ -1276,6 +1277,7 @@ Dans \cite {icard_normality_2017} une mesure de force de causalité (corresponda
 Dans \cite{henne_counterfactual_2021}, le travail porte sur l'influence qu'a la position temporelle d'un événement dans une séquence causale sur le jugement de sa responsabilité, et comment le raisonnement contrefactuel peut expliquer ces effets. Le premier effet discuté et l'effet de récence (dans un match on juge plutôt le dernier but comme la cause de la victoire plutôt que le dernier). Mais ils observent que dans des cas de surdétermination et plus particulièrement de préemption tardive, cet effet s'inverse: si chaque effet est suffisant alors la causalité est attribuée à l'événement le plus ancien. Ils étendent le \textit{necessity-sufficiency model}présenté dans \cite{icard_normality_2017}, qui avance que plus un événement fait une différence dans une simulation contrefactuelle plus il est vu comme causal, en introduisant l'hypothèse selon laquelle les gens sont plus enclins à imaginer des contrefactuelles autour de l'événement le plus récent (quelle que soit la structure). Avec cette extension du modèle causal, le mécanisme est toujours le même (simuler le contrefactuel de l'événement le plus récent) mais c'est la structure causale qui détermine ce que la pensée contrefactuelle révèle. Dans un cas elle indique que l'événement causal est le plus récent et dans l'autre c'est le plus ancien.
 
 
+\input{parser_proof.tex}
 \newpage
 \printbibliography
 \end{document}
