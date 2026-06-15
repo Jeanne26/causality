@@ -1,0 +1,4 @@
+rapports/build/
+.vscode/
+__pycache__/
+*.synctex.gz
