@@ -1013,74 +1013,68 @@ Les résultats présents dans la table \ref{tab:dist_pol} indique qu'avec cette 
 \appendix
 
 \section{Exemple PDDL}\label{ex_pddl}
-Exemple d'instanciation de problème PDDL issus de \url{https://github.com/arii/planning_exercises/tree/master}. 
+Exemple d'instanciation de problème PDDL issus de \url{https://github.com/arii/planning_exercises/tree/master}. Le domaine corresponds à un domaine Block World classique avec les quatres actions classiques de manipulation d'objet. Le problème contient de objet bloc a et bloc b, initialement le bras ne tient rien, le bloc b est posé sur la table et le bloc a au dessus du b. L'objectif est de poser a sur la table et que rien ne soit posé sur b. Les conditions de l'objectif sont donc respecté dans deux états: a est posé sur la table et b est posé sur la table, ou bien a est posé sur la table et b est posé sur a.
 
 \subsection*{Domain Definition}
     \begin{lstlisting}[language=Lisp]
-(define (domain air-cargo)
+(define (domain bw)
   (:requirements :strips)
-  (:predicates 
-    (In ?obj ?place)
-    (At ?obj ?place)
-    (Cargo ?obj)
-    (Plane ?obj)
-    (Airport ?obj))
+  (:constants red green blue)
+  (:predicates
+      (on ?x ?y)      ; object ?x is on ?object ?y
+      (on-table ?x)   ; ?x is directly on the table
+      (clear ?x)      ; ?x has nothing on it
+      (arm-empty)     ; robot isn't holding anything
+      (holding ?x))   ; robot is holding ?x
 
-  (:action LOAD
-    :parameters (?c ?p ?a)
-    :precondition (and (At ?c ?a) 
-                       (At ?p ?a)
-                       (Cargo ?c)
-                       (Plane ?p)
-                       (Airport ?a))
-    :effect (and (not (At ?c ?a)) (In ?c ?p)))
+  ;; les quatres actions classique de manipulation d'objet
+  (:action pick-up
+     :parameters (?ob1)
+     :precondition (and (clear ?ob1) (on-table ?ob1) (arm-empty))
+     :effect
+     (and (not (on-table ?ob1))
+  	     (not (clear ?ob1))
+	     (not (arm-empty))
+	     (holding ?ob1)))
 
-  (:action UNLOAD
-    :parameters (?c ?p ?a)
-    :precondition (and (In ?c ?p)
-                       (At ?p ?a)
-                       (Cargo ?c)
-                       (Plane ?p)
-                       (Airport ?a))
-    :effect (and (not (In ?c ?p)) (At ?c ?a)))
+  (:action put-down
+     :parameters (?ob)
+     :precondition (holding ?ob)
+     :effect
+     (and (not (holding ?ob))
+	   (clear ?ob)
+	   (arm-empty)
+	   (on-table ?ob)))
 
-  (:action FLY
-    :parameters (?p ?from ?to)
-    :precondition (and (At ?p ?from)
-                       (Plane ?p) 
-                       (Airport ?from)
-                       (Airport ?to))
-    :effect (and (not (At ?p ?from)) (At ?p ?to))))
+  (:action stack
+     :parameters (?sob ?sunderob)
+     :precondition (and (holding ?sob) (clear ?sunderob))
+     :effect
+     (and (not (holding ?sob))
+	   (not (clear ?sunderob))
+	   (clear ?sob)
+	   (arm-empty)
+	   (on ?sob ?sunderob)))
+
+  (:action unstack
+     :parameters (?sob ?sunderob)
+     :precondition (and (on ?sob ?sunderob) (clear ?sob) (arm-empty))
+     :effect
+     (and (holding ?sob)
+	   (clear ?sunderob)
+	   (not (clear ?sob))
+	   (not (arm-empty))
+	   (not (on ?sob ?sunderob))))
+)
     \end{lstlisting}
 
 \subsection*{Définition du problème}
     \begin{lstlisting}[language=Lisp]
-; PDDL instance problem for the Air cargo transport
-; Plane P1 is at SFO and plane P2 is at JFK.
-; Move cargo C1 from SFO to JFK
-; and cargo C2 from JFK to SFO.
-
-(define (problem ac_p0)
-
-  (:domain air-cargo)
-  
-  (:objects
-    C1 C2   ; cargo objects
-    P1 P2   ; plane objects
-    SFO JFK ; airports
-  )
-	
-  (:init
-    ; types
-    (Cargo C1) (Cargo C2)
-    (Plane P1) (Plane P2)
-    (Airport SFO) (Airport JFK)
-
-    ; locations
-    (At C1 SFO) (At C2 JFK)
-    (At P1 SFO) (At P2 JFK))
-
-  (:goal (and (At C1 JFK) (At C2 SFO))))
+(define (problem bw-simple)
+  (:domain bw)
+  (:objects a b )
+  (:init (clear a) (arm-empty) (on a b) (on-table b))
+  (:goal (and (on-table a) (clear b))))
     \end{lstlisting}
 
 
