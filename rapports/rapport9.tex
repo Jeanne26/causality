@@ -1,4 +1,3 @@
-% \documentclass{article}
 \documentclass[11pt]{extarticle}
 \usepackage{setspace}
 \onehalfspacing
@@ -44,23 +43,14 @@
 \newpage
 \setcounter{page}{1}
 
-\section{Introduction}
-
-Le raisonnement contrefactuel correspond à la capacité de se représenter ce qui aurait pu se passer si les choses avaient été différentes. Ce concept se trouve à l'intersection du domaine de la causalité et de l'explicabilité. En XAI (Explainable Artificial Intelligence), les explications contrefactuelles correspondent à proposer un changement minimal (selon différents critères possibles) qui permet de changer la sortie d'un système. Concernant la causalité, le raisonnement contrefactuel y tient une place centrale (notamment avec les traveaux de Halpern et Pearl), on cherche à identifier les facteurs déterminants d'une situation et à évaluer leur contribution dans la situation finale.
-
-Le travail proposé s'inscrit dans la continuité du cadre introduit dans \cite{sarmiento_formalising_2025} qui propose un formalisme général basé surdes systèmes à transitions d'état étiquetés (LTS) qui correspondent à des graphes orientés. Une trajectoire dans un LTS est entièrement déterminée par une politique déterministe qui associe à chaque état (sommet du graphe) un événement à exécuter (arête du graphe). L'objectif de ce travail est d'évaluer des contextes causaux contrefactuels, qui correspondent à des trajectoires alternatives à une trajectoire observée, selon deux axes: leur proximité à l'observation et leur vraisemblance. Sur la question de vraisemblance on souhaite dans ce travail introduire une forme d'acceptabilité des contrefactuelles relative à des normes prescriptive ou statistiques, pour cela les arêtes des graphes sont augmentées par un attribut de coût relatif à des normes, fourni par un expert.
-
-Pour répondre à cette problèmatique une fonction de coût modulaire est proposée, dont les composantes peuvent être adaptés en fonction de l'application et des contraintes d'un problème concret. Cette modularité s'appuie notamment sur des traveaux en sciences cognitives qui s'intéressent elles aussi au raisonnement contrefactuel. 
-
-Ce rapport est organisé de la façon suivante: dans un première partie  nous reprenons et adaptons les définitions et hypothèses formelles du cadre proposé par \cite{sarmiento_formalising_2025}. Puis nous introduisont la fonction de coût et sa modularité (choix des différentes composantes, opérateurs, évaluation normative...). Dans une seconde partie plus applicative, nous développons une pipeline pour des applications concrètes. La première étape corresponds à l'introduction d'un parser PDDL vers LTS afin de justifier la possibilité de travail dans le cadre formel introduit. Puis nous appliquons notre formule à un exemple concret qui permet d'illuster les différences introduites en fonction  de la configuration du coût.
-
+\input{intro.tex}
 
 
 
 \section{Définitions et hypothèses}\label{def}
-On définit dans un premier temps l'ensemble des objets nécessaire à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article AMAAS \cite{sarmiento_formalising_2025}, d'autres ont été légérement modifiées et certaines ont été rajoutées spécifiquement pour l'étude.
+On définit dans un premier temps l'ensemble des objets nécessaire à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article AMAAS \cite{sarmiento_formalising_2025}, d'autres ont été légèrement modifiées et certaines ont été rajoutées spécifiquement pour l'étude.
 \begin{itemize}
-    \item $\mathds{F}$: ensemble de fluents qui décrivent l’environnement
+    \item $\mathds{F}$ : ensemble de fluents qui décrivent l’environnement
     
     \item $\mathcal{F}$: ensemble des formules d'état, formules de logique classique construites sur $\mathds{F}$
     

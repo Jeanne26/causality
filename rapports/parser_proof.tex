@@ -3,45 +3,82 @@
 
 \section{Démonstrations des propriétés du parser}
 
-On souhaite démontrer les propriétés de correction et de terminaison du parser on introduit pour cela les notations suivantes:
+On souhaite démontrer les propriétés de correction et de terminaison du parser, on introduit pour cela les notations suivantes :
 
-Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un problème PDDL avec:
+Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un problème PDDL avec :
 \begin{itemize}
-    \item $\mathcal{O}$: l'ensemble des objets du problème
-    \item $\mathcal{A}$: l'ensemble des actions du problème avec pour tout $a\in \mathcal{A}$ la définition du tuple:  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
-    \item $Pred$: l'ensemble des prédicats déclarés dans le domaine de $\mathcal{P}$
-    \item $S_0$: l'ensemble des prédicats vérifiés dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
-    \item $\mathcal{G}$: formule de l'objectif construite sur $\mathds{F}(\mathcal{P})$, décrit l'ensemble des conditions qui doivent être respecté pour considérer un état comme final.
-    \item $\mathds{F}(\mathcal{P}) = \{ p(o_1,\dots,o_k) \mid p\in Pred, (o_1, \dots,o_k) \in \mathcal{O}^k \}$ (ensemble fini car $Pred$ et $\mathcal{O}$ sont finis)
+    \item $\mathcal{O}$ : l'ensemble des objets du problème
+    \item $Pred$ : l'ensemble des prédicats déclarés dans le domaine de $\mathcal{P}$
+    \item $\mathds{F}(\mathcal{P}) = \{ p(o_1,\dots,o_k) \mid p\in Pred, (o_1, \dots,o_k) \in \mathcal{O}^k \}$ (ensemble fini, car $Pred$ et $\mathcal{O}$ sont finis)
+    \item $\mathcal{A}$ : l'ensemble des actions du problème avec pour tout $a\in \mathcal{A}$ la définition du tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
+    et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$
     \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$
+    \item $S_0$: l'ensemble des prédicats vérifiés dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
+    \item $\mathcal{G} \in 2^{\mathds{F}(\mathcal{P})} $: l'ensemble des prédicats qui doivent être vérifiés dans les états terminaux.
 \end{itemize}
 
-On introduit $\langle \mathds{S}^*, \tau^*\rangle$ le LTS cible associé à $\mathcal{P}$ avec: 
-$$\mathds{S} = \{S  \mid S \in 2^{\mathds{F}(\mathcal{P})} \text{ accessible depuis }S_0\}$$
+On introduit $\langle \mathds{S}^*, \tau^*\rangle$ le LTS cible associé à $\mathcal{P}$ avec : 
+$$\mathds{S} = \{S  \mid S \in 2^{\mathds{F}(\mathcal{P})} \text{ tel qu'il existe un chemin dans le LTS entre } S_0 \text{ et }S\}$$
 \begin{equation*}
     \begin{aligned}
-    \tau^* &= \{(S, \{e\}, S') \mid S \in \mathbb{S}^*, e \in \mathbb{E}(\mathcal{P}), pre(e) \text{ satisfaite dans } S \text{ et } S' = (S \setminus eff^-(e)) \cup eff^+(e)\} \\
-    &\cup \{(S, \emptyset, S) \mid S \in \mathbb{S}^+, S \models \mathcal{G}\}
+    \tau^* &= \{(S, \{e\}, S') \mid S \in \mathbb{S}^*, \{e\} \in 2^{\mathds{E}(\mathcal{P})}, pre(e) \subseteq S \text{ et } S' = (S \setminus eff^-(e)) \cup eff^+(e)\} \\
+    &\cup \{(S, \emptyset, S) \mid S \in \mathbb{S}^*, \mathcal{G} \subseteq S\}
     \end{aligned}
 \end{equation*}
 
 et $T(\mathcal{P}) = \langle S, \tau \rangle $ avec $T$ notre processus (parser) et donc $T(\mathcal{P})$ le LTS obtenu en l'appliquant au problème PDDL $\mathcal{P}$.
 
 
+% \subsection{Correction v0}
+% Pour démontrer la correction on souhaite montrer dans un premier temps que le LTS obtenu par notre parser est correct. C'est à dire que $\mathds{S} \subseteq 2 ^{\mathds{F}(\mathcal{P})}$ et $\tau \subseteq \mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S} $. Par construction $S_0 \in \mathds{S}$ et $S_0\in 2 ^{\mathds{F}(\mathcal{P})}$. De plus pour tout $S\in \mathds{S}$ et pour tout $e \in \mathds{E}(\mathcal{P})$ si $pre(e)$ est vérifié dans $S$ on construit l'état résultant de l'application de $e$ dans $S$ de la façon suivante $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ et $eff^+(e),eff^-(e) \in 2 ^{\mathds{F}(\mathcal{P})}$ donc $S'\in 2 ^{\mathds{F}(\mathcal{P})}$. Et on ajoute $(S,\{e\}, S')$ à $\tau$. Cette procédure est la seule possible pour ajouter des états à $\mathds{S}$ donc $\mathds{S} \subseteq 2 ^{\mathds{F}(\mathcal{P})}$. 
+% Pour $\tau$ on ajoute uniquement en plus les arcs réflexifs qui appartiennent bien à $\mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S}$ donc on a bien $\tau \subseteq \mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S} $. On en conclut que $T(\mathcal{P})$ est un LTS correct.
+
+% Dans un second temps on souhaite montrer $T(\mathcal{P}) = \langle \mathds{S}, \tau \rangle$ avec $S = \mathds{S}^*$ et $\tau = \tau^*$.
+% \begin{itemize}
+%     \item $\mathds{S} \subseteq \mathds{S}^*$: pour tout $S\in \mathds{S}$, $S$ a été atteint par BFS depuis $S_0$ en aplique des événements dont les préconditions sont satisfaites donc $S$ est accessible depuis $S_0$ i.e $\mathds{S} \subseteq \mathds{S}^*$
+%     \item $\tau \subseteq \tau^*$: pour toutes transitions $(S, \{e\}, S')\in \tau$,  $pred(e)$ est vérifié dans $S$ et $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ donc $(S, \{e\}, S') \in \tau^*$ et les arêtes de la forme $(S, \emptyset, S)\in \tau$ sont ajoutées si et seulement si  $S \models \mathcal{G}$ donc $(S, \emptyset, S)\in \tau^*$.
+%     \item $\mathds{S} \supseteq \mathds{S}^* $ et $\tau \supseteq \tau^*$ par induction: 
+%     \begin{itemize}
+%         \item Base: $S_0 \in \mathds{S}$ car l'algorithme BFS est initialisé avec $S_0$
+%         \item Induction: Soit $S\in \mathds{S}^*$ accessible depuis $S_0$ par définition. Soit $e \in \mathds{E}(\mathcal{P})$ tel que $pre(e)$ est vérifié dans $S$ et soit $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ par définition $S'\in \mathds{S}^*$ et $(S,\{e\}, S') \in \tau*$. Lorsque le processus $T$ va traiter $S$ il va tester l'ensemble des événements et ajouter $(S,\{e\}, S')$ à $\tau$ et $S'$ à $\mathds{S}$ ainsi qu'à la liste d'états à traiter. On a bien $\mathds{S} \supseteq \mathds{S}^* $ et $\tau \supseteq \tau^*$ .
+%         \end{itemize}
+%  \end{itemize}
+
 \subsection{Correction}
-Pour démontrer la correction on souhaite montrer dans un premier temps que le LTS obtenu par notre parser est correct. C'est à dire que $\mathds{S} \subseteq 2 ^{\mathds{F}(\mathcal{P})}$ et $\tau \subseteq \mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S} $. Par construction $S_0 \in \mathds{S}$ et $S_0\in 2 ^{\mathds{F}(\mathcal{P})}$. De plus pour tout $S\in \mathds{S}$ et pour tout $e \in \mathds{E}(\mathcal{P})$ si $pre(e)$ est vérifié dans $S$ on construit l'état résultant de l'application de $e$ dans $S$ de la façon suivante $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ et $eff^+(e),eff^-(e) \in 2 ^{\mathds{F}(\mathcal{P})}$ donc $S'\in 2 ^{\mathds{F}(\mathcal{P})}$. Et on ajoute $(S,\{e\}, S')$ à $\tau$. Cette procédure est la seule possible pour ajouter des états à $\mathds{S}$ donc $\mathds{S} \subseteq 2 ^{\mathds{F}(\mathcal{P})}$. 
-Pour $\tau$ on ajoute uniquement en plus les arcs réflexifs qui appartiennent bien à $\mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S}$ donc on a bien $\tau \subseteq \mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S} $. On en conclut que $T(\mathcal{P})$ est un LTS correct.
+Afin de démontrer la correction de notre parser, nous allons montrer que $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^* \rangle$.
 
-Dans un second temps on souhaite montrer $T(\mathcal{P}) = \langle \mathds{S}, \tau \rangle$ avec $S = \mathds{S}^*$ et $\tau = \tau^*$.
+On montre dans un premier temps que $\mathds{S} = \mathds{S}^*$ :
 \begin{itemize}
-    \item $\mathds{S} \subseteq \mathds{S}^*$: pour tout $S\in \mathds{S}$, $S$ a été atteint par BFS depuis $S_0$ en aplique des événements dont les préconditions sont satisfaites donc $S$ est accessible depuis $S_0$ i.e $\mathds{S} \subseteq \mathds{S}^*$
-    \item $\tau \subseteq \tau^*$: pour toutes transitions $(S, \{e\}, S')\in \tau$,  $pred(e)$ est vérifié dans $S$ et $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ donc $(S, \{e\}, S') \in \tau^*$ et les arêtes de la forme $(S, \emptyset, S)\in \tau$ sont ajoutées si et seulement si  $S \models \mathcal{G}$ donc $(S, \emptyset, S)\in \tau^*$.
-    \item $\mathds{S} \supseteq \mathds{S}^* $ et $\tau \supseteq \tau^*$ par induction: 
+    \item $\mathds{S} \subseteq \mathds{S}^*$ : Pour tout $S$ appartenant $\mathcal{S}$, $S$ a été atteint par BFS depuis $S_0$ en appliquant des événements don les préconditions sont satisfaites donc il existe un chemin entre $S_0$ et $S$. On peut donc en conclure que $\mathds{S} \subseteq \mathds{S}^*$.
+    \item $\mathds{S}^* \subseteq \mathds{S}$ Par induction avec l'hypothèse : Si $S^* \in \mathds{S}^*$ et il existe $\{e\}\in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S^*$ alors $S'\in \mathds{S}^*$ avec $S' = (S \ eff^-(e)) \cup eff^+(e)$
     \begin{itemize}
-        \item Base: $S_0 \in \mathds{S}$ car l'algorithme BFS est initialisé avec $S_0$
-        \item Induction: Soit $S\in \mathds{S}^*$ accessible depuis $S_0$ par définition. Soit $e \in \mathds{E}(\mathcal{P})$ tel que $pre(e)$ est vérifié dans $S$ et soit $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ par définition $S'\in \mathds{S}^*$ et $(S,\{e\}, S') \in \tau*$. Lorsque le processus $T$ va traiter $S$ il va tester l'ensemble des événements et ajouter $(S,\{e\}, S')$ à $\tau$ et $S'$ à $\mathds{S}$ ainsi qu'à la liste d'états à traiter. On a bien $\mathds{S} \supseteq \mathds{S}^* $ et $\tau \supseteq \tau^*$ .
-        \end{itemize}
- \end{itemize}
+        \item Base : $S_0 \in \mathds{S}$, car l'algorithme BFS est initialisé avec $S_0$
+        \item  Induction : Soit $S \in \mathds{S}^* \cap \mathds{S}$  et de plus, il existe $\{e\} \in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S$. Montrons que $S'$ définit par  $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ appartenant par hypothèse à $\mathds{S}^*$ appartient aussi à $\mathds{S}$. Lorsque le processus $T$ traite $S$ il teste l'ensemble des événements possible pour tenter de les appliquer dans $S$. L'événement  $\{e\}$ est applicable dans $S$ donc $T$ va construire l'état $(S \setminus eff^-(e)) \cup eff^+(e) = S'$ et va l'ajouter à $\mathds{S}$.
+    \end{itemize}
+    On a donc montré par induction que $\mathds{S}^* \subseteq \mathds{S}$
+\end{itemize}
+On peut en conclure que $\mathds{S}^* = \mathds{S}$. Montrons maintenant que $\tau = \tau^*$.
 
+Comme $\mathds{S}^* = \mathds{S}$ on peut réécrire $\tau^*$ de la façon suivante :
+
+
+\begin{equation*}
+    \begin{aligned}
+    \tau^* &= \{(S, \{e\}, S') \mid S \in \mathbb{S}, \{e\} \in 2^{\mathds{E}(\mathcal{P})}, pre(e) \subseteq S \text{ et } S' = (S \setminus eff^-(e)) \cup eff^+(e)\} \\
+    &\cup \{(S, \emptyset, S) \mid S \in \mathds{S}, \mathcal{G} \subseteq S\}
+    \end{aligned}
+\end{equation*}
+
+
+Pour construire $\tau$ le processus $T$, pour tout $S,S'\in \mathds{S}$ tel qu'il existe $\{e\} \in 2^{\mathds{E}(\mathcal{P})}$ et $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ ajoute la transition $(S,\{e\}, S')$ à $\tau$. De plus pour tout $S\in \mathds{S}$ tel que $\mathcal{G} \subseteq S$, $T$ ajoute $(S,\{e\}, S')$ à $\tau$. Formellement, on a :
+
+\begin{equation*}
+    \begin{aligned}
+    \tau &= \{(S, \{e\}, S') \mid S \in \mathbb{S}, \{e\} \in 2^{\mathds{E}(\mathcal{P})}, pre(e) \subseteq S \text{ et } S' = (S \setminus eff^-(e)) \cup eff^+(e)\} \\
+    &\cup \{(S, \emptyset, S) \mid S \in \mathds{S}, \mathcal{G} \subseteq S\} = \tau^*
+    \end{aligned}
+\end{equation*}
+
+On a montré que $T(\mathds{P}) = \langle \mathds{S}^*, \tau^*\rangle$ donc notre algorithme est correct.
 \subsection{Terminaison}
-Le processus $T$ est basé sur un algorithme BFS donc l'espace d'exploration est fini et borné par le nombre d'états possible égal à $2^{\mid \mathds{F}(\mathcal{P}) \mid}$. Les états ne sont traité qu'une fois avec l'usage de la liste "visited".
+Le processus $T$ est basé sur un algorithme BFS dont l'espace d'exploration est fini et borné par le nombre d'états possible égal à $2^{\mid \mathds{F}(\mathcal{P}) \mid}$.
