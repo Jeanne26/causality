@@ -1,0 +1,44 @@
+
+\section{Définitions et hypothèses}\label{def}
+On définit dans un premier temps l'ensemble des objets nécessaire à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article AMAAS \cite{sarmiento_formalising_2025}, d'autres ont été légèrement modifiées et certaines ont été rajoutées spécifiquement pour l'étude.
+\begin{itemize}
+    \item $\mathds{F}$ : ensemble de fluents qui décrivent l’environnement
+    \item $\mathcal{F}$ : ensemble des formules d'état, formules de logique classique construites sur $\mathds{F}$
+    \item $\mathds{E}$ : ensemble des variables qui décrivent les transitions, "ground events" qui modifient les fluents
+    \item $\mathds{S} \subseteq 2^{\mathds{F}}$ : ensemble de tous les états possibles du monde (exclusion des états incohérents) 
+    \item $\tau \subseteq \mathds{S} \times 2^{\mathds{E}} \times \mathds{S}$ : ensemble des relations de transition. Pour chaque état indique les différents ensembles d'événements simultanés qui pourraient se produire ainsi que les états résultants
+    \item $\langle\mathds{S}, \tau\rangle$ : Labelled Transition System, graphe dirigé avec $\mathds{S}$ les nœuds du graphe et $\tau$ les arcs du graphe. nb : définition conventionnelle d'un graphe (nœuds + arcs), cette définition permet aussi de garder l'information d'états qui n'ont aucune transition entrante ou sortante. Soit $pre: \mathds{E}\to \mathcal{F}$, la fonction qui à chaque événement associe des préconditions, on considère dans notre contexte que tous les LTS sont corrects relativement à cette fonction.
+    
+    \item Politique $\pi$ : $\mathds{S} \to 2^{\mathds{E}}$ relativement à un LTS donné. À la différence de l'article AAMAS les événements ne dépendent que d'un état et non d'un couple (état, temps). On considère dans notre cadre que les états contiennent l'ensemble des informations nécessaires ce qui peut inclure des informations implicites sur le temps.
+
+    \item $\Pi_\tau$ l'ensemble de toutes les politiques possibles relativement à un LTS $\langle\mathds{S},\tau\rangle$
+    \item Politique correcte $\pi$ relative à un LTS : $\forall S \in \mathds{S} \quad \exists S'\in \mathds{S}, (S, \pi(S),S')\in \tau$
+
+    
+
+
+    \item Contexte causal : $\chi = (\pi, S_0,\tau)$ avec $\pi \in \Pi_\tau$ une politique, $S_0\in \mathds{S}$ un état de départ et $\tau$ un ensemble de relations de transitions décrivant un LTS. 
+    
+    \item Hypothèse cas déterministe : Soit un LTS défini par $\langle\mathds{S},\tau\rangle$ est dit déterministe si : 
+        \begin{equation*}
+            \forall S,S'\in \mathds{S}, \forall E\in 2^{\mathds{E}}, \quad (S,E,S')\in \tau \implies \nexists S'' \in \mathds{S}, \quad (S,E,S'')\in \tau
+        \end{equation*}
+    \item $\mathds{A} \subseteq \mathds{S}$: ensemble des états terminaux d'un LTS $\langle\mathds{S},\tau\rangle$
+        \begin{equation*}
+        \begin{aligned}
+            \mathds{A} &= \{ S \mid S\in \mathds{S},\ (S,\emptyset,S) \in \tau \} \\
+                    &\quad \text{et} \quad \forall S \notin \mathds{A},\ \forall E \in 2^{\mathds{E}},\ (S,E,S)\notin \tau
+        \end{aligned}
+        \end{equation*}
+    \item $\mathds{T}$: ensemble des pas de temps
+    
+    \item $S^\chi: \mathds{T}\to \mathds{S}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'état dans lequel on se trouve en suivant la politique $\pi$, dans $\tau$ depuis $S_0$.
+
+    \item $E^\chi: \mathds{T}\to \mathds{S}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'événement qui a lieu en suivant la politique $\pi$, dans $\tau$ depuis $S_0$
+    
+    \item $\sigma^\chi$ : avec $\chi = (\pi,S_0,\tau)$, la trace complète (états, événements), obtenue dans le contexte causal $\chi$, de la forme : $[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n,E_n,S_n,E_n\dots] $. Une fois un état terminal atteint, on observe une boucle qui amène à une trace infinie. On simplifie cette trace pour qu'elle soit de longueur finie. Soit $n$ tel que $S_n\in \mathds{A}$ : la trace d'origine devient $\sigma^\chi=[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n]$. On notera $\sigma^{\chi}_{|state}$ la trace ne contenant que les états et, $\sigma^{\chi}_{|event}$ la trace ne contenant que les événements.
+    
+
+    \item $expert\_judge_\tau: \mathds{S} \times 2 ^{\mathds{E}}\to \lbrack 0, 1\rbrack$ fonction d'évaluation experte, définie partiellement sur l'ensemble des couples $(S,E)$ tel que $\exists S'\in\mathds{S},(S,E,S')\in \tau$. Cette fonction attribue à chaque paire une valeur comprise entre 0 et 1 relative à une norme (statistique ou prescriptive). Ces valeurs sont fixées de manière subjective.
+
+\end{itemize}
