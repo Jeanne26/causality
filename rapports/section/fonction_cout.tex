@@ -1,0 +1,424 @@
+\section{Évaluation d'un contexte causal contrefactuel}
+
+
+Pour évaluer un contexte causal contrefactuel relativement à un contexte causal observé, on procède en deux temps. Dans un premier temps, on attribue un coût au contexte causal, ce dernier permet d'évaluer la proximité à l'observation, ainsi que la plausibilité du contexte. Le coût permet aussi d'agir comme un filtre à priori sur les contrefactuels non valides relativement au LTS. Une fois le coût calculé, on applique un critère de validité (au sens XAI), qui permet de vérifier que les sorties obtenues, en appliquant respectivement les deux politiques, à partir de l'état de départ dans le LTS, sont différentes. Ce critère agit comme un filtre à posteriori sur les contextes causaux contrefactuels.
+
+
+
+\subsection{Fonction de coût}
+
+La fonction de coût doit permettre un compromis entre l'évaluation :
+\begin{itemize}
+    \item  de la distance du contexte causal contrefactuel par rapport au causal setting  observé. L'intuition derrière ce terme correspond à l'idée qu'un bon contrefactuel doit être relativement proche du contexte causal observé pour être pertinent
+    \item de la plausibilité du contexte causal. La plausibilité ou encore le réalisme correspond ici à un respect relatif d'une norme (statistique ou prescriptive). 
+
+\end{itemize}
+
+La fonction de coût intègre deux termes supplémentaires qui permettent d'exclure les contrefactuels non valides relativement au LTS (politiques non correctes), ainsi que les politiques qui ne divergent de la politique observée que sur des états non présents dans la trace d'états observée.
+
+\begin{equation}\label{cout}
+    \textit{Coût}_\tau(\chi,\chi')= \lambda_1  d\_obs(\sigma^\chi_{|state},\sigma^{\chi'}_{|state}) + \lambda_2 v(\chi', expert\_{judge}_\tau) + divergence(\chi,\chi') + correct(\chi') 
+\end{equation}
+
+Avec :
+\begin{itemize}
+    \item $\chi= (\pi,S_0,\tau)$ le contexte causal observé et $\chi' = (\pi',S_0',\tau)$ le contexte causal contrefactuel que l'on évalue. 
+    \item $d\_obs$ attribue un coût relatif à la distance entre le contexte causal contrefactuel par rapport à celui observé. On utilise la distance de Levenshtein, avec variation des poids en fonction de l'intervention effectuée (suppression, insertion, substitution).
+    \item $v$ la fonction de vraisemblance du contexte causal contrefactuel par rapport à un jugement expert.
+    \item La fonction $divergence$ permet d'exclure les contextes causaux contrefactuels si leur politique associée ne diverge de celle observée que dans des états non présents dans la trace d'états du contexte causal observé. 
+    \begin{equation}
+        divergence(\chi,\chi') = \begin{cases}
+             & 0 \quad \text{si} \quad \exists t<len(\sigma^{\chi}_{|state}) \quad \pi(S^\chi(t))\neq \pi'(S^{\chi}(t))
+             \\
+             &+\infty \quad \text{sinon}
+        \end{cases}
+    \end{equation}
+    Voir exemple \ref{ex_div}
+
+    \item La fonction $correct$ permet d'exclure les contextes causaux contrefactuels dont la politique n'est pas correcte : 
+    \begin{equation}
+        correct(\chi') = \begin{cases}
+            & 0 \quad \textit{si $\pi'$ correcte relativement au LTS associé à $\tau$} \\
+            & +\infty \quad sinon
+        \end{cases}
+    \end{equation}
+    Voir exemple \ref{ex_corr}.
+
+\end{itemize}
+
+\subsection{Distance à l'observation : coûts des opérations}
+
+Des travaux en sciences cognitives ont montré l'impact des notions de propensité (vraisemblance d'obtenir un effet sachant qu'un événement se produit) et de mutabilité (facilité avec laquelle on peut imaginer qu'un événement ait été différent) des événements lors du processus de raisonnement contrefactuel pour la sélection causale (voir \ref{mut_prop}). Notre cadre est pour l'instant déterministe donc nous laissons de côté la notion de propensité. Mais il reste intéressant d'intégrer la mutabilité, notamment pour le calcul de distance à l'observation. 
+
+
+On souhaite modifier le coût de l'opération de substitution d'un état dans la distance de Levenshtein, c'est-à-dire que lorsque l'on cherche à déterminer le coût de transformation de la trace observée vers la trace contrefactuelle, on souhaite que la substitution d'un événement très peu mutable ait un coût de substitution plus élevé que pour un événement très mutable. Pour cela la première chose à faire est de définir formellement la notion de mutabilité dans notre framework. 
+
+Soit un événement $E$ qui se produit dans un état $S$ d'un LTS défini par $<\mathds{S},\tau>$ de la façon suivante :
+\begin{equation}
+    mutabilite(E,S) =\#\{(S,E',S')\in \tau\}.
+\end{equation}
+
+La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ d'un événement. Pour un état donné, s'il possède un grand nombre d'arcs sortants, on considère ses événements possibles comme très mutables (on peut facilement imaginer qu'un autre événement ait eu lieu).
+
+La distance de Levenshtein est calculée non pas sur les événements, mais sur les états, on adapte donc cette définition. Le coût de substitution d'un état de la trace observé par un autre état correspond à l'inverse de la mutabilité de l'état le précédent dans la trace observée. Et la mutabilité d'un état correspond à son nombre d'arcs sortants.
+
+
+\begin{figure}[h!]
+    \centering
+    \[
+        \xymatrix @R=0.3em @C=5em{
+                & *++[o][F-]{B} \ar[ddr] \ar@[red]@{->}@< -4pt>[ddr] \ar@[blue]@{->}@< +4pt>[rdd]& & *++[o][F-]{E} \ar[rdd] \ar@[red]@{->}@< +4pt>[rdd]& \\
+                & & & *++[o][F-]{F} & \\
+            *++[o][F-]{A} \ar[ruu] \ar@[blue]@{->}@< +4pt>[ruu] \ar[rdd] \ar@[green]@{->}@< -4pt>[ddr] \ar@[red]@{->}@< -4pt>[ruu] & & *++[o][F-]{D} \ar[ruu] \ar[ru] \ar[rd] \ar@[blue]@{->}@< +4pt>[rd] \ar@[green]@{->}@< -4pt>[dr] \ar[rdd] \ar@[red]@{->}@< +4pt>[ruu]& & *++[o][F-]{I} \\
+                & & & *++[o][F-]{G} \ar[ru] \ar@[blue]@{->}@< +4pt>[ru] \ar@[green]@{->}@< -4pt>[ru]& \\
+                & *++[o][F-]{C} \ar[ruu] \ar@[green]@{->}@< -4pt>[ruu] & & *++[o][F-]{H} &
+        }
+    \]
+    \captionsetup{width = 0.8\textwidth}
+
+    \caption{Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $\frac{1}{4}$ et celle entre la trace bleue et la trace verte est de $\frac{1}{2}$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}
+    \label{cout_sub}
+\end{figure}
+
+On observe dans l'exemple \ref{cout_sub} l'intérêt de modifier le coût de substitution en fonction de la mutabilité s'il avait été fixé à un la distance à l'observation pour les traces rouge et bleue aurait été la même. Mais on considère maintenant plus proche une trace contrefactuelle si elle diffère en des états très mutables de la trace observée.
+
+Cette définition et intégration de la mutabilité dans la distance à l'observation reste une première piste et peut présenter de potentielles limitations. En effet, cette définition dépend de la modélisation du monde (le LTS) que nous choisissons de ne pas remettre en question. De plus la question posée par ce nouveau coût de substitution est : "à quel point il est coûteux de remplacer l'événement observé" alors que l'on pourrait plutôt souhaiter répondre à la question "à quel point il est coûteux de remplacer l'événement observé par l'événement spécifique du scénario contrefactuel".
+
+
+ \subsection{Vraisemblance du contrefactuel}
+ Pour évaluer la vraisemblance (fonction $v$) du contexte causal contrefactuel, on se base sur l'évaluation extérieure d'un juge expert, comme définie dans la partie \ref{def}. Cette évaluation permet d'attribuer un score compris entre 0 et 1 à chaque couple état/événement d'un LTS. Un score d'un correspond à un respect total de la norme, un score de 0 à un non-respect total de la norme. 
+ À partir des scores, on évalue la vraisemblance du contrefactuel soit en l'exploitant directement, soit en construisant à partir de ces derniers une politique optimale.
+ 
+ \subsubsection{Juge expert}
+Différentes méthodes sont applicables pour attribuer les scores. On peut contraindre, par exemple, pour un état donné, à avoir une distribution de probabilité ou de possibilité sur l'ensemble des événements possibles depuis cet état.
+ \begin{enumerate}
+    \item Distribution de probabilité : L'expert donne une distribution de probabilité sur les arcs sortant d'un état, deux possibilités de construction :
+        \begin{itemize}
+            \item À partir d'un classement avec softmax sur l'inverse des positions : simple, mais on perd en expressivité, les écarts entre les événements sont fixes relativement au nombre d'arcs sortants du sommet qui représente un état. De plus cela demande d'avoir un ordre sur les événements ce qui n'est pas toujours souhaitable si on a des événements normativement équivalents.
+            \item L'expert donne directement une distribution de probabilités, cette méthode a l'avantage de limiter la perte d'expressivité et d'autoriser des scores égaux pour deux événements sortant d'un même état.
+            \item Une distribution de probabilité peut fortement pénaliser des événements issus d'un état avec de nombreux arcs sortant comme on l'observe sur le LTS ci-dessous :
+        \end{itemize}
+
+        \begin{figure}[h!]\label{graph_prob}
+            \centering
+            \[
+                \xymatrix @R=0.1em@C=5em {
+                    & & *++[o][F-]{D} \ar[r]^{\dots} &
+                \\ & & *++[o][F-]{E} \ar[r]^{\dots}&
+                \\ & *++[o][F-]{B} \ar[ruu]^{0.25}\ar[ru]^{0.25}\ar[r]^{0.25}\ar[rd]^{0.25}& *++[o][F-]{B}&
+                \\ & & *++[o][F-]{G} \ar[r]^{\dots}&
+                \\  *++[o][F-]{A} \ar[ruu]^{0.5} \ar[rd]^{0.5}& & &
+                \\ & *++[o][F-]{C}\ar[r]^{0.5} \ar[rd]^{0.5}&*++[o][F-]{H} \ar[r]^{\dots} &
+                \\ & & *++[o][F-]{I} \ar[r]^{\dots}& 
+                }            
+            \]
+            \captionsetup{width = 0.6\textwidth}
+            \caption{Exemple de LTS contraint à des distributions de probabilités. Pour les états B et C chaque événement sortant est normativement équivalent aux autres. Les arcs sortant de l'état B sont pénalisés par leur nombre.}
+        \end{figure}
+
+    \item Distribution de possibilité : l'expert attribue une distribution de possibilité sur l'ensemble des arcs sortant d'un état donné. On note qu'une distribution de possibilité impose que le score maximal parmi tous les scores des événements sortant d'un état soit de 1.
+    \item Valeurs libres : l'expert juge indépendamment chaque événement possible en attribuant une valeur entre 0 et 1. Avantage : pas de contrainte sur la somme des scores ou encore sur leur valeur maximale. Désavantage : interprétation et choix des valeurs potentiellement plus complexe.  
+        
+\end{enumerate}
+ \subsubsection{Construction d'une politique optimale à partir de l'expert}
+ Pour évaluer la vraisemblance d'un contexte causal contrefactuel à partir d'une évaluation experte, on peut premièrement construire une politique optimale vis-à-vis de l'évaluation puis dans un second temps comparer nos deux politiques (optimale et contrefactuelle). La construction de politiques optimales peut être contrainte selon l'application, en fonction d'une heuristique, en prenant en compte le coût de calcul de la construction, etc. Les politiques optimales dépendent uniquement d'un LTS et de l'évaluation d'un juge expert, elles sont indépendantes des contextes causaux contrefactuels qui sont évalués.
+ \begin{enumerate}
+     \item Politique optimale sans planification : pour chaque état cette politique indique l'événement qui maximise l'évaluation de l'expert à un horizon temporel d'un seul pas de temps.  La fonction $\pi_\tau^{opt}\in \Pi_\tau$ est définie par :
+     \begin{equation}\label{pi_instan}
+            \forall S\in \mathds{S} \quad \pi^{opt}_\tau(S) = \underset{E}{\argmax} (expert\_{judge}_\tau(S,E))
+     \end{equation}
+     Cette politique a pour avantage sa simplicité de construction, d'interprétation ainsi que son coût de calcul. Dans certains cas, elle possède tout de même certaines limitations comme on l'observe dans l'exemple ci-dessous :
+
+     \begin{figure}[h!]
+            \[
+                \xymatrix @R=0.1em{
+                    & &  *++[o][F-]{S_3}\ar@(r,u)[]_{\emptyset} &
+                \\  & *++[o][F-]{S_1} \ar@[red][ru]_{a: 0.2} \ar[rd]_{b: 0.2}&     
+                \\  & & *++[o][F-]{S_4}\ar@(r,u)[]_{\emptyset} &
+                \\  *++[o][F-]{S_0} \ar@[red][ruu]_{a: 0.7} \ar@[green][rdd]_{b: 0.4}& &   
+                \\  & & *++[o][F-]{S_5} \ar@(r,u)[]_{\emptyset} &   
+                \\  & *++[o][F-]{S_2} \ar[ru]_{a: 0.8} \ar@[green][rd]_{b: 0.9}&     
+                \\  & & *++[o][F-]{S_6}\ar@(r,u)[]_{\emptyset} &
+                }
+            \]
+            \captionsetup{width=0.8\textwidth}
+         \centering
+            \caption{Exemple de LTS évalué par un expert qui représente un cas limite pour une politique sans planification. Étiquetage des arcs du graphe de la forme "événement:score"}
+         \label{fig:instant_cas_lim}
+     \end{figure}
+     La politique optimale sans planification associée au LTS de la Figure \ref{fig:instant_cas_lim} corresponds à : 
+     \begin{equation}
+        \begin{aligned}
+            &\pi_\tau^{opt1}(S_0)=a,\quad \pi_\tau^{opt1}(S_1)=a,\quad \pi_\tau^{opt1}(S_2)=b,\\
+            & \forall i\in[3,4,5,6]\quad  \pi^{opt1}_\tau(S_i)=\emptyset
+        \end{aligned}
+     \end{equation}
+
+    Si on fixe l'état de départ à $S_0$ on obtient, en suivant la politique optimale, la trace : $[S_0, a, S_1,a,S_3]$ qui correspond au chemin rouge. La moyenne arithmétique des scores des événements de cette trace vaut 0.45 (le  choix de la moyenne arithmétique est discutable). Cependant, on peut considérer dans ce cas que la bonne décision à prendre, à partir de l'état $S_0$, en connaissant le LTS et les scores qui y sont associés est l'événement $b$. En effet, on obtient la trace $[S_0,b,S_2,b,S_6]$, correspondant au chemin vert et qui a une moyenne arithmétique sur les scores des événements de la trace de 0.65. 
+    
+    De cet exemple, on tire deux observations. La politique optimale sans planification ne tire pas parti de la connaissance totale du LTS et des scores associés aux événements. Deuxièmement, on note que la politique optimale n'est pas unique. En effet, un choix arbitraire a été effectué en $S_1$ pour le choix de l'événement $a$. Dans les cas où plusieurs événements maximisent le score, on peut appliquer une seconde heuristique ou choisir aléatoirement.
+     
+     \item Politique optimale avec planification : on peut généraliser la définition \ref{pi_instan} à un horizon temporel $n$. Pour cela, dans chaque état, on applique un algorithme du plus court chemin dans un graphe pondéré (par exemple A*) et on sélectionne le premier événement de ce chemin. Voir \ref{astar} pour plus de détail sur la construction de cette politique. Ce type de politique optimale permet de prendre en compte la connaissance totale du LTS et en fonction de l'algorithme de plus court chemin, on peut limiter l'augmentation du coût de construction de la politique. Une telle politique permet de mieux gérer les cas du même type que la Figure \ref{fig:instant_cas_lim}. On obtient, par exemple pour le LTS de la figure \ref{fig:instant_cas_lim} une politique de la forme :
+     \begin{equation}
+         \pi_\tau^{opt2}(S_0)=b,\quad \pi_\tau^{opt2}(S_1)=a,\quad \pi_\tau^{opt2}(S_2)=b,\quad \forall i\in[3,4,5,6]\quad  \pi^{opt2}_\tau(S_i)=\emptyset
+     \end{equation}
+     Comme pour les politiques optimales sans planification, il n'y a pas unicité du résultat. Un traitement spécifique est nécessaire pour les états qui possèdent plusieurs événements qui maximise le score.
+ \end{enumerate}
+
+\subsubsection{Évaluation de la vraisemblance à partir de la politique optimale}
+
+À partir d'une politique optimale donnée, on peut définir un coût de vraisemblance entre cette dernière et la politique associé à un contexte causal contrefactuel. On définit une fonction de distance entre deux politiques sur une trace d'état : 
+\begin{equation}
+dist\_politiques(\pi,\pi',\sigma_{|state}) =\frac{ \#\{\pi(S) \neq \pi'(S)| S\in \sigma_{|state}\}}{\#\{S\in \sigma_{|state}\}}.    
+\end{equation}
+
+On peut utiliser cette distance pour évaluer la vraisemblance entre une politique associée à un contexte causal contrefactuel $\chi' = (\pi',S_0,\tau)$ et une politique optimale $\pi^{opt}_\tau$ construite à partir d'une évaluation experte $expert\_judge_\tau$ :
+\begin{equation}
+    v(\chi',expert\_judge_\tau)= dist\_politiques(\pi',\pi^{opt}_\tau, \sigma^{\chi'}_{|state})
+\end{equation}
+On compte le nombre de fois où la politique contrefactuelle n'a pas effectué un choix optimal sur le chemin (la trace) obtenue dans son contexte causal.
+\newline
+
+Exemple : Soit le LTS de la Figure \ref{fig:instant_cas_lim} $\langle\mathds{S},\tau\rangle$ on définit un contexte causal $\chi'=(\pi',S_0,\tau)$ avec :
+$$\pi'(S_0)= b,\quad \pi'(S_1) = b,\quad \pi'(S_2)=a,\quad \forall i\in[3,4,5,6]\quad  \pi'(S_i)=\emptyset$$
+On obtient la trace $\sigma^{\chi'}=[S_0,b,S_2,a,S_5]$ et donc $\sigma_{|state}^{\chi'}=[S_0,S_2,S_5]$
+\begin{itemize}
+    \item Coût de vraisemblance avec $\pi^{opt1}_\tau$ :
+    \begin{equation*}
+        dist\_politiques(\pi',\pi^{opt1}_\tau, \sigma^{\chi'}_{|state}) = \frac{\#{\{S_0,S_2\}}}{\#\{S_0,S_2,S_5\}} = \frac{2}{3}
+    \end{equation*}
+    
+    \item Coût de vraisemblance avec $\pi^{opt2}_\tau$ :
+    \begin{equation*}
+        dist\_politiques(\pi',\pi^{opt2}_\tau, \sigma^{\chi'}_{|state}) = \frac{\#{\{S_2\}}}{\#\{S_0,S_2,S_5\}} = \frac{1}{3}
+    \end{equation*}
+\end{itemize}
+On observe que le résultat du coût de vraisemblance dépends de la politique optimale même si l'évaluation experte sur lesquelles $\pi^{opt1}_\tau$ et $\pi^{opt2}_\tau$ sont construites est la même.
+
+\subsubsection{Exploitation directe de l'expert}
+Une autre approche possible pour évaluer la vraisemblance d'un contexte causal contrefactuel est de directement exploiter l'évaluation experte, en agrégeant les scores des événements associés à la trace du contexte causal contrefactuel. Pour cela différents opérateurs d'agrégation peuvent être utilisés en fonction de l'application.
+
+
+
+Soit $Agg$ un opérateur d'agrégation, un LTS $\langle \mathds{S},\tau \rangle$, un contexte causal contrefactuel $\chi'= (\pi',S_0,\tau)$ avec $\sigma^{\chi'}= [S^{\chi'}(0),E^{\chi'}(0),\dots,E^{\chi'}(n-1),S^{\chi'}(n)]$ et $expert\_judge_\tau$ une évaluation experte sur le LTS, la fonction $v$ de l'équation \ref{cout} est de la forme :
+
+\begin{equation}
+    \begin{aligned}
+        &v(\chi',expert\_judge_\tau)= 1 - Agg(s_0, \dots, s_{n-1}) \\
+        & \forall i < len(\sigma^{\chi'}_{|state}) \quad s_i= expert\_judge(S^{\chi'}(i),E^{\chi'}(i))
+    \end{aligned}
+\end{equation}\label{exploit_direct}
+
+
+
+Différentes propriétés peuvent être désirables pour les opérateurs d'agrégation : une invariance à la longueur de la liste des scores (implicitement du chemin), une pénalisation en fonction du temps, des possibilités de compensation, etc.
+
+
+ \paragraph{Opérateur de moyenne géométrique} 
+ Soit $\epsilon>0$ qui permet de ne pas avoir à restreindre l'évaluation à des valeurs strictement supérieures à 0.
+    \begin{equation}
+            agg_{geo}(s_0,s_1,\dots,s_{n-1}) =\sqrt[n]{\prod_{i=0}^{n-1} \max (\epsilon,s_i)} 
+            % agg_{geo}(s_0,s_1,\dots,s_{n-1}) =\exp\left( \frac{1}{N} \sum_{i<n} \log(\max(s_i,\epsilon ))\right) 
+    \end{equation}
+    Cet opérateur permet une plus grande expressivité que la moyenne arithmétique. Il est plus sensible à une variance importante. Même s'il reste un opérateur de compensations, pour "rattraper" un score faible, la compensation doit être plus forte qu'avec une moyenne arithmétique. Par exemple :
+    \begin{itemize}
+        \item $1 - agg_{geo}([0.5,0.5,0.5]) = 0.5$
+        \item$ 1 - agg_{geo}([0.5,0.3,0.7]) = 0.53$ la moyenne arithmétique est bien de 0.5 mais, l'opérateur pénalise le faible score de 0.3
+        \item $1 - agg_{geo}([0.5,0.3,0.8]) = 0.5$ la moyenne arithmétique est de 0.53.
+        
+    \end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \[
+        \xymatrix @R=0.1em@C=5em {
+         & *++[o][F-]{B} \ar[r]^{b:0.4} & *++[o][F-]{C} \\
+          *++[o][F-]{A} \ar[ru]^{a:0.4} \ar[rd]_{c:0.1} \\
+        & *++[o][F-]{D} \ar[r]_{d:0.9} & *++[o][F-]{E}
+        }
+        \]
+        \caption{LTS}
+        \label{fig:lts_geo}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{tabular}{ccc}
+            chemin & 1 - moyenne & 1 - $agg_{geo}$ \\
+            \hline
+            ABC & 0.6 & \textbf{0.6} \\
+            ADE & \textbf{0.5 }& 0.7 \\
+        \end{tabular}
+        \caption{Coûts}
+        % \label{fig:Coûts}
+    \end{subfigure}
+    \caption{Exemple opérateur géométrique}
+    \label{fig:geo}
+\end{figure}
+On observe sur la figure \ref{fig:geo} que le coût associé au chemin [ABC] est plus faible que celui du chemin [ADE] même si ce dernier possède une moyenne arithmétique plus élevée. En effet, la variance plus importante de [ADE] est pénalisée en utilisant l'opérateur géométrique. On peut imaginer des situations simples où l'on préfère faire une action neutre comme mettre du sirop dans un verre d'eau plutôt que de mettre du poison puis un antidote avant de le servir (en utilisant une norme relative au bien et au mal).
+    
+\paragraph{Opérateur gamma (temporel)}
+Soit $\gamma\in ]0,1]$, $\Gamma = \frac{1-\gamma^{N}}{1-\gamma}$ ($\Gamma =N $ si $\gamma=1$)
+    \begin{equation}
+        agg_{\gamma}(s_0,s_1,\dots,s_{n-1}) = \frac{ \sum_{i=0}^{N-1}\gamma^is_i}{\Gamma}
+    \end{equation}
+    Cet opérateur permet d'accorder une grande importance aux événements au début d'une trace puis de manière exponentiellement décroissante à ceux qui arrivent à un temps avancé. On peut facilement définir de manière symétrique l'agrégateur $agg_{\gamma \text{ }late}$:
+    \begin{equation}
+        agg_{\gamma \text{ }late}(s_0,s_1,\dots,s_{n-1}) = \frac{ \sum_{i=0}^{N-1}\gamma^{N-1-i}s_i}{\Gamma}        
+    \end{equation}
+    
+    Ce dernier accorde plus d'importance aux scores en fin de traces qu'à ceux du début (voir Figure \ref{fig:gamma}). La valeur du $\gamma$ possède un rôle essentiel pour cet opérateur et doit être fixée relativement à la longueur de la liste plus la liste des scores est longue plus $\gamma$ doit être proche de 1 et inversement pour des courtes listes, il est préférable de fixer $\gamma$ à des valeurs proches de 0.
+    
+    
+    % \begin{figure}[h!]
+    %     \centering
+    %     \includegraphics[width=0.7\linewidth]{gammas_opp.png}
+    %     \caption{Évolution des scores des agrégateurs gamma et gamma late en fonction de la position d'un événement de faible score dans la liste des scores. La liste des scores possède 100 éléments qui ont tous une valeur de 1. L'élément de faible valeur que l'on fait progressivement avancer dans la liste a une valeur de 0.1, $\gamma=0.9$}
+    %     \label{fig:placeholder}
+    % \end{figure}
+    On peut utiliser l'opérateur gamma si l'on souhaite pénaliser des événements avec un faible score en début de trace. Par exemple, si on utilise une norme statistique, on souhaite exclure les chemins qui dès les premiers temps possèdent un événement statistiquement peu probable même si après tous les événements qui en découlent ont une forte possibilité de se produire. 
+
+
+    \begin{figure}[h!]
+        \centering
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \[
+            \xymatrix @R=0.1em@C=5em {
+             & *++[o][F-]{B} \ar[r]^{b:0.9} & *++[o][F-]{C} \ar[r]^{c:0.9} & *++[o][F-]{D}  \\
+              *++[o][F-]{A} \ar[ru]^{a:0.1} \ar[rd]_{d:0.9} \\
+            & *++[o][F-]{E} \ar[r]_{e:0.9} & *++[o][F-]{F} \ar[r]_{f:0.1}  & *++[o][F-]{G}
+            }
+            \]
+            \caption{LTS}
+            \label{fig:lts_gamma}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \begin{tabular}{cccc}
+                chemin & 1 - moyenne & 1 - $agg_{\gamma}$ & 1- $agg_{\gamma late}$  \\
+                \hline
+                ABCD & \textbf{ 0.3} & 0.42 &\textbf{ 0.21} \\
+                AEFG & \textbf{0.3} & \textbf{0.21} & 0.42\\
+            \end{tabular}
+            \caption{Coûts ($\gamma =0.7$)}
+            % \label{fig:Coûts}
+        \end{subfigure}
+        \caption{Exemple opérateurs gamma}
+        \label{fig:gamma}
+    \end{figure}
+
+
+    
+    Les opérateurs gamma permettent de prendre en compte le temps dans l'agrégation des scores, ils ne sont pas invariants à la longueur de la trace et ne permettent pas une réelle compensation entre des scores si ils sont éloignés temporellement.
+
+\paragraph{Opérateur seuil} Soit $\lambda\in[0,1]$ :
+\begin{equation}
+    agg_{seuil}(s_0,\dots,s_{n-1}) = \begin{cases}
+        0 & si \quad \exists i<n \textit{ tel que } s_i < \lambda
+        \\ 1 & sinon
+    \end{cases}
+\end{equation}
+
+
+
+L'opérateur de seuil permet soit de pénaliser complètement un contrefactuel si un événement possède un score inférieur au seuil fixé soit de ne pas pénaliser si un tel événement n'apparaît pas dans la trace voir Figure \ref{fig:seuil}. 
+
+    \begin{figure}[h!]
+        \centering
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \[
+            \xymatrix @R=0.1em@C=5em {
+             & *++[o][F-]{B} \ar[r]^{b:0.3} & *++[o][F-]{C} \ar[r]^{c:0.3} & *++[o][F-]{D}  \\
+              *++[o][F-]{A} \ar[ru]^{a:0.3} \ar[rd]_{d:0.9} \\
+            & *++[o][F-]{E} \ar[r]_{e:0.2} & *++[o][F-]{F} \ar[r]_{f:0.9}  & *++[o][F-]{G}
+            }
+            \]
+            \caption{LTS}
+            \label{fig:lts_gamma}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.45\textwidth}
+            \centering
+            \begin{tabular}{ccc}
+                chemin & 1 - moyenne & 1 - $agg_{seuil}$   \\
+                \hline
+                ABCD & 0.6 & \textbf{0}  \\
+                AEFG & \textbf{0.33} & 1 \\
+            \end{tabular}
+            \caption{Coûts ($\lambda =0.25$)}
+            % \label{fig:Coûts}
+        \end{subfigure}
+        \caption{Exemple opérateurs de seuil}
+        \label{fig:seuil}
+    \end{figure}
+
+Cet opérateur peut présenter un intérêt dans des cas critiques où l'on se refuse de passer sous un seuil de score de normativité quel que soit le reste des événements. 
+
+\subsubsection{Sélection des événements à évaluer}
+
+On peut vouloir agréger l'ensemble des scores d'un chemin causal (comme fait jusqu'alors dans les exemples). Mais comme le travail porte in fine sur une évaluation de contrefactuel, on peut vouloir se concentrer uniquement sur les transitions auxquelles une alternative existe, c'est-à-dire les états avec strictement plus d'une transition sortante. 
+
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \[
+            \xymatrix @R=0.1em{
+                &  *++[o][F-]{B} \ar[r]^{d:1} \ar@[blue]@{-}@<2pt> [r]& *++[o][F-]{D} \ar[r]^{g:0.9} \ar@[blue]@{-}@<2pt>[r] &  *++[o][F-]{G} \ar@[blue]@{-}@<2pt> [r] \ar[r]^{i:1} & *++[o][F-]{I}
+                \\ *++[o][F-]{A} \ar[ru]^{b:0.2} \ar[rdd]^{c:0.8}  \ar@[red]@{-}@< 2pt> [rdd] \ar@[green]@{-}@< -2pt> [rdd] \ar@[blue]@{-}@<2pt> [ru] & & & 
+                \\ & & *++[o][F-]{E} \ar[r]^{h:0.3} \ar@[red]@{-}@<2pt> [r] & *++[o][F-]{H} &
+                \\ & *++[o][F-]{C} \ar[ru]^{e:0.8} \ar@[red]@{-}@<2pt> [ru] \ar[rd]^{f:0.3} \ar@[green]@{-}@< -2pt> [rd]  & & &
+                \\ & & *++[o][F-]{F}
+            }
+        \]
+        \caption{LTS}
+        \label{fig:lts_gamma}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{tabular}{ccc}
+            chemin & 1 - $agg_{geo}$ & événements comptés \\
+            \hline
+            bleu  & 0.\textbf{35} & $b,d,g,i$ \\
+            rouge & 0.42 & $c,e,h$ \\
+            vert  & 0.51 & $c,f$\\
+        \end{tabular}
+        \caption{Coûts globaux ($\gamma = 0.7$)}
+        \label{tab:couts_global}
+
+        \vspace{1em}
+
+        \begin{tabular}{ccc}
+            chemin & 1 - $agg_{geo}$  & événements comptés \\
+            \hline
+            bleu  & 0.8 & $b$ \\
+            rouge & \textbf{0.2} & $c,e$ \\
+            vert  & 0.51 & $c,f$ \\
+        \end{tabular}
+        \caption{Coûts sur les choix ($\gamma = 0.7$)}
+        \label{tab:couts_choix}
+    \end{subfigure}
+    \caption{Évaluation sur les choix}
+    \label{fig:choix}
+\end{figure}
+
+ Comme on l'observe sur la Figure \ref{fig:choix}, considérer seulement les événements avec une alternative modifie complètement les résultats, on évalue la qualité des choix pris durant un scénario et non plus le scénario dans sa globalité. Lorsque l'on évalue la normativité totale, c'est le chemin bleu qui minimise le coût, hors ce scénario pour l'unique choix possible qu'il a, a effectué le pire choix. Contrairement à ce dernier, le chemin rouge sur les deux événements qui présentent une alternative prend les événements qui maximise le score. En réduisant les événements à considérer c'est le chemin rouge qui minimise le coût.
+
+
+\subsection{Critère de validité}
+Le critère permet de filtrer les contrefactuels non valides. Un contexte causal contrefactuel et considéré comme valide par rapport au contexte causal observé si l'état terminal de la trace du contrefactuel est différent de celui de l'observation et que son coût est inférieur à un seuil fixé.
+
+Soit $\chi= (\pi,S_0,\tau)$ le contexte causal observé avec $\sigma_{|state}^\chi = [S^\chi(0),\dots,S^\chi(n)]$ et $\chi'= (\pi',S_0',\tau)$ le contexte causal contrefactuel que l'on évalue, avec $\sigma_{|state}^{\chi'} = [S^{\chi'}(0),\dots,S^{\chi'}(m)]$ et $\delta \in \mathds{R}^+$, $\chi'$ est valide si :
+\begin{equation}
+    S^\chi(n) \neq S^{\chi'}(m) \quad \text{et} \quad \textit{Coût}_\tau(\chi,\chi')<\delta.
+\end{equation}
+
+On peut aussi envisager d'affiner le critère de validité en rajoutant des seuils propres à $v$ et $d\_obs$.

@@ -1,0 +1,350 @@
+\section{Exemple Poison}
+
+\subsection{Définitions du LTS}
+
+\begin{equation*}
+    \begin{aligned}
+        \mathds{F} & = \{VerreOK, \textit{VerreEmpoisonné},VerreVide,VerreAntidote,Mort,Vivant\}\\ 
+        \mathds{E} & = \{empoisonner,antidote,boire,vider\}\\
+        \mathds{A} & = \{ Vivant,Mort\}\\
+        \mathds{T}& = \mathds{N} \\
+        & pre(boire)  = VO \vee VA \vee VE \vee VV \quad pre(antidote) = VE \\
+        & pre(empoisonner) = VO \quad pre(vider) = VO\vee VE \\
+        \mathds{S} & = \left\{
+        \begin{aligned}
+        VO     &= VO     \wedge \neg VE \wedge \neg VV \wedge \neg VA \wedge \neg \text{Mort} \wedge \neg \text{Vivant}, \\
+        VE     &= \neg VO \wedge VE     \wedge \neg VV \wedge \neg VA \wedge \neg \text{Mort} \wedge \neg \text{Vivant}, \\
+        VV     &= \neg VO \wedge \neg VE \wedge VV     \wedge \neg VA \wedge \neg \text{Mort} \wedge \neg \text{Vivant}, \\
+        VA     &= \neg VO \wedge \neg VE \wedge \neg VV \wedge VA     \wedge \neg \text{Mort} \wedge \neg \text{Vivant}, \\
+        \text{Mort}   &= \neg VO \wedge \neg VE \wedge \neg VV \wedge \neg VA \wedge \text{Mort}   \wedge \neg \text{Vivant}, \\
+        \text{Vivant} &= \neg VO \wedge \neg VE \wedge \neg VV \wedge \neg VA \wedge \neg \text{Mort} \wedge \text{Vivant}
+        \end{aligned}
+        \right\}\\
+        \tau & = \left\{
+        \begin{aligned}
+        (VE,vider,VV),(VE,boire,Mort),(VE,antidote,VA),(Mort,\emptyset,Mort)\\
+        (VV,\emptyset,Mort),(VA,boire,Vivant),(Vivant,\emptyset,Vivant),(VO, boire,vivant)\\
+        (VO, boire,vivant),(VO,empoisonner,VE),(VO,vider,VV),\\
+        \end{aligned}
+        \right\} \\
+        expert\_judge_\tau &= \left\{
+        \begin{aligned}
+        VO &: \{boire: 1,\ vider: 0.5,\ emp: 0.1\}, \\
+        VE &: \{antidote: 1,\ boire: 0.1,\ vider: 0.5\}, \\
+        VV &: \{\emptyset: 0.5\}, \\
+        VA &: \{boire: 1\}, \\
+        \text{Mort} &: \{\emptyset: 1\}, \\
+        \text{Vivant} &: \{\emptyset: 1\}
+        \end{aligned}
+        \right\}
+    \end{aligned}
+\end{equation*}
+
+
+
+\begin{align}
+    \scalebox{1.2}{
+        \xymatrix@=2em@C=5em{
+            &    *++[o][F-]{Vivant} \ar @(r,u) []_{\emptyset}^1& \\
+            &   &    *++[o][F-]{VA} \ar [lu]_{boire}^1  \\
+            *++[o][F-]{VO}  \ar [ruu]^{boire}_1 \ar [r]^{empoisonner}_{0.1} \ar[rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar[ru]^{antidote}_1 \ar[rd]^{boire}_{0.1} \ar[dd]^{vider}_{0.5}&  \\
+            &    & *++[o][F-]{Mort} \ar @(r,u) []_{\emptyset}^1 \\
+             &     *++[o][F-]{VV} \ar [ru]^{\emptyset}_{0.5} &  \\
+        }
+    }
+\end{align}
+
+Il est à noter que cet exemple représente un exemple jouet, des choix subjectifs ont été effectués sur la représentation des états, des événements, mais aussi concernant les valeurs attribuées par $expert\_judge_\tau$ qui correspondent au respect d'une norme sociale abstraite (et non statistique). On considère que les formules s'applique sur un exemple fourni sans le remettre en question.
+
+\subsection{Définition des contextes causaux}
+On réduit le champ de travail en ne travaillant que sur des contextes causaux partageant le même état de départ $S_0$ et une politique correcte relativement au LTS $<\mathds{S},\tau>$
+\begin{itemize}
+\item Contexte causal  $\chi_1 = (\pi_1,S_0,\tau)$ avec $\pi_1\in \Pi_\tau$ :
+
+
+    \begin{minipage}{0.45\textwidth}
+        \begin{align*}
+            &\pi_1(VO)= \{empoisonner\}, \quad \pi_1(VE)= \{boire\}, \quad \pi_1(mort)=\{\emptyset\} \quad \\ 
+            &\pi_1(VV) = \{\emptyset\},\quad \pi_1(VA) = \{boire\},\quad \pi_1(vivant)=\{\emptyset\}
+        \end{align*}
+        On obtient :
+    \begin{itemize}
+        \item $\sigma^{\chi_1}= [VO,empoisonner,VE,boire, Mort]$
+        \item $\sigma^{\chi_1}_{|state}=[VO,VE,Mort]$
+        \item $\sigma^{\chi_1}_{|event}=[empoisonner,boire]$
+    \end{itemize}
+    \end{minipage}   
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+    \scalebox{0.65}{    \xymatrix@R=1em@C=5em{
+            &    *++[o][F-]{Vivant} \ar @(r,u) []_{\emptyset}^1& \\
+            &   &    *++[o][F-]{VA} \ar [lu]_{boire}^1  \\
+            *++[o][F-]{VO}  \ar [ruu]^{boire}_1 \ar @[red][r]^{empoisonner}_{0.1} \ar[rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar[ru]^{antidote}_1 \ar@[red][rd]^{boire}_{0.1} \ar[dd]^{vider}_{0.5}&  \\
+            &    & *++[o][F-]{Mort} \ar @(r,u) []_{\emptyset}^1 \\
+             &     *++[o][F-]{VV} \ar [ru]^{\emptyset}_{0.5} &  \\
+        }}
+
+    \end{minipage}
+
+
+    \item Contexte causal $\chi_2 = (\pi_2,S_0,\tau)$avec $\pi_2\in \Pi_\tau:$
+
+    \begin{minipage}{0.45\textwidth}
+
+    \begin{align*}
+        &\pi_2(VO)= \{boire\}, \quad \pi_2(VE)= \{boire\}, \quad \pi_2(mort)=\{\emptyset\} \quad \\ 
+        &\pi_2(VV) = \{\emptyset\},\quad \pi_2(VA) = \{boire\},\quad \pi_2(vivant)=\{\emptyset\}
+    \end{align*}
+
+    \begin{itemize}
+        \item $\sigma^{\chi_2}= [VO,boire, Vivant]$
+        \item $\sigma^{\chi_2}_{|state}=[VO,Vivant]$
+        \item $\sigma^{\chi_2}_{|event}=[boire]$
+    \end{itemize}
+    \end{minipage}   
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+    \scalebox{0.8}{    \xymatrix@R=1em@C=5em{
+            &    *++[o][F-]{Vivant} \ar @(r,u) []_{\emptyset}^1& \\
+            &   &    *++[o][F-]{VA} \ar [lu]_{boire}^1  \\
+            *++[o][F-]{VO}  \ar @[red] [ruu]^{boire}_1 \ar [r]^{empoisonner}_{0.1} \ar[rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar[ru]^{antidote}_1 \ar[rd]^{boire}_{0.1} \ar[dd]^{vider}_{0.5}&  \\
+            &    & *++[o][F-]{Mort} \ar @(r,u) []_{\emptyset}^1 \\
+             &     *++[o][F-]{VV} \ar [ru]^{\emptyset}_{0.5} &  \\
+        }}
+
+    \end{minipage}
+
+
+    \item Contexte causal $\chi_3 = (\pi_3,S_0,\tau)$ avec $\pi_3\in \Pi_\tau:$
+
+    \begin{minipage}{0.45\textwidth}
+        \begin{align*}
+            &\pi_3(VO)= \{vider\}, \quad \pi_3(VE)= \{boire\}, \quad \pi_3(mort)=\{\emptyset\} \quad \\ 
+            &\pi_3(VV) = \{\emptyset\},\quad \pi_3(VA) = \{boire\},\quad \pi_3(vivant)=\{\emptyset\}
+        \end{align*}
+        \begin{itemize}
+            \item $\sigma^{\chi_3}= [VO,vider, VV,\emptyset,Mort]$ 
+            \item $\sigma^{\chi_3}_{|state}=[VO,VV,Mort]$
+            \item $\sigma^{\chi_3}_{|event}=[vider,\emptyset]$
+        \end{itemize}
+        \end{minipage}   
+        \hfill
+        \begin{minipage}{0.45\textwidth}
+        \scalebox{0.8}{    \xymatrix@R=1em@C=5em{
+                &    *++[o][F-]{Vivant} \ar @(r,u) []_{\emptyset}^1& \\
+                &   &    *++[o][F-]{VA} \ar [lu]_{boire}^1  \\
+                *++[o][F-]{VO}  \ar  [ruu]^{boire}_1 \ar [r]^{empoisonner}_{0.1} \ar@[red][rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar[ru]^{antidote}_1 \ar[rd]^{boire}_{0.1} \ar[dd]^{vider}_{0.5}&  \\
+                &    & *++[o][F-]{Mort} \ar @(r,u) []_{\emptyset}^1 \\
+                 &     *++[o][F-]{VV} \ar @[red][ru]^{\emptyset}_{0.5} &  \\
+            }}
+    
+        \end{minipage}
+
+    \item Contexte causal 
+    $\chi_4 = (\pi_4,S_0, \tau)$ avec $\pi_4\in \Pi_\tau:$
+
+    \begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        &\pi_4(VO)= \{empoisonner\}, \quad \pi_4(VE)= \{vider\}, \quad \pi_4(mort)=\{\emptyset\} \quad \\ 
+        &\pi_4(VV) = \{\emptyset\},\quad \pi_4(VA) = \{boire\},\quad \pi_4(vivant)=\{\emptyset\}
+    \end{align*}
+    \begin{itemize}
+        \item $\sigma^{\chi_4}= [VO,empoisonner,VE,vider,VV,\emptyset,Mort]$
+        \item $\sigma^{\chi_4}_{|state}=[VO,VE,VV,Mort]$
+        \item $\sigma^{\chi_4}_{|event}=[empoisonner,vider,\emptyset]$
+    \end{itemize}        
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \scalebox{0.65}{    \xymatrix@R=1em@C=5em{
+                &    *++[o][F-]{Vivant} \ar @(r,u) []_{\emptyset}^1& \\
+                &   &    *++[o][F-]{VA} \ar [lu]_{boire}^1  \\
+                *++[o][F-]{VO}  \ar  [ruu]^{boire}_1 \ar@[red] [r]^{empoisonner}_{0.1} \ar[rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar[ru]^{antidote}_1 \ar[rd]^{boire}_{0.1} \ar@[red][dd]^{vider}_{0.5}&  \\
+                &    & *++[o][F-]{Mort} \ar @(r,u) []_{\emptyset}^1 \\
+                 &     *++[o][F-]{VV} \ar@[red][ru]^{\emptyset}_{0.5} &  \\
+            }}
+    \end{minipage}
+
+    
+
+    \item Contexte causal $\chi_5 = (\pi_5,S_0,\tau)$ avec $\pi_5\in \Pi_\tau:$
+
+
+     \begin{minipage}{0.3\textwidth}
+        \begin{align*}
+            &\pi_5(VO)= \{empoisonner\}, \quad \pi_5(VE)= \{antidote\}, \quad \pi_5(mort)=\{\emptyset\} \quad \\ 
+            &\pi_5(VV) = \{\emptyset\},\quad \pi_5(VA) = \{boire\},\quad \pi_5(vivant)=\{\emptyset\}
+        \end{align*}
+         \begin{itemize}
+             \item $\sigma^{\chi_5}= [VO,empoisonner,VE,antidote,VA,boire,Vivant]$ 
+             \item  $\sigma^{\chi_5}_{|state}=[VO,VE,VA,Vivant]$
+             \item $\sigma^{\chi_5}_{|event}=[empoisonner,antidote,boire]$
+         \end{itemize}         
+     \end{minipage}
+     \begin{minipage}{0.45\textwidth}
+        \scalebox{0.6}{    \xymatrix@R=1em@C=5em{
+                &    *++[o][F-]{Vivant} \ar @(r,u) []_{\emptyset}^1& \\
+                &   &    *++[o][F-]{VA} \ar @[red][lu]_{boire}^1  \\
+                *++[o][F-]{VO}  \ar  [ruu]^{boire}_1 \ar@[red] [r]^{empoisonner}_{0.1} \ar[rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar@[red][ru]^{antidote}_1 \ar[rd]^{boire}_{0.1} \ar[dd]^{vider}_{0.5}&  \\
+                &    & *++[o][F-]{Mort} \ar @(r,u) []_{\emptyset}^1 \\
+                 &     *++[o][F-]{VV} \ar[ru]^{\emptyset}_{0.5} &  \\
+            }}
+     \end{minipage}
+\end{itemize}
+
+\subsection{Définition des politiques optimales}
+
+Politique optimale sans planification :
+\begin{align*}
+    & \pi^{opt1}_\tau(VO)=\{boire\}, \quad \pi^{opt1}_\tau(VE)=\{antidote\}, \quad \pi^{opt1}_\tau(VV)=\{\emptyset\}, \quad \pi^{opt1}_\tau(Mort)=\{\emptyset\} \\
+    & \pi^{opt1}_\tau(VA)=\{boire\}, \quad \pi^{opt1}_\tau(Vivant)=\{\emptyset\} \quad
+\end{align*}
+Politique optimale avec planification :
+\begin{align}\label{pol_opti}
+    & \pi^{opt2}_\tau(VO)=\{boire\}, \quad \pi^{opt2}_\tau(VE)=\{antidote\}, \quad \pi^{opt2}_\tau(VV)=\{\emptyset\}, \quad \pi^{opt2}_\tau(Mort)=\{\emptyset\} \\
+    & \pi^{opt2}_\tau(VA)=\{boire\}, \quad \pi^{opt2}_\tau(Vivant)=\{\emptyset\} \quad
+\end{align}
+On note $\forall S\in \mathds{S},\quad \pi^{opt1}_\tau(S) =\pi^{opt2}_\tau(S)$. On notera par la suite simplement $\pi^{opt}_\tau$.
+\begin{figure}[h!]
+    \centering
+    \[
+        \xymatrix@R=1em@C=5em{
+            &    *++[o][F-]{Vivant} \ar@[red]  @(r,u) []_{\emptyset}^1& \\
+            &   &    *++[o][F-]{VA} \ar@[red]  [lu]_{boire}^1  \\
+            *++[o][F-]{VO}  \ar @[red] [ruu]^{boire}_1 \ar [r]^{empoisonner}_{0.1} \ar[rdd]^{vider}_{0.5} &*++[o][F-]{VE} \ar@[red] [ru]^{antidote}_1 \ar[rd]^{boire}_{0.1} \ar[dd]^{vider}_{0.5}&  \\
+            &    & *++[o][F-]{Mort} \ar@[red]  @(r,u) []_{\emptyset}^1 \\
+             &     *++[o][F-]{VV} \ar@[red] [ru]^{\emptyset}_{0.5} &  \\
+        }    
+    \]
+    \captionsetup{width=0.8\textwidth}
+    \caption{Politique optimale: les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection{Expérimentations}
+
+En fonction de la configuration choisie (extraction d'une politique optimale, exploitation directe, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance à priori des contraintes que l'on souhaite appliquer lors de l'évaluation permet de guider le classement. 
+
+Dans les exemples suivant on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$, on fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$ (avec cette valeur la validité ne dépends que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel).
+
+\paragraph{Priorité à des contrefactuels avec des scores d'événements consistants :}
+On choisit pour la fonction de vraisemblance la formule \ref{exploit_direct} avec comme opérateur d'agrégation $agg_{geo}$ et on agrège les scores de tous les événements des scénarios. On souhaite dans cette configuration pénaliser des traces avec une variance de score importante.
+
+On obtient les résultats suivants:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
+\hline\hline
+1 & $\chi_2$ & 0.67 & 0.0 & 0.67 &  $[VO,boire, Vivant]$ & \checkmark \\
+\hline
+3 & $\chi_3$ & 0.33 & 0.5 & 0.83 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+4 & $\chi_4$ & 0.25 & 0.71 & 0.96 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ &\texttimes \\
+2 & $\chi_5$ & 0.50 & 0.54 & 1.04 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
+\hline
+\end{tabular}
+\caption{Résultats pour la priorité à la normativité}
+\label{tab:prio_normativite}
+\end{table}
+
+On observe dans la table \ref{tab:prio_normativite} que le contexte contrefactuel avec le coût minimal est le contexte $\chi2$ sa distance à l'observation est de 0.67 et sa vraisemblance de 0 (l'unique événement $boire$ a un score de 1). Ce contrefactuel est suivi du contexte $\chi_5$, plus proche de l'observation (coût de 0.5) mais le scénario associé contient l'événement $empoisonner$ qui fait augmenter le coût. Les deux premiers contrefactuels $\chi_2$ et $\chi_5$ sont valides.
+
+
+
+\paragraph{Interdiction de dépasser un seuil}
+
+On utilise l'opérateur d'agrégation avec un seuil fixé à $\lambda = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. 
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ &  trace & valide \\
+\hline\hline
+2 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ &  \checkmark \\
+\hline
+1 & $\chi_3$ & 0.33 & 0.0 & 0.33 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+3 & $\chi_4$ & 0.25 & 1.0 & 1.25 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+4 & $\chi_5$ & 0.50 & 1.0 & 1.50 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \texttimes \\
+\hline
+\end{tabular}
+\caption{Résultats pour la priorité à la normativité}
+\label{tab:res_seuil}
+\end{table}
+
+Dans cette configuration uniquement le contexte causal $\chi_2$ est valide. En rajoutant une contrainte sur le coût de vraisemblance, on exclut automatiquement les contrefactuels qui possèdent un événement inférieur au seuil, c'est ce qu'on observe pour $\chi_5$. 
+
+\paragraph{Normativité en début de scénario}
+On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élévés sur les événements en début de trace en considérant peu ceux de la fin de la trace.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
+\hline\hline
+1 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ & \checkmark \\
+\hline
+2 & $\chi_3$ & 0.33 & 0.5 & 0.83 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+3 & $\chi_4$ & 0.25 & 0.80 & 1.05 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+4 & $\chi_5$ & 0.50 & 0.69 & 1.19 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
+\hline
+\end{tabular}
+\caption{Priorité à la normativité en début de scénario}
+\label{tab:res_gamma}
+\end{table}
+
+On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût correspond à $\chi_2$ qui a le premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possède en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. 
+
+
+\paragraph{Normativité en fin de scénario}
+
+On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplé au coût sur la distance à l'observation on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace mais qui reste le plus proche possible au début.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
+\hline\hline
+2 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ & \checkmark \\
+4 &$\chi_3$ & 0.33 & 0.5 & 0.83 & $[VO,vider, VV,\emptyset,Mort]$ &  \texttimes \\
+3 & $\chi_4$ & 0.25 & 0.52 & 0.77 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+\hline
+1 & $\chi_5$ & 0.50 & 0.04 & 0.54 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \checkmark \\
+\hline\hline
+\end{tabular}
+\caption{Priorité à la normativité en fin de scénario}
+\label{tab:res_gamma_late}
+\end{table}
+
+La table des résultats \ref{tab:res_gamma_late} montre que dans cette configuration, c'est $\chi_5$ qui a le coût le plus faible, malgré l'empoisonnement, on s'éloigne de l'observation le plus tard possible.
+
+\paragraph{Normativité du contrefactuel avec distance à une politique optimale}
+On choisit pour cette configuration de calculer la distance à la politique optimale définie par \ref{pol_opti}. Le choix est fait de ne considérer que les événements pour lesquelles une alternative existe.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide \\
+\hline
+1 & $\chi_2$ & 0.67 & 0.0 & 0.67 & $[VO,boire, Vivant]$ & \checkmark \\
+\hline
+4 & $\chi_3$ & 0.33 & 1.0 & 1.33 & $[VO,vider, VV,\emptyset,Mort]$ & \texttimes \\
+3 & $\chi_4$ & 0.25 & 1.0 & 1.25 & $[VO,empoisonner,VE,vider,VV,\emptyset,Mort]$ & \texttimes \\
+2 & $\chi_5$ & 0.50 & 0.5 & 1.0 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
+\hline
+\end{tabular}
+\caption{Résultats distance à la politique optimale.}
+\label{tab:dist_pol}
+\end{table}
+
+Les résultats présents dans la table \ref{tab:dist_pol} indiquent qu'avec cette configuration, le contexte causal avec le plus faible coût est le contexte $\chi_2$ suivi de $\chi_5$ les deux contrefactuels valides. Concernant la fonction de vraisemblance : dans la trace associée à $\chi_2$ un seul événement est présent et un choix est possible, le choix fait est l'événement $boire$ qui correspond à l'événement choisi par la politique optimale donc le coût associé est de 0. Pour $\chi_5$, deux événements avec alternative sont présents dans la trace $empoisonner$ qui n'est pas l'événement indiqué par la politique optimale, et $antidote$ qui est similaire à la politique optimale. Sur les deux événements un seul est égal à la politique optimale donc un coût de 0.5 est appliqué. Pour $\chi_3$ et $\chi_4$ tous les choix possibles différents de la politique optimale un coût d'un leur est attribué.
+
+
+
+
+

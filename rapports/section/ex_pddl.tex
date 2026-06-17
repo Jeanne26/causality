@@ -1,0 +1,86 @@
+
+\section{Exemple PDDL}\label{ex_pddl}
+%faire texte
+Exemple d'instanciation de problème PDDL issus de \url{https://github.com/arii/planning_exercises/tree/master}. Le domaine correspond à un domaine Block World classique avec les quatre actions classiques de manipulation d'objet. Le problème contient deux objets bloc A et bloc B, initialement le bras ne tient rien, le bloc B est posé sur la table et le bloc A au-dessus du b. L'objectif est de poser A sur la table et que rien ne soit posé sur b. Les conditions de l'objectif sont donc respecté dans deux états : A est posé sur la table et B est posé sur la table, ou bien A est posé sur la table et B est posé sur A.
+
+\subsection*{Définition du  domaine}
+    \begin{lstlisting}[language=Lisp]
+(define (domain bw)
+  (:requirements :strips)
+  (:constants red green blue)
+  (:predicates
+      (on ?x ?y)      ; object ?x is on ?object ?y
+      (on-table ?x)   ; ?x is directly on the table
+      (clear ?x)      ; ?x has nothing on it
+      (arm-empty)     ; robot isn't holding anything
+      (holding ?x))   ; robot is holding ?x
+
+  ;; les quatres actions classique de manipulation d'objet
+  (:action pick-up
+     :parameters (?ob1)
+     :precondition (and (clear ?ob1) (on-table ?ob1) (arm-empty))
+     :effect
+     (and (not (on-table ?ob1))
+  	     (not (clear ?ob1))
+	     (not (arm-empty))
+	     (holding ?ob1)))
+
+  (:action put-down
+     :parameters (?ob)
+     :precondition (holding ?ob)
+     :effect
+     (and (not (holding ?ob))
+	   (clear ?ob)
+	   (arm-empty)
+	   (on-table ?ob)))
+
+  (:action stack
+     :parameters (?sob ?sunderob)
+     :precondition (and (holding ?sob) (clear ?sunderob))
+     :effect
+     (and (not (holding ?sob))
+	   (not (clear ?sunderob))
+	   (clear ?sob)
+	   (arm-empty)
+	   (on ?sob ?sunderob)))
+
+  (:action unstack
+     :parameters (?sob ?sunderob)
+     :precondition (and (on ?sob ?sunderob) (clear ?sob) (arm-empty))
+     :effect
+     (and (holding ?sob)
+	   (clear ?sunderob)
+	   (not (clear ?sob))
+	   (not (arm-empty))
+	   (not (on ?sob ?sunderob))))
+)
+    \end{lstlisting}
+
+\subsection*{Définition du problème}
+    \begin{lstlisting}[language=Lisp]
+(define (problem bw-simple)
+  (:domain bw)
+  (:objects a b )
+  (:init (clear a) (arm-empty) (on a b) (on-table b))
+  (:goal (and (on-table a) (clear b))))
+    \end{lstlisting}
+
+
+
+On obtient pour l'exemple \ref{ex_pddl} le graphe suivant :
+
+\begin{figure}[h!]
+    \[
+        \xymatrix @R=0.1em @C=5em {
+            *++[o][F-]{S0} \ar@/_/[r]_{unstack\ a\ b} & 
+            *++[o][F-]{S1} \ar@/_/[l]_{stack\ a\ b} \ar@/_/[r]_{put\ down\ a} &
+            *++[o][F-]{S2} \ar@/_/[l]_{pick\ up\ a} \ar@/_/[r]_{pick\ up\ b} \ar@(r,u)[]_{\varnothing} &
+            *++[o][F-]{S3} \ar@/_/[l]_{put\ down\ b} \ar@/_/[r]_{stack\ b\ a} &
+            *++[o][F-]{S4} \ar@/_/[l]_{unstack\ b} \ar@(r,u)[]_{\varnothing}
+        }
+    \]
+    \centering
+    \captionsetup{width=0.8\textwidth}
+    \caption{LTS obtenu pour le problème simple de block world. Avec S0 =\{'clear a', 'on a b', 'on table b', 'arm-empty'\}, S1 =\{'on table b', 'clear b', 'holding a'\}, S2 =\{'on table b','arm empty'', 'clear b','clear a', 'on table a'\}, S3 =\{'holding b','on table a', 'clear a'\}, S4 =\{'on b a', 'on table a', 'arm empty', 'clear b'\}}
+    \label{fig:exemple graphe BW}
+\end{figure}

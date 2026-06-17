@@ -103,23 +103,7 @@ def build_graph(actions, init_state, goals):
 \end{lstlisting}
 \hfill
 
-On obtient pour l'exemple \ref{ex_pddl} le graphe suivant :
 
-\begin{figure}[h!]
-    \[
-        \xymatrix @R=0.1em @C=5em {
-            *++[o][F-]{S0} \ar@/_/[r]_{unstack\ a\ b} & 
-            *++[o][F-]{S1} \ar@/_/[l]_{stack\ a\ b} \ar@/_/[r]_{put\ down\ a} &
-            *++[o][F-]{S2} \ar@/_/[l]_{pick\ up\ a} \ar@/_/[r]_{pick\ up\ b} \ar@(r,u)[]_{\varnothing} &
-            *++[o][F-]{S3} \ar@/_/[l]_{put\ down\ b} \ar@/_/[r]_{stack\ b\ a} &
-            *++[o][F-]{S4} \ar@/_/[l]_{unstack\ b} \ar@(r,u)[]_{\varnothing}
-        }
-    \]
-    \centering
-    \captionsetup{width=0.8\textwidth}
-    \caption{LTS obtenu pour le problème simple de block world. Avec S0 =\{'clear a', 'on a b', 'on table b', 'arm-empty'\}, S1 =\{'on table b', 'clear b', 'holding a'\}, S2 =\{'on table b','arm empty'', 'clear b','clear a', 'on table a'\}, S3 =\{'holding b','on table a', 'clear a'\}, S4 =\{'on b a', 'on table a', 'arm empty', 'clear b'\}}
-    \label{fig:exemple graphe BW}
-\end{figure}
 
 \subsection{Remarques et limites}
 

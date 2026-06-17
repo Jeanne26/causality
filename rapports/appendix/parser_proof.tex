@@ -10,11 +10,14 @@ Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un probl
     \item $\mathcal{O}$ : l'ensemble des objets du problème
     \item $Pred$ : l'ensemble des prédicats déclarés dans le domaine de $\mathcal{P}$
     \item $\mathds{F}(\mathcal{P}) = \{ p(o_1,\dots,o_k) \mid p\in Pred, (o_1, \dots,o_k) \in \mathcal{O}^k \}$ (ensemble fini, car $Pred$ et $\mathcal{O}$ sont finis)
-    \item $\mathcal{A}$ : l'ensemble des actions du problème avec pour tout $a\in \mathcal{A}$ la définition du tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
-    et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$
+    \item $\mathcal{A}$ : l'ensemble des actions du problème. Pour tout $a\in \mathcal{A}$ la définition du tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
+    et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$.
+
     \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$
-    \item $S_0$: l'ensemble des prédicats vérifiés dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
-    \item $\mathcal{G} \in 2^{\mathds{F}(\mathcal{P})} $: l'ensemble des prédicats qui doivent être vérifiés dans les états terminaux.
+    
+    \item $S_0$ : l'ensemble des prédicats vérifiés dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
+    
+    \item $\mathcal{G} \in 2^{\mathds{F}(\mathcal{P})}$ : l'ensemble des prédicats qui doivent être vérifiés dans les états terminaux.
 \end{itemize}
 
 On introduit $\langle \mathds{S}^*, \tau^*\rangle$ le LTS cible associé à $\mathcal{P}$ avec : 
@@ -22,11 +25,11 @@ $$\mathds{S} = \{S  \mid S \in 2^{\mathds{F}(\mathcal{P})} \text{ tel qu'il exis
 \begin{equation*}
     \begin{aligned}
     \tau^* &= \{(S, \{e\}, S') \mid S \in \mathbb{S}^*, \{e\} \in 2^{\mathds{E}(\mathcal{P})}, pre(e) \subseteq S \text{ et } S' = (S \setminus eff^-(e)) \cup eff^+(e)\} \\
-    &\cup \{(S, \emptyset, S) \mid S \in \mathbb{S}^*, \mathcal{G} \subseteq S\}
+    &\cup \{(S, \emptyset, S) \mid S \in \mathbb{S}^*, \mathcal{G} \subseteq S\}.
     \end{aligned}
 \end{equation*}
 
-et $T(\mathcal{P}) = \langle S, \tau \rangle $ avec $T$ notre processus (parser) et donc $T(\mathcal{P})$ le LTS obtenu en l'appliquant au problème PDDL $\mathcal{P}$.
+Et $T(\mathcal{P}) = \langle S, \tau \rangle $ avec $T$ notre processus (parser) et donc $T(\mathcal{P})$ le LTS obtenu en l'appliquant au problème PDDL $\mathcal{P}$.
 
 
 % \subsection{Correction v0}
