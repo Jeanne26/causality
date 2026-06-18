@@ -1,6 +1,6 @@
 (define (domain poison)
 
-  (:requirements :strips :disjunctive-preconditions :negative-preconditions)
+  (:requirements :strips :negative-preconditions)
 
   (:predicates
     (ok ?v)
