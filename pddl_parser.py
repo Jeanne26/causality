@@ -17,8 +17,8 @@ from utils import complete_expertise, add_expertise
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--pddl_folder', type=str, default="pddl_exemples/", help='dossier contenant les fichiers pddl')
-argparser.add_argument('--domain_file', type=str, default="bw_domain.pddl", help='nom fichier domaine')
-argparser.add_argument('--problem_file', type=str, default="bw_p0.pddl", help='nom probleme fichier')
+argparser.add_argument('--domain_file', type=str, default="poison_domain.pddl", help='nom fichier domaine')
+argparser.add_argument('--problem_file', type=str, default="poison_p0.pddl", help='nom probleme fichier')
 argparser.add_argument("--output_folder", type=str, default="graphs/", help="dossier de sortie pour les graphes")
 args = argparser.parse_args()
 PDDL_FOLDER = args.pddl_folder
@@ -43,7 +43,11 @@ def statisfied(preconditions,state):
 def apply_effects(effects,state):
     #applique des effets à un état donné gère and et not
     new_state = set(state)
-    for eff in effects.operands:
+    if isinstance(effects, And):
+        effs = effects.operands
+    else:
+        effs = [effects]
+    for eff in effs:
         if isinstance(eff, Not):
             new_state.discard(str(eff.argument))
         else:

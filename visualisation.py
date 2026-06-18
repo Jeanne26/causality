@@ -171,5 +171,6 @@ if __name__== "__main__":
     # visualisation(G, ["label", "action", "weight"], "Graphe BW_p0")
     # plt.savefig("fig/graphe_bw_p0.png")
 
-    pass
-    
+    G = pickle.load(open("graphs/poison.pickle","rb"))
+    visualisation(G, ["label", "action", "weight"], "Graphe poison_p0")
+    plt.savefig("fig/graphe_poison_p0.png")
