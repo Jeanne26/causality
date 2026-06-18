@@ -1,6 +1,6 @@
 (define (domain poison)
 
-  (:requirements :strips :negative-preconditions)
+  (:requirements :strips :negative-preconditions :disjunctive-preconditions)
 
   (:predicates
     (ok ?v)
@@ -13,7 +13,10 @@
   )
   (:action boire_vo
     :parameters (?v)
-    :precondition   (and (ok ?v) (not (emp ?v)) (not (anti ?v)) (not (vide ?v)) (not (mort ?v)) (not (vivant ?v)) (not (final ?v)))
+    :precondition   (or 
+                      (and (ok ?v) (not (emp ?v)) (not (anti ?v)) (not (vide ?v)) (not (mort ?v)) (not (vivant ?v)) (not (final ?v)))
+                      
+                      )
 
     :effect (and (not (ok ?v))
                  (vivant ?v) (final ?v))

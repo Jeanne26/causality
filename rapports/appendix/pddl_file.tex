@@ -52,3 +52,6 @@
 	   (not (on ?sob ?sunderob))))
 )
     \end{lstlisting}
+
+\subsection{Exemple Poison}
+Notre parseur ne gère pas directement les disjonctions dans le goal, on contourne ce problème en ajoutant un prédicat \textit{final} qui est ajouté dans tous les états que l'on souhaite considérer comme respectant notre goal. De plus le parseur ne prend pas non plus en compte les effets conditionnels, on utilise donc plusieurs définitions pour une même action en fonction de l'état dans lequel elle a lieu. Ces deux contournements alourdissent légérement le LTS obtenu, dans la partie \ref{ex_poison} le choix a été fait de masquer leurs effets, le prédicat \textit{final} n'apparait pas et les préconditions sont exprimées sous formes de disjonctions pour une écriture plus compacte.

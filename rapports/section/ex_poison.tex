@@ -12,8 +12,9 @@ La définition du
         \mathds{E} & = \{empoisonner,antidote,boire,vider\}\\
         \mathds{A} & = \{ Vivant,Mort\}\\
         \mathds{T}& = \mathds{N} \\
-        & pre(boire)  = VO \vee VA \vee VE \vee VV \quad pre(antidote) = VE \\
+        & pre(boire)  = VO \vee VA \vee VE  \quad pre(antidote) = VE \\
         & pre(empoisonner) = VO \quad pre(vider) = VO\vee VE \\
+        & pre(\emptyset) = VV \vee Mort \vee Vivant\\
         \mathds{S} & = \left\{
         \begin{aligned}
         VO     &= VO     \wedge \neg VE \wedge \neg VV \wedge \neg VA \wedge \neg \text{Mort} \wedge \neg \text{Vivant}, \\
