@@ -4,16 +4,18 @@ Dans cette partie, nous allons présenter un exemple concret d'application du tr
 
 \subsection{De PDDL vers un LTS}
 
-La définition du 
+La définition des fichiers PDDL se trouve en annexe \ref{app_pddl_poison_file}. Ci-dessous le LTS résultant de l'application du parseur.
 
 \begin{equation*}
     \begin{aligned}
         \mathds{F} & = \{VerreOK, \textit{VerreEmpoisonné},VerreVide,VerreAntidote,Mort,Vivant\}\\ 
-        \mathds{E} & = \{empoisonner,antidote,boire,vider\}\\
+        \mathds{E} & = \{empoisonner,antidote,boire_{VO},boire_{VA},boire_{VE},vider_{VO}, vider_{VE}\}\\
         \mathds{A} & = \{ Vivant,Mort\}\\
         \mathds{T}& = \mathds{N} \\
-        & pre(boire)  = VO \vee VA \vee VE  \quad pre(antidote) = VE \\
-        & pre(empoisonner) = VO \quad pre(vider) = VO\vee VE \\
+        & pre(boire_{VO})  = VO \quad pre(antidote) = VE \\
+        & pre(boire_{VA}) = VA \quad pre(boire_{VE}) = VE \\
+        & pre(empoisonner) = VO \quad pre(vider_{VO}) = VO \\
+        & pre(vider_{VE}) = VE \\
         & pre(\emptyset) = VV \vee Mort \vee Vivant\\
         \mathds{S} & = \left\{
         \begin{aligned}
@@ -25,6 +27,12 @@ La définition du
         \text{Vivant} &= \neg VO \wedge \neg VE \wedge \neg VV \wedge \neg VA \wedge \neg \text{Mort} \wedge \text{Vivant}
         \end{aligned}
         \right\}\\
+    \end{aligned}
+\end{equation*}
+
+Pour alléger la notation, on fusionne la notation de $boire_{VO},boire_{VA},boire_{VE}$ en $boire$ et de $vider_{VO}, vider_{VE}$ en $vider$.
+\begin{equation*}
+    \begin{aligned}
         \tau & = \left\{
         \begin{aligned}
         (VE,vider,VV),(VE,boire,Mort),(VE,antidote,VA),(Mort,\emptyset,Mort)\\
@@ -59,10 +67,9 @@ La définition du
     }
 \end{align}
 
-Il est à noter que cet exemple représente un exemple jouet, des choix subjectifs ont été effectués sur la représentation des états, des événements, mais aussi concernant les valeurs attribuées par $expert\_judge_\tau$ qui correspondent au respect d'une norme sociale abstraite (et non statistique). On considère que les formules s'applique sur un exemple fourni sans le remettre en question.
 
 \subsection{Définition des contextes causaux}
-On réduit le champ de travail en ne travaillant que sur des contextes causaux partageant le même état de départ $S_0$ et une politique correcte relativement au LTS $<\mathds{S},\tau>$
+On réduit le champ de travail en ne travaillant que sur des contextes causaux partageant le même état de départ $S_0$ et une politique correcte relativement au LTS $<\mathds{S},\tau>$.
 \begin{itemize}
 \item Contexte causal  $\chi_1 = (\pi_1,S_0,\tau)$ avec $\pi_1\in \Pi_\tau$ :
 
@@ -230,12 +237,12 @@ On note $\forall S\in \mathds{S},\quad \pi^{opt1}_\tau(S) =\pi^{opt2}_\tau(S)$. 
 
 En fonction de la configuration choisie (extraction d'une politique optimale, exploitation directe, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance à priori des contraintes que l'on souhaite appliquer lors de l'évaluation permet de guider le classement. 
 
-Dans les exemples suivant on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$, on fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$ (avec cette valeur la validité ne dépends que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel).
+Dans les exemples suivants, on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$, on fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$ (avec cette valeur la validité ne dépends que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel).
 
 \paragraph{Priorité à des contrefactuels avec des scores d'événements consistants :}
 On choisit pour la fonction de vraisemblance la formule \ref{exploit_direct} avec comme opérateur d'agrégation $agg_{geo}$ et on agrège les scores de tous les événements des scénarios. On souhaite dans cette configuration pénaliser des traces avec une variance de score importante.
 
-On obtient les résultats suivants:
+On obtient les résultats suivants :
 
 \begin{table}[h]
 \centering
@@ -282,7 +289,7 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ &  trace & valid
 Dans cette configuration uniquement le contexte causal $\chi_2$ est valide. En rajoutant une contrainte sur le coût de vraisemblance, on exclut automatiquement les contrefactuels qui possèdent un événement inférieur au seuil, c'est ce qu'on observe pour $\chi_5$. 
 
 \paragraph{Normativité en début de scénario}
-On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élévés sur les événements en début de trace en considérant peu ceux de la fin de la trace.
+On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élevés sur les événements en début de trace en considérant peu ceux de la fin de la trace.
 
 \begin{table}[h]
 \centering
@@ -306,7 +313,7 @@ On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus f
 
 \paragraph{Normativité en fin de scénario}
 
-On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplé au coût sur la distance à l'observation on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace mais qui reste le plus proche possible au début.
+On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplé au coût sur la distance à l'observation, on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace, mais qui reste le plus proche possible au début.
 
 \begin{table}[h]
 \centering

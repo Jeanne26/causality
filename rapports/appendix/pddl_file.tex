@@ -53,5 +53,111 @@
 )
     \end{lstlisting}
 
-\subsection{Exemple Poison}
-Notre parseur ne gère pas directement les disjonctions dans le goal, on contourne ce problème en ajoutant un prédicat \textit{final} qui est ajouté dans tous les états que l'on souhaite considérer comme respectant notre goal. De plus le parseur ne prend pas non plus en compte les effets conditionnels, on utilise donc plusieurs définitions pour une même action en fonction de l'état dans lequel elle a lieu. Ces deux contournements alourdissent légèrement le LTS obtenu, dans la partie \ref{ex_poison} le choix a été fait de masquer leurs effets, le prédicat \textit{final} n'apparait pas et les préconditions sont exprimées sous formes de disjonctions pour une écriture plus compacte.
+\subsection{Domaine et problème Poison} \label{app_pddl_poison_file}
+Les fichiers PDDL permettant d'obtenir le LTS de la section \ref{ex_poison}.
+\begin{lstlisting}[language=Lisp,basicstyle=\ttfamily\footnotesize]
+
+(define (domain poison)
+
+  (:requirements :strips :negative-preconditions :disjunctive-preconditions)
+
+  (:predicates
+    (ok ?v)
+    (emp ?v)
+    (anti ?v)
+    (vide ?v)
+    (mort ?v)
+    (vivant ?v)
+  )
+  (:action boire_vo
+    :parameters (?v)
+    :precondition    (and (ok ?v) (not (emp ?v)) 
+                      (not (anti ?v)) (not (vide ?v)) 
+                      (not (mort ?v)) (not (vivant ?v)))
+    :effect (and (not (ok ?v))
+                 (vivant ?v))
+  )
+
+  (:action emp
+    :parameters (?v)
+    :precondition   (and (ok ?v) (not (emp ?v)) 
+                         (not (anti ?v)) (not (vide ?v))
+                         (not (mort ?v)) (not (vivant ?v)))
+    :effect (and
+              (not (ok ?v))
+              (emp ?v))
+  )
+
+  (:action vider_vo
+    :parameters (?v)
+    :precondition   (and (ok ?v) (not (emp ?v)) 
+                         (not (anti ?v)) (not (vide ?v))
+                         (not (mort ?v)) (not (vivant ?v)))
+    :effect (and
+              (not (ok ?v))
+              (vide ?v))
+  )
+
+  (:action anti
+    :parameters (?v)
+    :precondition   (and (not (ok ?v)) (emp ?v) 
+                         (not (anti ?v)) (not (vide ?v))
+                         (not (mort ?v)) (not (vivant ?v)))
+
+    :effect (and
+              (not (emp ?v))
+              (anti ?v))
+  )
+
+  (:action boire_ve
+    :parameters (?v)
+    :precondition   (and (not (ok ?v)) (emp ?v)
+                         (not (anti ?v)) (not (vide ?v))
+                         (not (mort ?v)) (not (vivant ?v)))
+
+    :effect (and (not(emp ?v)) (mort ?v))
+  )
+
+  (:action vider_ve
+    :parameters (?v)
+    :precondition   (and (not (ok ?v)) (emp ?v) 
+                         (not (anti ?v)) (not (vide ?v)) 
+                         (not (mort ?v)) (not (vivant ?v)))
+    :effect (and (not (emp ?v)) (vide ?v))
+  )
+
+  (:action rien
+    :parameters (?v)
+    :precondition   (and (not (ok ?v)) (not (emp ?v)) 
+                         (not (anti ?v)) (vide ?v) 
+                         (not (mort ?v)) (not (vivant ?v)))
+
+    :effect (and (not (vide ?v)) (mort ?v))
+  )
+
+  (:action boire_va
+    :parameters (?v)
+    :precondition   (and (not (ok ?v)) (not (emp ?v)) 
+                         (anti ?v) (not (vide ?v)) 
+                         (not (mort ?v)) (not (vivant ?v)))
+
+    :effect (and (not (anti ?v)) (vivant ?v))
+  )
+
+)
+
+
+    \end{lstlisting}
+
+
+\begin{lstlisting}[language=Lisp,basicstyle=\ttfamily\footnotesize]
+
+(define (problem poison_p0)
+    (:domain poison)
+    (:objects V)
+        
+    (:init (ok V))
+
+    (:goal (or (vivant V) (mort V))))
+
+    \end{lstlisting}
