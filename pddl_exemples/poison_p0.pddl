@@ -7,7 +7,6 @@
         (ok V)
     )
 
-    ; (:goal (or (vivant V) (mort V)))  
-    (:goal (final V))  
+    (:goal (or (vivant V) (mort V)))  
         
 )

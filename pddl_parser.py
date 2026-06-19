@@ -1,6 +1,7 @@
 import json
 
-from pddl import parse_domain, parse_problem
+from pddl import parse_domain
+from pddl.parser.problem import ProblemParser
 from pddl.logic.base import And, Not, Or
 from itertools import product
 import networkx as nx
@@ -123,12 +124,25 @@ def build_graph(actions, init_state, goal):
 
 
 if __name__ == "__main__":
-    problem = parse_problem(PDDL_FOLDER + PROBLEM_FILE)
-    domain  = parse_domain(PDDL_FOLDER + DOMAIN_FILE)
+    domain = parse_domain(PDDL_FOLDER + DOMAIN_FILE)
 
-    objects = list(problem.objects) 
+    #on recup requirement du domaine et on l'injecte dans le parser du pb pour pas avoir de pb de requireement
+    with open(PDDL_FOLDER + PROBLEM_FILE, 'r') as f:
+        problem_text = f.read()
 
-    actions = instanciate_action(domain.actions,objects)
+    pparser = ProblemParser()
+    try:
+        reqs = set(domain.requirements)
+        pparser._transformer._domain_transformer._requirements = reqs
+        pparser._transformer._domain_transformer._extended_requirements = reqs
+    except Exception:
+        pass
+
+    problem = pparser(problem_text)
+
+    objects = list(problem.objects)
+
+    actions = instanciate_action(domain.actions, objects)
     init_state = frozenset(str(p) for p in problem.init)
     G = build_graph(actions, init_state, problem.goal)
     print(f"Nombre de noeuds : {len(G.nodes)}")

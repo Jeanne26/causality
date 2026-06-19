@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
-  <meta lastmodifieddate="2026-06-18">
+  <meta lastmodifieddate="2026-06-19">
     <creator>NetworkX 3.6.1</creator>
   </meta>
   <graph defaultedgetype="directed" mode="static" name="">
@@ -34,12 +34,12 @@
       </node>
       <node id="S4" label="S4">
         <attvalues>
-          <attvalue for="0" value="(final V) ; (mort V)" />
+          <attvalue for="0" value="(anti V)" />
         </attvalues>
       </node>
       <node id="S5" label="S5">
         <attvalues>
-          <attvalue for="0" value="(anti V)" />
+          <attvalue for="0" value="(final V) ; (mort V)" />
         </attvalues>
       </node>
     </nodes>
@@ -68,39 +68,39 @@
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S2" target="S3" id="4" label="A3" weight="1">
-        <attvalues>
-          <attvalue for="1" value="(vider_ve V)" />
-          <attvalue for="2" value="0" />
-        </attvalues>
-      </edge>
-      <edge source="S2" target="S4" id="5" label="A4" weight="1">
-        <attvalues>
-          <attvalue for="1" value="(boire_ve V)" />
-          <attvalue for="2" value="0" />
-        </attvalues>
-      </edge>
-      <edge source="S2" target="S5" id="6" label="A5" weight="1">
+      <edge source="S2" target="S4" id="4" label="A3" weight="1">
         <attvalues>
           <attvalue for="1" value="(anti_ve V)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S3" target="S4" id="7" label="A6" weight="1">
+      <edge source="S2" target="S3" id="5" label="A4" weight="1">
+        <attvalues>
+          <attvalue for="1" value="(vider_ve V)" />
+          <attvalue for="2" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="S2" target="S5" id="6" label="A5" weight="1">
+        <attvalues>
+          <attvalue for="1" value="(boire_ve V)" />
+          <attvalue for="2" value="0" />
+        </attvalues>
+      </edge>
+      <edge source="S3" target="S5" id="7" label="A6" weight="1">
         <attvalues>
           <attvalue for="1" value="(rien_VV V)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S4" target="S4" id="8" label="Goal" weight="1">
+      <edge source="S4" target="S1" id="8" label="A7" weight="1">
         <attvalues>
-          <attvalue for="1" value="$\varnothing$" />
+          <attvalue for="1" value="(boire_va V)" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
-      <edge source="S5" target="S1" id="9" label="A7" weight="1">
+      <edge source="S5" target="S5" id="9" label="Goal" weight="1">
         <attvalues>
-          <attvalue for="1" value="(boire_va V)" />
+          <attvalue for="1" value="$\varnothing$" />
           <attvalue for="2" value="0" />
         </attvalues>
       </edge>
