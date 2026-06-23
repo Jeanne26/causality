@@ -9,15 +9,15 @@ Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un probl
 \begin{itemize}
     \item $\mathcal{O}$ : l'ensemble des objets du problème
     \item $Pred$ : l'ensemble des prédicats déclarés dans le domaine de $\mathcal{P}$
-    \item $\mathds{F}(\mathcal{P}) = \{ p(o_1,\dots,o_k) \mid p\in Pred, (o_1, \dots,o_k) \in \mathcal{O}^k \}$ (ensemble fini, car $Pred$ et $\mathcal{O}$ sont finis)
+    \item $\mathds{F}(\mathcal{P}) = \{ p(o_1,\dots,o_k) \mid p\in Pred, (o_1, \dots,o_k) \in \mathcal{O}^k\}$: ensemble des prédicats instanciables du domaine (ensemble fini, car $Pred$ et $\mathcal{O}$ sont finis)
     \item $\mathcal{A}$ : l'ensemble des actions du problème. Pour tout $a\in \mathcal{A}$ la définition du tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
-    et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$.
+    et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$. Avec $param(a)$ les paramètres de l'action $a$,  $pre(a)$ ses préconditions, $eff^+(a)$ ses effets positifs et $eff^-(a)$ ses effets négatifs.
 
     \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$
     
-    \item $S_0$ : l'ensemble des prédicats vérifiés dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
+    \item $S_0$ : l'ensemble des vrais prédicats dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
     
-    \item $\mathcal{G} \in 2^{\mathds{F}(\mathcal{P})}$ : l'ensemble des prédicats qui doivent être vérifiés dans les états terminaux.
+    \item $\mathcal{G} \in 2^{\mathds{F}(\mathcal{P})}$ : formule d'état qui décrit les conditions nécessaires pour considérer qu'un état est terminal.
 \end{itemize}
 
 On introduit $\langle \mathds{S}^*, \tau^*\rangle$ le LTS cible associé à $\mathcal{P}$ avec : 
@@ -52,7 +52,7 @@ Afin de démontrer la correction de notre parser, nous allons montrer que $T(\ma
 
 On montre dans un premier temps que $\mathds{S} = \mathds{S}^*$ :
 \begin{itemize}
-    \item $\mathds{S} \subseteq \mathds{S}^*$ : Pour tout $S$ appartenant $\mathcal{S}$, $S$ a été atteint par BFS depuis $S_0$ en appliquant des événements don les préconditions sont satisfaites donc il existe un chemin entre $S_0$ et $S$. On peut donc en conclure que $\mathds{S} \subseteq \mathds{S}^*$.
+    \item $\mathds{S} \subseteq \mathds{S}^*$ : Pour tout $S$ appartenant $\mathcal{S}$, $S$ a été atteint par BFS depuis $S_0$ en appliquant des événements dont les préconditions sont satisfaites donc il existe un chemin entre $S_0$ et $S$. On peut donc en conclure que $\mathds{S} \subseteq \mathds{S}^*$.
     \item $\mathds{S}^* \subseteq \mathds{S}$ Par induction avec l'hypothèse : Si $S^* \in \mathds{S}^*$ et il existe $\{e\}\in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S^*$ alors $S'\in \mathds{S}^*$ avec $S' = (S \ eff^-(e)) \cup eff^+(e)$
     \begin{itemize}
         \item Base : $S_0 \in \mathds{S}$, car l'algorithme BFS est initialisé avec $S_0$
@@ -82,6 +82,6 @@ Pour construire $\tau$ le processus $T$, pour tout $S,S'\in \mathds{S}$ tel qu'i
     \end{aligned}
 \end{equation*}
 
-On a montré que $T(\mathds{P}) = \langle \mathds{S}^*, \tau^*\rangle$ donc notre algorithme est correct.
+On a montré que $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^*\rangle$ donc notre algorithme est correct.
 \subsection{Terminaison}
 Le processus $T$ est basé sur un algorithme BFS dont l'espace d'exploration est fini et borné par le nombre d'états possible égal à $2^{\mid \mathds{F}(\mathcal{P}) \mid}$.
