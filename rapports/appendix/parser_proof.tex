@@ -13,7 +13,7 @@ Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un probl
     \item $\mathcal{A}$ : l'ensemble des actions du problème. Pour tout $a\in \mathcal{A}$ la définition du tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
     et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$. Avec $param(a)$ les paramètres de l'action $a$,  $pre(a)$ ses préconditions, $eff^+(a)$ ses effets positifs et $eff^-(a)$ ses effets négatifs.
 
-    \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$
+    \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$ : ensemble des actions instanciables à partir des objets du domaine.
     
     \item $S_0$ : l'ensemble des vrais prédicats dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
     
@@ -56,7 +56,7 @@ On montre dans un premier temps que $\mathds{S} = \mathds{S}^*$ :
     \item $\mathds{S}^* \subseteq \mathds{S}$ Par induction avec l'hypothèse : Si $S^* \in \mathds{S}^*$ et il existe $\{e\}\in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S^*$ alors $S'\in \mathds{S}^*$ avec $S' = (S \ eff^-(e)) \cup eff^+(e)$
     \begin{itemize}
         \item Base : $S_0 \in \mathds{S}$, car l'algorithme BFS est initialisé avec $S_0$
-        \item  Induction : Soit $S \in \mathds{S}^* \cap \mathds{S}$  et de plus, il existe $\{e\} \in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S$. Montrons que $S'$ définit par  $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ appartenant par hypothèse à $\mathds{S}^*$ appartient aussi à $\mathds{S}$. Lorsque le processus $T$ traite $S$ il teste l'ensemble des événements possible pour tenter de les appliquer dans $S$. L'événement  $\{e\}$ est applicable dans $S$ donc $T$ va construire l'état $(S \setminus eff^-(e)) \cup eff^+(e) = S'$ et va l'ajouter à $\mathds{S}$.
+        \item  Induction : Soit $S \in \mathds{S}^* \cap \mathds{S}$  et de plus, il existe $\{e\} \in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S$. Montrons que $S'$ définit par  $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ appartenant par hypothèse à $\mathds{S}^*$ appartient aussi à $\mathds{S}$. Lorsque le processus $T$ traite $S$ il teste l'ensemble des événements possibles pour tenter de les appliquer dans $S$. L'événement  $\{e\}$ est applicable dans $S$ donc $T$ va construire l'état $(S \setminus eff^-(e)) \cup eff^+(e) = S'$ et va l'ajouter à $\mathds{S}$.
     \end{itemize}
     On a donc montré par induction que $\mathds{S}^* \subseteq \mathds{S}$
 \end{itemize}
@@ -82,6 +82,6 @@ Pour construire $\tau$ le processus $T$, pour tout $S,S'\in \mathds{S}$ tel qu'i
     \end{aligned}
 \end{equation*}
 
-On a montré que $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^*\rangle$ donc notre algorithme est correct.
+On a montré que $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^*\rangle$  qui est un LTS, donc notre algorithme est correct.
 \subsection{Terminaison}
 Le processus $T$ est basé sur un algorithme BFS dont l'espace d'exploration est fini et borné par le nombre d'états possible égal à $2^{\mid \mathds{F}(\mathcal{P}) \mid}$.
