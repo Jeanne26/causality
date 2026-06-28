@@ -5,7 +5,7 @@
 
 On souhaite démontrer les propriétés de correction et de terminaison du parser, on introduit pour cela les notations suivantes :
 
-Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un problème PDDL avec :
+Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_{init}, \mathcal{G})$ un problème PDDL avec :
 \begin{itemize}
     \item $\mathcal{O}$ : l'ensemble des objets du problème
     \item $Pred$ : l'ensemble des prédicats déclarés dans le domaine de $\mathcal{P}$
@@ -15,12 +15,13 @@ Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_0, \mathcal{G})$ un probl
 
     \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$ : ensemble des actions instanciables à partir des objets du domaine.
     
-    \item $S_0$ : l'ensemble des vrais prédicats dans l'état initial (hypothèse de monde clos), $S_0 \in 2^{\mathds{F}(\mathcal{P})}$
+    \item $S_{init}$ : l'ensemble des vrais prédicats dans l'état initial (hypothèse de monde clos), $S_{init} \in 2^{\mathds{F}(\mathcal{P})}$
     
     \item $\mathcal{G} \in 2^{\mathds{F}(\mathcal{P})}$ : formule d'état qui décrit les conditions nécessaires pour considérer qu'un état est terminal.
 \end{itemize}
 
 On introduit $\langle \mathds{S}^*, \tau^*\rangle$ le LTS cible associé à $\mathcal{P}$ avec : 
+$$S_0 \text{ l'état du LTS équivalent à } S_{init} \text{ du problème } \mathcal{P}$$
 $$\mathds{S} = \{S  \mid S \in 2^{\mathds{F}(\mathcal{P})} \text{ tel qu'il existe un chemin dans le LTS entre } S_0 \text{ et }S\}$$
 \begin{equation*}
     \begin{aligned}
@@ -85,3 +86,24 @@ Pour construire $\tau$ le processus $T$, pour tout $S,S'\in \mathds{S}$ tel qu'i
 On a montré que $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^*\rangle$  qui est un LTS, donc notre algorithme est correct.
 \subsection{Terminaison}
 Le processus $T$ est basé sur un algorithme BFS dont l'espace d'exploration est fini et borné par le nombre d'états possible égal à $2^{\mid \mathds{F}(\mathcal{P}) \mid}$.
+
+
+\subsection{Complétude}
+Nous souhaitons montrer que notre algorithme est complet sur le sous-ensemble de LTS obtenables avec notre parseur (pas de nœud isolé, un événement unique par transition et au moins une transition réflexive). Soit un LTS défini par $\langle \mathds{S}, \tau \rangle$, tel que $\mathds{S} \subseteq 2^{\mathds{F}}$ et $\tau \subseteq \mathds{S} \times 2^{\mathds{E}} \times \mathds{S}$, $S_0 \in \mathds{S}$. Il est possible d'y associé un domaine et un problème PDDL. Pour cela, on fixe :
+\begin{itemize}
+    \item $\mathcal{O} = \{o\}$ on définit un unique objet pour tous les problèmes associés (nb: on pourrait ne pas en mettre du tout, mais les prédicats ne porteraient plus sur rien et notre parseur ne gère pas les actions sans paramètres).  
+    \item $Pred = \{f(o) \mid \forall f \in \mathds{F}\}$ : L'ensemble des prédicats ont une arité d'un. L'unique objet/paramètre ne représente rien, mais sert de "levier" pour dire si un prédicat est vrai ou faux.
+    \item Pour chaque transition $(S,E,S')\in \tau$ on construit l'action associée $a\in \mathcal{A}$ de la façon suivante :
+        \begin{itemize}
+            \item $param(a) = o$
+            \item $pre(a)= \{f(o) \mid \forall f \in S\} \cup \{not f(o) \mid \forall f \notin S\}$. On explicite la négation des fluents absents de l'état de départ pour que chaque action soit uniquement applicable entre les deux états de la transition et nulle part ailleurs.
+            \item $eff^+(a) = \neg S \cap S'$ avec $\neg S = \{\neg s \mid s \in S\}$
+            \item $eff^-(a) = S \cap \neg S'$ avec $\neg S' = \{\neg s \mid s \in S'\}$
+        \end{itemize}
+    \item $S_{init} = \{ f(o) \mid f \in S_0\}$ 
+    \item $\mathcal{G}$ est construite  à partir de $\mathds{A} = \{S \mid S \in \mathds{S}, (S,\varnothing, S) \in \tau \}$. La formule $\mathcal{G}$ corresponds à l'union des états appartenant à $\mathds{A}$. 
+\end{itemize}
+
+Nous avons démontré la complétude au sens formelle. Il existe pour les LTS obtenables par notre parseur une possibilité de les reconvertir en problème PDDL. Cependant, il est à noter que sur le plan computationnel la correspondance est inapplicable avec un solveur PDDL. En effet, nous restreignons l'application d'une action à une unique état en générant des préconditions de taille $\mid \mathcal{F}\mid$ ce qui fait exploser la combinatoire du problème et perdre l'intérêt du solveur. 
+
+nb: on ne montre pas vraiment la complétude, mais plutôt l'idée de représentabilité en PDDL. On ne perd pas en information sémantiquement, mais cette transition inverse est peu optimale. Une autre possibilité de démonstration intéressante serait de construire un PDDL moins restreint et plus compact. En contrepartie des états non présents dans le LTS de base pourrait être atteints en appliquant notre parseur au PDDL construit. Dans tous les cas, pour notre parseur actuel, il n'existe pas d'application inverse qui reconstruise à l'identique le problème PDDL qui a permis d'obtenir un LTS. 
