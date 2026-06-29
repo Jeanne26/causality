@@ -1,6 +1,6 @@
 \section{Application : exemple du poison}
 
-Dans cette partie, nous allons présenter un exemple concret d'application du travail présenté précédemment. Cette section est organisée sous forme de pipeline, nous partons d'un problème défini en PDDL que nous convertissons en LTS, nous ajoutons une évaluation experte avant d'appliquer différentes configurations de la fonction de coût pour en analyser les nuances. L'exemple défini correspond à une situation dans laquelle se trouve un verre qui contient à l'origine de l'eau. On considère que différents événements peuvent se produire pour altérer la potabilité de ce dernier et entraîner ou non la mort de la personne qui le boit. Les événements sont évalués selon une norme que l'on laisse floue, mais qui correspond approximativement à une norme du bien dans le sens où un événement est jugé comme peu normal s'il est associé à une nuisance  (comme empoisonner le verre qui peut entraîner la mort) et comme très normal s'il entraîne un bénéfice (verser un antidote dans un verre empoisonné permet de sauver une personne). La modélisation de la situation et de l'évaluation est entièrement subjective et pourrait être complexifié, mais nous souhaitons garder un exemple simple pour plus de lisibilité. 
+Dans cette partie, nous allons présenter un exemple concret d'application du travail présenté précédemment. Cette section est organisée sous forme de pipeline, nous partons d'un problème défini en PDDL que nous convertissons en LTS, nous ajoutons une évaluation experte avant d'appliquer différentes configurations de la fonction de coût pour en analyser les nuances. L'exemple défini correspond à une situation dans laquelle se trouve un verre qui contient à l'origine de l'eau. On considère que différents événements peuvent se produire pour altérer la potabilité de ce dernier et entraîner ou non la mort de la personne qui le boit. Les événements sont évalués selon une norme que l'on laisse floue, mais qui correspond approximativement à une norme du bien dans le sens où un événement est jugé comme peu normal s'il est associé à une nuisance  (comme empoisonner le verre qui peut entraîner la mort) et comme très normal s'il entraîne un bénéfice (verser un antidote dans un verre empoisonné permet de sauver une personne). Dans notre modélisation un verre vide entraîne la mort cela peut paraître contre-intuitif, mais cette modélisation s'inspire d'un exemple connu en causalité. Cet exemple représente un voyageur dans le désert qui se fait empoisonner sa gourde puis un second assassin la lui vide. Nous nous inspirons de cet exemple pour représenter la possibilité de mourir de soif et évaluons subjectivement l'action de vider un verre moins mauvaise que de l'empoisonner. La modélisation de la situation et de l'évaluation est entièrement subjective et pourrait être complexifié, mais nous souhaitons garder un exemple simple pour plus de lisibilité. 
 
 \subsection{De PDDL vers un LTS}
 
@@ -36,8 +36,8 @@ Pour alléger la notation, on fusionne la notation de $boire_{VO},boire_{VA},boi
         \tau & = \left\{
         \begin{aligned}
         (VE,vider,VV),(VE,boire,Mort),(VE,antidote,VA),(Mort,\emptyset,Mort)\\
-        (VV,\emptyset,Mort),(VA,boire,Vivant),(Vivant,\emptyset,Vivant),(VO, boire,vivant)\\
-        (VO, boire,vivant),(VO,empoisonner,VE),(VO,vider,VV),\\
+        (VV,\emptyset,Mort),(VA,boire,Vivant),(Vivant,\emptyset,Vivant),(VO, boire,vivant),\\
+        (VO,empoisonner,VE),(VO,vider,VV),\\
         \end{aligned}
         \right\} \\
         expert\_judge_\tau &= \left\{
@@ -229,11 +229,23 @@ On note $\forall S\in \mathds{S},\quad \pi^{opt1}_\tau(S) =\pi^{opt2}_\tau(S)$. 
         }    
     \]
     \captionsetup{width=0.8\textwidth}
-    \caption{Politique optimale: les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale}
+    \caption{Politique optimale : les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale}
     \label{fig:placeholder}
 \end{figure}
 
 \subsection{Expérimentations}
+
+De nombreuses variables $\gamma, \lambda_1,\lambda_2,\delta$, et opérateurs ont été introduits pour la définition de la formule de coût. Pour fixer et choisir les opérateurs de manière adaptée, il est important de comprendre leur comportement et leur sensibilité à leurs paramètres. 
+
+\subsubsection{Sensibilité à $\gamma$ pour l'opérateur gamma}
+
+La variable $\gamma$ des opérateurs temporels est centrale
+
+
+
+
+
+\subsection{Résultats}
 
 En fonction de la configuration choisie (extraction d'une politique optimale, exploitation directe, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance à priori des contraintes que l'on souhaite appliquer lors de l'évaluation permet de guider le classement. 
 

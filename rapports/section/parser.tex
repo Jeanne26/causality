@@ -94,7 +94,7 @@ def build_graph(actions, init_state, goals):
             G.add_edge(current_node, new_node)
 
             if new_node not in visited:
-                queue.append(visited)
+                queue.append(new_node)
     
     for node in G.nodes:
         if satisfied(goals, node):

@@ -46,6 +46,8 @@ Avec :
 
 \end{itemize}
 
+Les termes \textit{d\_obs} et \textit{v} sont des termes bornés et permettent d'ordonner les contextes causaux contrefactuels. À l'inverse les terme \textit{divergence} et \textit{correct} valent 0 ou $+\infty$ ces termes jouent un rôle de filtre à priori, séparé de l'évaluation quantitative.
+
 \subsection{Distance à l'observation : coûts des opérations}
 
 Des travaux en sciences cognitives ont montré l'impact des notions de propensité (vraisemblance d'obtenir un effet sachant qu'un événement se produit) et de mutabilité (facilité avec laquelle on peut imaginer qu'un événement ait été différent) des événements lors du processus de raisonnement contrefactuel pour la sélection causale (voir \ref{mut_prop}). Notre cadre est pour l'instant déterministe donc nous laissons de côté la notion de propensité. Mais il reste intéressant d'intégrer la mutabilité, notamment pour le calcul de distance à l'observation. 
@@ -53,14 +55,18 @@ Des travaux en sciences cognitives ont montré l'impact des notions de propensit
 
 On souhaite modifier le coût de l'opération de substitution d'un état dans la distance de Levenshtein, c'est-à-dire que lorsque l'on cherche à déterminer le coût de transformation de la trace observée vers la trace contrefactuelle, on souhaite que la substitution d'un événement très peu mutable ait un coût de substitution plus élevé que pour un événement très mutable. Pour cela la première chose à faire est de définir formellement la notion de mutabilité dans notre framework. 
 
-Soit un événement $E$ qui se produit dans un état $S$ d'un LTS défini par $<\mathds{S},\tau>$ de la façon suivante :
+Soit un état $S$ d'un LTS défini par $<\mathds{S},\tau>$, on définit sa mutabilité de la façon suivante :
 \begin{equation}
-    mutabilite(E,S) =\#\{(S,E',S')\in \tau\}.
+    mutabilite(S) =\#\{(S,E',S')\in \tau\}.
 \end{equation}
 
-La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ d'un événement. Pour un état donné, s'il possède un grand nombre d'arcs sortants, on considère ses événements possibles comme très mutables (on peut facilement imaginer qu'un autre événement ait eu lieu).
+La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ d'un événement. Pour un état donné, s'il possède un grand nombre d'arcs sortants, on considère ses événements possibles comme très mutables (on peut facilement imaginer qu'un autre événement ait eu lieu). Le coût de substitution d'un état de la trace observé par un autre état correspond à l'inverse de la mutabilité de l'état le précédent dans la trace observée.
 
-La distance de Levenshtein est calculée non pas sur les événements, mais sur les états, on adapte donc cette définition. Le coût de substitution d'un état de la trace observé par un autre état correspond à l'inverse de la mutabilité de l'état le précédent dans la trace observée. Et la mutabilité d'un état correspond à son nombre d'arcs sortants.
+
+
+\begin{equation}
+    \textit{coût\_substitution}(S) = \frac{1}{\textit{mutabilite}(S_{\text{précédent}})}
+\end{equation}
 
 
 \begin{figure}[h!]
