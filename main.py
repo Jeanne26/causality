@@ -70,7 +70,7 @@ if __name__ == "__main__":
     res_dico = {}
     #L+P2
     for p in P_graph.policies:
-        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p],agg = gamma_late, choice = True )
+        res_dico[p] = cout(P_graph,"VO",P_graph.policies["pi1"],P_graph.policies[p],agg = gamma_late, choice = False )
     del res_dico["pi1"]
     show_res(res_dico)    
     

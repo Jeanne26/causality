@@ -132,7 +132,7 @@ def compute_score(path,graph, agg: lambda liste: np.mean(liste), choice=False):
     scores = []
     for action in range(1, len(path)-1 ,2):
         scores.append(path[action]['weight'])
-    return agg(scores)
+    return agg(liste_score = scores)
 
 
 def distance_pi_opt(pi,pi_opt,state_path):

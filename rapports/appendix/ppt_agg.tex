@@ -36,6 +36,19 @@ Soit $\gamma\in ]0,1]$, $\Gamma = \frac{1-\gamma^{N}}{1-\gamma}$ ($\Gamma =N $ s
 Soit $u\in [0,1]$
 $$agg_\gamma(u)= \frac{\gamma^0u}{\gamma^0}= u$$
 La propriété d'identité est respectée.
+L'identité étant vérifiée, on peut vérifier la propriété d'idempotence que l'on définie comme l'extension de l'identité avec un $n \geq 1$.
+
+Soit $\textbf{u} = (u,\dots,u)$, $\textbf{u} \in [0,1]^n$ :
+
+\begin{align*}
+    agg(u,\dots,u) & = \frac{\sum_{i=0}^{N-1} \gamma^i u}{\Gamma}  \\
+    & =u\frac{1-\gamma}{1-\gamma^N}\sum_{i=0}^{N-1}\gamma^i  = u \frac{\sum_{i=0}^{N-1}\gamma^i- \gamma\sum_{i=0}^{N-1}\gamma^i}{1- \gamma^N}\\
+    & = u \frac{\sum_{i=0}^{N-1}\gamma^i- \sum_{i=0}^{N-1}\gamma^{i+1}}{1- \gamma^N} = u \frac{\sum_{i=0}^{N-1}\gamma^i- \gamma^{i+1}}{1- \gamma^N} \\
+    &= u \frac{1-\gamma^N}{1-\gamma^N} = u\\  
+\end{align*}
+
+La propriété d'idempotence est bien vérifiée.
+
 \paragraph{Conditions aux limites}
 $$agg_\gamma(0,\dots,0) = \frac{ \sum_{i=0}^{N-1}\gamma^i0}{\Gamma}=0$$
 
@@ -45,6 +58,7 @@ Les conditions aux limites sont respectées.
 Soit $u,v\in [0,1]$ tel que $u\leq v$ 
 $$agg_{\gamma}(u_0,\dots,u,\dots,s_{n-1}) \leq agg_{\gamma}(u_0,\dots,v,\dots,s_{n-1}),$$ car $\gamma^iu\leq \gamma^iv$
 La propriété de monotonie croissante est respectée.
+
 
 \subsection{Opérateur de seuil}
 

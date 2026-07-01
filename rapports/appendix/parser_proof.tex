@@ -21,8 +21,9 @@ Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_{init}, \mathcal{G})$ un 
 \end{itemize}
 
 On introduit $\langle \mathds{S}^*, \tau^*\rangle$ le LTS cible associé à $\mathcal{P}$ avec : 
-$$S_0 \text{ l'état du LTS équivalent à } S_{init} \text{ du problème } \mathcal{P}$$
-$$\mathds{S} = \{S  \mid S \in 2^{\mathds{F}(\mathcal{P})} \text{ tel qu'il existe un chemin dans le LTS entre } S_0 \text{ et }S\}$$
+$$S_0 = S_{init} $$
+% $$S_0 \text{ l'état du LTS équivalent à } S_{init} \text{ du problème } \mathcal{P}$$
+$$\mathds{S^*} = \{S \in 2^{\mathds{F}(\mathcal{P})} \mid \text{il existe un chemin dans le LTS entre } S_0 \text{ et }S\}$$
 \begin{equation*}
     \begin{aligned}
     \tau^* &= \{(S, \{e\}, S') \mid S \in \mathbb{S}^*, \{e\} \in 2^{\mathds{E}(\mathcal{P})}, pre(e) \subseteq S \text{ et } S' = (S \setminus eff^-(e)) \cup eff^+(e)\} \\
