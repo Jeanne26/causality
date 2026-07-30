@@ -1,19 +1,39 @@
 \section{État de l'art}
-À RÉDIGER
 % Dans cet état de l'art, j'établis un lien entre les divers domaines abordés durant mon stage. La complexité de ce travail a notamment résidé dans la défnition précise des outils mobilisés, issus initialement des langages d'action et de la causalité actuelle, mais utilisés ici à des fins d'explicabilité. Cet état de l'art débute par une présentation de la causalité actuelle ainsi que des langages d'action, qui ont représenté un point de départ à mon travail. Je justifierai ensuite la dimension explicative de ma contribution en examinant l'intérêt et les limites des explications contrefactuelles. En conclusion je présenterai concrètement le positionnement de mon travail. Une part importante du travail a consisté à définir précisément les outils mobilisables issus de différents domaines et à assurer une cohérence sémantique entre l'ensemble des concepts et définitions identifiés au cours de mes recherches.
+Cet état de l'art présente les différents domaines explorés au cours de mon stage, la complexité de ce travail résidant notamment dans la définition et l'utilité précise des outils mobilisés. Le stage s'appuie initialement sur l'article \textcite{sarmiento_formalising_2025}, qui s'inscrit dans le domaine de la causalité effective et du raisonnement autour de l'action et du changement. Dans cet article des politiques contrefactuelles sont définies de manière simple dans le formalisme qui est proposé et permettent de caractériser des cas de surdétermination causale (des cas où plusieurs causes sont présentes et suffisantes pour produire un effet). L'objectif du stage a été d'enrichir et d'affiner le travail sur la construction de politiques contrefactuelles. Avant d'envisager une construction automatique, une phase d'évaluation s'est avérée nécessaire pour identifier précisément les besoins ainsi que les contraintes à respecter relativement au formalisme. Pour  définir ces notions, je me suis appuyée sur le domaine de l'explicabilité, qui dispose de nombreux travaux sur la notion d'explication contrefactuelle. Par ailleurs, cette évaluation a été enrichie par des recherches en sciences cognitives portant sur la sélection et la responsabilité causale. Une part significative de mon travail a consisté à définir les outils mobilisables issus de ces différents champs, afin d'assurer une cohérence sémantique entre l'ensemble des concepts identifiés.
+Tout d'abord, nous présenterons le domaine de la causalité effective ainsi que le raisonnement sur l'action et le changement. Ensuite, nous aborderons le concept d'explication contrefactuelle, sa définition, ses limites et la possibilité de son intégration dans le formalisme.
+
+\subsection{Causalité}
+La causalité peut être définie comme l'étude de l'influence par laquelle un événement, un processus ou un état (la cause) contribue à la production d'un autre événement, processus ou état (l'effet). Issu à l'origine de la philosophie, les champs de recherche et d'applications de la causalité sont très variés, on y trouve par exemple la physique, l'économie, l'éthique ou encore le droit. Il existe deux types de causalité, la première est la causalité générale qui cherche à définir des lois universelles, qui peut être vu comme une réflexion "vers l'avant", on cherche à déterminer les effets de causes. On peut par exemple penser à des règles générales comme les lois de Newton qui permettent d'expliquer le mouvement d'objets, ou encore le fait que conduire en état d'ébriété augmente le risque d'accident.  À l'inverse se trouve la causalité effective qui elle, correspond  à une réflexion "vers l'arrière", on cherche à définir les causes d'un effet dans des situations précises. Par exemple si Billy  provoque un accident de voiture après avoir consommé de l'alcool et regardé son téléphone en conduisant, l'approche par causalité effective consiste à retracer les chaînes causales propres à cette situation particulière. C'est à cette dernière que l'on s'intéresse dans ce travail. 
+
+Il existe deux approches principales en causalité effective, la première est l'approche par régularité qui se base uniquement sur les faits observés en établissant des relations causales sur des successions constantes et prévisibles de causes et d'effet. Par exemple Hume définit un lien causal si la cause est continue à l'effet, qu'elle précède l'effet et qu'ils sont du même type. Ce type de définition simple, mais floue peut être clairement insuffisante, on peut par exemple établir que le jour cause la nuit (\textcite{kueffner_comprehensive_2021}). La seconde approche est l'approche contrefactuelle qui explore des mondes alternatifs régis par les mêmes lois que le monde observé, mais où des choses se sont produites différemment. Par exemple si on se demande si \textit{A} est la cause de \textit{B}, on se demande si \textit{B} se serait produit si \textit{A} ne s'était pas produit. Même si ces théories ont l'avantage d'être relativement intuitives et permettent de résoudre la majorité des situations auxquelles elles sont confrontées, sur certains cas de surdétermination des débats subsistent encore. Un exemple de surdétermination  est celui d'un marcheur dans le désert : une première personne empoisonne sa gourde puis une seconde la vide, le marcheur décède. Si on enlève l'empoisonnement le marcheur meurt quand même, de même si on ne lui vide finalement pas sa gourde. 
+
+Ce type de limite à amener au développement de formalisme rigoureux permettant de représenter explicitement les relations causales et de raisonner sur des situations hypothétiques. Parmis les plus populaires d'entre eux, on trouve les modèles d'équations structurelles introduit notamment par Judea Pearl \textcite{pearl2009causality}. Ces modèles permettent de modéliser le monde et les mécanismes causaux qui le régissent avec un ensemble de variables exogènes (dont les valeurs sont définies à l'extérieur du modèle) et un ensemble de variables endogènes dont les valeurs sont fixés par un ensemble d'équations structurelles déterministes. Halpern définit au sein de ce formalisme les causes effectives comme l'ensemble d'événements qui respectent trois critères \textcite{halpern2016actual}. Le premier est celui d'existence, les événements doivent être observés pour être considérés comme une cause. Le second est la contrefactualité, si la cause est absente et en gardant fixe un ensemble de variables témoins l'effet n'est pas observé. Enfin, un critère de minimalité garantit que la cause ne comprend que les événements qui en font partie intégrante. Dans ce cadre, l'inférence contrefactuelle ne consiste pas à imaginer un monde alternatif mais à calculer les conséquences d'une modification d'une ou plusieurs variables tout en conservant les mécanismes causaux. On peut donc prédire des observations, estimer les effets d'intervention et raisonner sur des scénarios contrefactuels. Cette capacité à expliciter l'effet d'une intervention constitue une des bases du domaine du raisonnement sur l'action et le changement, qui offre des outils permettant de raisonner sur des systèmes dynamiques représentant le monde. Si ce champ permet d'étudier la cuaslité grâce à la diversité de ses théories, celle-ci n'en constitue pas l'effet centrale, il est donc pertinent de clarifier les transitions possibles entre les deux domaines. 
+
+rajouter le travail de d'amico 
+\subsection{Raisonnement sur l'action et le changement}
+RAC
+les actions languages
+la representation sous forme de LTS 
+la séparation etat event
+l'identification de chaine causale
+la notion de temps 
 
 
-\subsection{Causalité actuelle}
+
+
 Causalité regulière vs causalité Actuelle \textcite{pearl2009causality}
 
 Causalité contrefactuelle \textcite{damico_interventionist_nodate} \textcite{sarmiento_formalising_2025}
 
 Formalisme Rac equivalence lts \textcite{sarmientolozano:tel-04576890},\textcite{sarmiento2023actionlanguagesbasedactual} 
 
-LTS: politiques , temps, causalité, séparation état events \textcite{galtonstatesevents}, politique
 
 
 
+
+Il est important d'apporter une précision pour lever une confusion fréquente : on peut s'interroger sur la cause d'un effet, mais aussi sur la responsabilité d'une cause dans la production de cet effet. Un exemple permet de distinguer la causalité de la responsabilité causale : imaginons un pont ne pouvant supporter qu'un seul véhicule à la fois, sous peine de s'effondrer. Tom s'engage sur le pont alors que son feu est vert ; en face, Luc s'engage alors que son feu est rouge. Le pont s'effondre. D'un point de vue purement causal, Tom et Luc sont tous deux à l'origine de l'effondrement, car leur présence simultanée est nécessaire à la chute. Cependant, on a souvent tendance à attribuer la responsabilité de l'accident à Luc, sous prétexte qu'il a brûlé un feu rouge. Ce raisonnement relève de la responsabilité causale et non de la causalité pure. 
+\subsection{Sélection causale}
 \subsection{Explication Contrefactuelle}
 
 \textcite{carloni2023rolecausalityexplainableartificial}
@@ -33,4 +53,3 @@ Application au RL et Limites (temps, recompense, robustese) \textcite{gajcin_red
 Politiques contrefactuelles \textcite{DBLP:journals/corr/abs-1811-06272},\textcite{lally2026robustcounterfactualinferencemarkov}
 
 Motivation Sciences cognitives \textcite{henne_counterfactual_2021},\textcite{icard_normality_2017},\textcite{kominsky_causal_2015},\textcite{mcgill_mutability_2000} 
-
