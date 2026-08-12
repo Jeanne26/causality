@@ -23,6 +23,16 @@
 \usepackage{booktabs}
 \usepackage{listings}
 \usepackage{minipage-marginpar}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+
+\hypersetup{
+    colorlinks=false,
+    pdfborder={0 0 1},
+    linkbordercolor=BrickRed,
+    citebordercolor=BrickRed,
+    urlbordercolor=BrickRed
+}
 \usepackage{enumitem}
 \setlist[itemize,1]{label=\textbullet}
 \newcommand*{\longDefiningEquals}{\stackrel{\text{def}}{=\joinrel=}}
@@ -30,7 +40,7 @@
 \author{Jeanne Bonnaventure}
 \date{Février - Août 2026}
 \usepackage{subfiles}
-\usepackage[style=authoryear, backend=biber]{biblatex}
+\usepackage[style=authoryear, backend=biber, url=false]{biblatex}
 \addbibresource{ref.bib}
 
 
