@@ -2,9 +2,9 @@
 \section{Définitions et notations}\label{def}
 On définit dans un premier temps l'ensemble des objets nécessaires à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article \cite{sarmiento_formalising_2025}, d'autres ont été légèrement modifiées et certaines ont été ajoutées.
 
-On commence par décrire la structure statique du monde : les \emph{fluents} qui le caractérisent ainsi que les formules d'états qui permettent d'exprimer des propriétés logiques sur ces fluents. On
-introduit ensuite sa dynamique, à travers les \emph{événements} qui font évoluer le monde et les
-\emph{relations de transition} qui les relient aux états, formant ainsi un système de transition
+On commence par décrire la structure statique du monde : les fluents qui le caractérisent ainsi que les formules d'états qui permettent d'exprimer des propriétés logiques sur ces fluents. On
+introduit ensuite sa dynamique, à travers les événements qui font évoluer le monde et les
+relations de transition qui les relient aux états, formant ainsi un système de transition
 d'états étiquetés (LTS).
 
 On commence par décrire la structure du monde : les fluents qui le caractérisent ainsi que les formules d'états qui permettent d'exprimer des propriétés logiques sur ces fluents.
@@ -44,29 +44,29 @@ Une fois cette structure posée, on définit la notion de politique qui associe 
     \item \textbf{États terminaux } $\mathds{A} \subseteq \mathds{S}$ : ensemble des états d'un LTS $\langle\mathds{S},\tau\rangle$ défini par :
         \begin{equation*}
         \begin{aligned}
-            \mathds{A} &= \{ S\in \mathds{S} \mid\ (S,\emptyset,S) \in \tau \} \\
+            \mathds{A} &= \{ S\in \mathds{S} \mid\ (S,\emptyset,S) \in \tau \} 
                     &\quad \text{et} \quad \forall S' \notin \mathds{A},\ \forall E \in 2^{\mathds{E}},\ (S',E,S')\notin \tau
         \end{aligned}
         \end{equation*}
     \end{itemize}
 
-L'exécution d'un contexte causal engendre une évolution du monde qu'il est nécessaire de pouvoir indexer temporellement, on introduit pour cela l'ensemble des pas de temps, qui permet de définir les fonctions $S^\chi$ et $E^\chi$ donnant l'état et l'événement obtenus à un instant donné, ainsi que la trace $\sigma^\chi$ qui en résulte. Les résultats de $S^\chi$, $E^\chi$ ainsi que la trace sont directement dérivables de par le fait que les LTS ainsi que les politiques soient déterministe. 
+L'exécution d'un contexte causal engendre une évolution du monde qu'il est nécessaire de pouvoir indexer temporellement, on introduit pour cela l'ensemble des pas de temps, qui permet de définir les fonctions $S^\chi$ et $E^\chi$ donnant l'état et l'événement obtenus à un instant donné, ainsi que la trace $\sigma^\chi$. Les résultats de $S^\chi$, $E^\chi$ ainsi que la trace sont directement dérivables de par le fait que les LTS ainsi que les politiques soient déterministe. 
 
 \begin{itemize}
     \item $\mathds{T}$: ensemble des pas de temps
     
     \item $S^\chi: \mathds{T}\to \mathds{S}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'état dans lequel on se trouve en suivant la politique $\pi$, dans $\tau$ depuis $S_0$.
 
-    \item $E^\chi: \mathds{T}\to \mathds{S}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'événement qui a lieu en suivant la politique $\pi$, dans $\tau$ depuis $S_0$
+    \item $E^\chi: \mathds{T}\to \mathds{E}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'événement qui a lieu en suivant la politique $\pi$, dans $\tau$ depuis $S_0$
     
-    \item \textbf{Trace} $\sigma^\chi$ : avec $\chi = (\pi,S_0,\tau)$, la trace complète (états, événements), obtenue dans le contexte causal $\chi$, de la forme : $[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n,E_n,S_n,E_n\dots] $. Une fois un état terminal atteint, on observe une boucle qui amène à une trace infinie. On simplifie cette trace pour qu'elle soit de longueur finie. Soit $n$ tel que $S_n\in \mathds{A}$ : la trace d'origine devient $\sigma^\chi=[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n]$. On notera $\sigma^{\chi}_{|state}$ la trace ne contenant que les états et, $\sigma^{\chi}_{|event}$ la trace ne contenant que les événements.
+    \item \textbf{Trace} $\sigma^\chi$ : avec $\chi = (\pi,S_0,\tau)$, la trace complète (états, événements), obtenue dans le contexte causal $\chi$, de la forme : $[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n,E_n,S_n,E_n\dots] $. Une fois un état terminal atteint, on observe une boucle qui amène à une trace infinie. On simplifie cette trace pour qu'elle soit de longueur finie. Soit $n$ tel que $S_n\in \mathds{A}$ : la trace d'origine devient $\sigma^\chi=[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n]$. On notera $\sigma^{\chi}_{|state}$ la partie de la trace ne contenant que les états et, $\sigma^{\chi}_{|event}$ la trace ne contenant que les événements.
     
 \end{itemize}
 
 
-Enfin, on introduit la fonction $expert\_judge_\tau$, qui permettra dans la section suivante d'évaluer la plausibilité d'un contexte causal relativement à une norme.
+Enfin, on introduit la fonction $expert\_judge_\tau$, qui permet de représenter la notion de normativité dans le formalisme. On pondère les transitions du LTS avec des poids qui représente le respect ou la violation d'une norme.
 \begin{itemize}
-    \item $expert\_judge_\tau: \mathds{S} \times 2 ^{\mathds{E}}\to \lbrack 0, 1\rbrack$ fonction d'évaluation experte, définie partiellement sur l'ensemble des couples $(S,E)$ tel que $\exists S'\in\mathds{S},(S,E,S')\in \tau$. Cette fonction attribue à chaque paire une valeur comprise entre 0 et 1 relative à une norme (statistique ou prescriptive). Ces valeurs sont fixées de manière subjective.
+    \item $expert\_judge_\tau: \mathds{S} \times 2 ^{\mathds{E}}\to \lbrack 0, 1\rbrack$ fonction d'évaluation experte, définie partiellement sur l'ensemble des couples $(S,E)$ tel que $\exists S'\in\mathds{S},(S,E,S')\in \tau$. Cette fonction attribue à chaque paire une valeur comprise entre 0 et 1 relative à une norme (statistique ou prescriptive).
 \end{itemize}
 
-Les éléments présentés dans cette section forment un cadre de travail clair et expressif, sur lequel je m'appuie dans la section \ref{fct_cout} pour introduire la contribution principale de ce travail.
+Les éléments présentés dans cette section forment un cadre de travail clair et expressif, sur lequel je m'appuie dans la section \ref{fct_cout} pour introduire la contribution principale de ce travail. Un exemple d'instanciation avec ces notions se trouve dans la section \ref{ex_poison}

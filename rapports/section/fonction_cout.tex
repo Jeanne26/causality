@@ -1,20 +1,26 @@
 \section{Évaluation d'un contexte causal contrefactuel}\label{fct_cout}
 
 
-Pour évaluer un contexte causal contrefactuel relativement à un contexte causal observé, on procède en deux temps. Dans un premier temps, on attribue un coût au contexte causal, ce dernier permet d'évaluer la proximité à l'observation, ainsi que la plausibilité du contexte. Le coût permet aussi d'agir comme un filtre à priori sur les contrefactuels non valides relativement au LTS. Une fois le coût calculé, on applique un critère de validité (au sens XAI), qui permet de vérifier que les sorties obtenues, en appliquant respectivement les deux politiques, à partir de l'état de départ dans le LTS, sont différentes. Ce critère agit comme un filtre à posteriori sur les contextes causaux contrefactuels.
+Pour évaluer un contexte causal contrefactuel relativement à un contexte causal observé, on procède en deux temps. Dans un premier temps, on attribue à chaque contexte causal contrefactuel un coût, qui permet à la fois d'évaluer sa proximité à l'observation et sa plausibilité relativement à une norme. Cette fonction de coût, définie sur l'ensemble des contextes causaux contrefactuels permet de les ordonner entre eux. Elle joue aussi un rôle de filtre à priori en attribuant un coût infini aux contrefactuels non valides relativement au LTS, par exemple, ceux dont la politique ne diverge de la politique observée qu'en des états absents de la trace observée.
 
+La fonction de coût est une mesure de qualité des contrefactuels, mais on peut également vouloir restreindre cette notion à un sens plus proche de celui employé en XAI. C'est pourquoi dans un second temps, on définit un filtre a posteriori qui, une fois les contextes causaux évalués, ne retient que ceux dont l'état final diffère de celui observé (validité au sens XAI), et dont le coût reste inférieur à un certain seuil d'acceptabilité.
 
+% Il est à noter que ce traitement n'est pas nécessaire du point de vue de la causalité effective, où l'on peut au contraire s'intéresser à des contrefactuels dont l'état final est identique à celui de l'observation, mais dont le cheminement pour l'atteindre est différent, par exemple, en respectant davantage la norme.
 
-\subsection{Fonction de coût}
+Dans la partie qui suit, j'introduis la fonction de coût proposée, puis je détaille les termes qui la composent avant de conclure par les filtres a posteriori.
 
-La fonction de coût doit permettre un compromis entre l'évaluation :
+\subsection{Fonction de coût proposée}
+
+La fonction de coût doit permettre d'atteindre un compromis entre l'évaluation :
 \begin{itemize}
     \item  de la distance du contexte causal contrefactuel par rapport au causal setting  observé. L'intuition derrière ce terme correspond à l'idée qu'un bon contrefactuel doit être relativement proche du contexte causal observé pour être pertinent
-    \item de la plausibilité du contexte causal. La plausibilité ou encore le réalisme correspond ici à un respect relatif d'une norme (statistique ou prescriptive). 
+    \item de la plausibilité du contexte causal. La plausibilité ou réalisme correspond ici à un respect relatif d'une norme (statistique ou prescriptive). 
 
 \end{itemize}
 
 La fonction de coût intègre deux termes supplémentaires qui permettent d'exclure les contrefactuels non valides relativement au LTS (politiques non correctes), ainsi que les politiques qui ne divergent de la politique observée que sur des états non présents dans la trace d'états observée.
+
+Aussi, la fonction globale dont les composantes sont discutées tour à tour dans les sections suivantes : 
 
 \begin{equation}\label{cout}
     \textit{Coût}_\tau(\chi,\chi')= \lambda_1  d\_obs(\sigma^\chi_{|state},\sigma^{\chi'}_{|state}) + \lambda_2 v(\chi', expert\_{judge}_\tau) + divergence(\chi,\chi') + correct(\chi') 
@@ -23,7 +29,7 @@ La fonction de coût intègre deux termes supplémentaires qui permettent d'excl
 Avec :
 \begin{itemize}
     \item $\chi= (\pi,S_0,\tau)$ le contexte causal observé et $\chi' = (\pi',S_0',\tau)$ le contexte causal contrefactuel que l'on évalue. 
-    \item $d\_obs$ attribue un coût relatif à la distance entre le contexte causal contrefactuel par rapport à celui observé. On utilise la distance de Levenshtein, avec variation des poids en fonction de l'intervention effectuée (suppression, insertion, substitution).
+    \item $d\_obs$ attribue un coût relatif à la distance entre le contexte causal contrefactuel par rapport à celui observé.  Je propose d'utiliser la distance de Levenshtein sur la trace des états, avec une variation des poids en fonction du type de l'intervention effectuée (suppression, insertion, substitution).
     \item $v$ la fonction de vraisemblance du contexte causal contrefactuel par rapport à un jugement expert.
     \item La fonction $divergence$ permet d'exclure les contextes causaux contrefactuels si leur politique associée ne diverge de celle observée que dans des états non présents dans la trace d'états du contexte causal observé. 
     \begin{equation}
@@ -33,7 +39,7 @@ Avec :
              &+\infty \quad \text{sinon}
         \end{cases}
     \end{equation}
-    Voir exemple \ref{ex_div}
+    Voir l'exemple dans l'annexe \ref{ex_div}
 
     \item La fonction $correct$ permet d'exclure les contextes causaux contrefactuels dont la politique n'est pas correcte : 
     \begin{equation}
@@ -42,25 +48,30 @@ Avec :
             & +\infty \quad sinon
         \end{cases}
     \end{equation}
-    Voir exemple \ref{ex_corr}.
+    Voir l'exemple dans l'annexe \ref{ex_corr}.
 
 \end{itemize}
 
-Les termes \textit{d\_obs} et \textit{v} sont des termes bornés et permettent d'ordonner les contextes causaux contrefactuels. À l'inverse les terme \textit{divergence} et \textit{correct} valent 0 ou $+\infty$ ces termes jouent un rôle de filtre à priori, séparé de l'évaluation quantitative.
+Les termes \textit{d\_obs} et \textit{v} sont des termes bornés et permettent d'ordonner les contextes causaux contrefactuels. Les termes \textit{divergence} et \textit{correct} valent 0 ou $+\infty$ ces termes jouent un rôle de filtre à priori, séparé de l'évaluation quantitative.
 
-\subsection{Distance à l'observation : coûts des opérations}
+\subsection{Distance à l'observation} \label{dist_obs}
 
-Des travaux en sciences cognitives ont montré l'impact des notions de propensité (vraisemblance d'obtenir un effet sachant qu'un événement se produit) et de mutabilité (facilité avec laquelle on peut imaginer qu'un événement ait été différent) des événements lors du processus de raisonnement contrefactuel pour la sélection causale (voir \ref{mut_prop}). Notre cadre est pour l'instant déterministe donc nous laissons de côté la notion de propensité. Mais il reste intéressant d'intégrer la mutabilité, notamment pour le calcul de distance à l'observation. 
+\subsubsection{Distance de Levenshtein}
+
+Pour évaluer la distance entre deux contextes causaux, je choisis de travailler sur leurs traces d'états qui sont finies et entièrement déterminées par les contextes causaux. Une trace d'états peut être vue comme un mot définie sur un alphabet dont les lettre sont les états du LTS.
+
+La distance de Levenshtein est utilisé pour comparer deux chaînes de caractères, elle indique le coût minimal des opérations pour transformer l'une en l'autre. Les opérations sont l'insertion, la suppression et la substitution d'un caractère. Appliquée aux traces d'états, elle correspond au coût minimal des interventions nécessaires pour passer de la trace contrefactuelle à la trace observée, ou inversement. Ce choix de la distance de Levenshtein présente plusieurs intérêts pour notre application. Cette distance ne suppose pas de contrainte sur la longueur des traces comparées, ce qui est essentiel car une politique contrefactuelle peut produire une trace plus longue, plus courte ou égale que celle du contexte observé. D'autre part, elle décompose la distance en somme d'opérations élémentaires interprétables (insertion, suppression, substitution d'un état). Cette décomposition peut être exploitée en modifiant la pondération de chaque opération, c'est ce que je propose dans la section suivante.
 
 
-On souhaite modifier le coût de l'opération de substitution d'un état dans la distance de Levenshtein, c'est-à-dire que lorsque l'on cherche à déterminer le coût de transformation de la trace observée vers la trace contrefactuelle, on souhaite que la substitution d'un événement très peu mutable ait un coût de substitution plus élevé que pour un événement très mutable. Pour cela la première chose à faire est de définir formellement la notion de mutabilité dans notre framework. 
+\subsubsection{Intégration de la mutabilité}
 
+Des travaux en sciences cognitives ont montré l'importance des notions de propensité (vraisemblance d'obtenir un effet sachant qu'un événement se produit) et de mutabilité (facilité avec laquelle on peut imaginer qu'un événement ait été différent) des événements lors du processus de raisonnement contrefactuel pour la sélection causale \parencite{mcgill_mutability_2000} (voir les détails en annexe \ref{mut_prop}). Notre cadre est pour l'instant déterministe donc nous laissons de côté la notion de propensité. Cependant, il reste intéressant d'intégrer la mutabilité, notamment pour le calcul de la distance à l'observation, la première étape étant d'adapter les définitions du concept en sciences cognitives à notre cadre. 
 Soit un état $S$ d'un LTS défini par $<\mathds{S},\tau>$, on définit sa mutabilité de la façon suivante :
 \begin{equation}
-    mutabilite(S) =\#\{(S,E',S')\in \tau\}.
+    mutabilite(S) =Card \mid \{(S,E',S')\in \tau\} \mid.
 \end{equation}
 
-La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ d'un événement. Pour un état donné, s'il possède un grand nombre d'arcs sortants, on considère ses événements possibles comme très mutables (on peut facilement imaginer qu'un autre événement ait eu lieu). Le coût de substitution d'un état de la trace observé par un autre état correspond à l'inverse de la mutabilité de l'état le précédent dans la trace observée.
+La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ d'un événement. Pour un état donné, s'il possède un grand nombre d'arcs sortants, on considère ses événements possibles comme très mutables (on peut facilement imaginer qu'un autre événement ait eu lieu). Le coût de substitution d'un état de la trace observé par un autre état correspond à l'inverse de la mutabilité de l'état le précédant dans la trace observée.
 
 
 
@@ -82,50 +93,85 @@ La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ 
     \]
     \captionsetup{width = 0.8\textwidth}
 
-    \caption{Exemple d'application de la distance de Levenshtein avec coût de substitution dynamique. On considère que la trace bleue [ABDGI] est la trace observée et on cherche à mesurer la distance de la trace rouge [ABDEI] à la trace bleue, ainsi que de la trace verte [ACDGI] à la bleue. Les traces rouge et verte ne diffèrent de la bleue que par un état. Pour la rouge, c'est le choix dans l'état D (mutabilité $= 4$) qui a amené à l'état E. Pour la verte, c'est le choix dans A (mutabilité $= 2$) qui a amené à l'état C. La distance entre la trace rouge et la trace bleue est de $\frac{1}{4}$ et celle entre la trace bleue et la trace verte est de $\frac{1}{2}$. La trace verte est donc plus éloignée de la bleue que la trace rouge, car la mutabilité est plus faible en A qu'en D.}
+    \caption{Exemple d'application de la distance de Levenshtein avec un coût de substitution dynamique, dépendant de la mutabilité des états. Avec un coût de substitution fixé à 1, on obtient \textit{coût}(ABDEI, ABDGI) = 1 = \textit{coût}(ACDGI, ABDGI). En tenant compte de la mutabilité des états, on obtient \textit{coût}(ABDEI, ABDGI) = $\frac{1}{4}$ < \textit{coût}(ACDGI, ABDGI) = $\frac{1}{2}$, car \textit{mutabilité}(A) = 2 < \textit{mutabilité}(D) = 4.}
     \label{cout_sub}
 \end{figure}
 
-On observe dans l'exemple \ref{cout_sub} l'intérêt de modifier le coût de substitution en fonction de la mutabilité s'il avait été fixé à un la distance à l'observation pour les traces rouge et bleue aurait été la même. Mais on considère maintenant plus proche une trace contrefactuelle si elle diffère en des états très mutables de la trace observée.
+On observe dans la Figure \ref{cout_sub} l'intérêt de modifier le coût de substitution en fonction de la mutabilité : s'il avait été fixé à un, la distance à l'observation pour les traces rouge et bleue aurait été la même. Cependant, on considère maintenant plus proche une trace contrefactuelle si elle diffère en des états très mutables de la trace observée. Tenir compte de la mutabilité permet de privilégier l'une par rapport à l'autre et donc de fournir une évaluation plus fine des contextes causaux contrefactuels
 
-Cette définition et intégration de la mutabilité dans la distance à l'observation reste une première piste et peut présenter de potentielles limitations. En effet, cette définition dépend de la modélisation du monde (le LTS) que nous choisissons de ne pas remettre en question. De plus la question posée par ce nouveau coût de substitution est : "à quel point il est coûteux de remplacer l'événement observé" alors que l'on pourrait plutôt souhaiter répondre à la question "à quel point il est coûteux de remplacer l'événement observé par l'événement spécifique du scénario contrefactuel".
+% Cette définition et intégration de la mutabilité dans la distance à l'observation reste une première piste et peut présenter de potentielles limitations. En effet, cette définition dépend de la modélisation du monde (le LTS) que nous choisissons de ne pas remettre en question. De plus la question posée par ce nouveau coût de substitution est : "à quel point il est coûteux de remplacer l'événement observé" alors que l'on pourrait plutôt souhaiter répondre à la question "à quel point il est coûteux de remplacer l'événement observé par l'événement spécifique du scénario contrefactuel".
 
+Un enrichissement pourrait être de définir un coût de substitution ne dépendant pas uniquement de la caractéristique de l'état précédent mais aussi de l'état remplaçant l'état courant.
 
  \subsection{Vraisemblance du contrefactuel}
- Pour évaluer la vraisemblance (fonction $v$) du contexte causal contrefactuel, on se base sur l'évaluation extérieure d'un juge expert, comme définie dans la partie \ref{def}. Cette évaluation permet d'attribuer un score compris entre 0 et 1 à chaque couple état/événement d'un LTS. Un score d'un correspond à un respect total de la norme, un score de 0 à un non-respect total de la norme. 
- À partir des scores, on évalue la vraisemblance du contrefactuel soit en l'exploitant directement, soit en construisant à partir de ces derniers une politique optimale.
+ L'évaluation de la vraisemblance d'un contexte causal se fait relativement à une norme. Pour tenir compte de cet aspect normatif, on choisit de représenter une norme sous la forme d'une pondération des transitions, qui par défaut est considérée comme fournie par un expert, d'où le nom $expert\_judge$ (\ref{def}). Cette évaluation attribue un score compris entre 0 et 1 à chaque couple état/événement d'un LTS. Un score de 1 correspond à un respect total de la norme, un score de 0 à un non-respect total de la norme. Différentes contraintes peuvent être envisagées pour l'attribution des scores, elles sont discutées dans la section \ref{jugeexpert}. Une fois la pondération du graphe établie il faut définir concrètement une définition de la vraisemblance. Le cadre des LTS et des contextes causaux est très riche et les objets considérés pour évaluer la vraisemblance peuvent être divers, j'introduis dans la section \ref{v_pol_opt} une évaluation basée sur la comparaison entre la politique associée au contexte causal contrefactuel et une politique optimale. Dans la section \ref{agre_v}, une seconde proposition est faite, on utilise la trace du contexte causal contrefactuel pour en évaluer la vraisemblance relativement à la norme. 
+%  Pour évaluer la vraisemblance (fonction $v$) du contexte causal contrefactuel, on se base sur l'évaluation extérieure d'un juge expert, comme définie dans la partie \ref{def}. Cette évaluation permet d'attribuer un score compris entre 0 et 1 à chaque couple état/événement d'un LTS. Un score d'un correspond à un respect total de la norme, un score de 0 à un non-respect total de la norme. 
+%  À partir des scores, on évalue la vraisemblance du contrefactuel soit en l'exploitant directement, soit en construisant à partir de ces derniers une politique optimale.
  
- \subsubsection{Juge expert}
-Différentes méthodes sont applicables pour attribuer les scores. On peut contraindre, par exemple, pour un état donné, à avoir une distribution de probabilité ou de possibilité sur l'ensemble des événements possibles depuis cet état.
- \begin{enumerate}
-    \item Distribution de probabilité : L'expert donne une distribution de probabilité sur les arcs sortant d'un état, deux possibilités de construction :
-        \begin{itemize}
-            \item À partir d'un classement avec softmax sur l'inverse des positions : simple, mais on perd en expressivité, les écarts entre les événements sont fixes relativement au nombre d'arcs sortants du sommet qui représente un état. De plus cela demande d'avoir un ordre sur les événements ce qui n'est pas toujours souhaitable si on a des événements normativement équivalents.
-            \item L'expert donne directement une distribution de probabilités, cette méthode a l'avantage de limiter la perte d'expressivité et d'autoriser des scores égaux pour deux événements sortant d'un même état.
-            \item Une distribution de probabilité peut fortement pénaliser des événements issus d'un état avec de nombreux arcs sortant comme on l'observe sur le LTS ci-dessous :
-        \end{itemize}
+ \subsubsection{Pondération des arcs} \label{jugeexpert}
 
-        \begin{figure}[h!]\label{graph_prob}
-            \centering
-            \[
-                \xymatrix @R=0.1em@C=5em {
-                    & & *++[o][F-]{D} \ar[r]^{\dots} &
-                \\ & & *++[o][F-]{E} \ar[r]^{\dots}&
-                \\ & *++[o][F-]{B} \ar[ruu]^{0.25}\ar[ru]^{0.25}\ar[r]^{0.25}\ar[rd]^{0.25}& *++[o][F-]{B}&
-                \\ & & *++[o][F-]{G} \ar[r]^{\dots}&
-                \\  *++[o][F-]{A} \ar[ruu]^{0.5} \ar[rd]^{0.5}& & &
-                \\ & *++[o][F-]{C}\ar[r]^{0.5} \ar[rd]^{0.5}&*++[o][F-]{H} \ar[r]^{\dots} &
-                \\ & & *++[o][F-]{I} \ar[r]^{\dots}& 
-                }            
-            \]
-            \captionsetup{width = 0.6\textwidth}
-            \caption{Exemple de LTS contraint à des distributions de probabilités. Pour les états B et C chaque événement sortant est normativement équivalent aux autres. Les arcs sortant de l'état B sont pénalisés par leur nombre.}
-        \end{figure}
+ Différentes méthodes sont possibles pour attribuer les poids des transitions et leur choix entraîne plusieurs questions qu'il me semble important d'expliciter afin d'en saisir les nuances et ainsi que les difficultés auxquelles on se confronte lorsque l'on cherche à modéliser une norme. Je présente dans ce qui suit trois choix qui ont été envisager : contraindre à une distribution de probabilité les scores sortant d'un même état, contraindre à une distribution de possibilité ou attribuer des valeurs libres. Ce choix peut se faire en fonction de ce que l'on souhaite représenter ou en fonction des informations disponibles.
 
-    \item Distribution de possibilité : l'expert attribue une distribution de possibilité sur l'ensemble des arcs sortant d'un état donné. On note qu'une distribution de possibilité impose que le score maximal parmi tous les scores des événements sortant d'un état soit de 1.
-    \item Valeurs libres : l'expert juge indépendamment chaque événement possible en attribuant une valeur entre 0 et 1. Avantage : pas de contrainte sur la somme des scores ou encore sur leur valeur maximale. Désavantage : interprétation et choix des valeurs potentiellement plus complexe.  
+ \paragraph{Distribution de probabilité}
+
+ On peut choisir de contraindre les scores des transitions sortantes d'un même état à une distribution de probabilités. Deux constructions sont possibles : la première consiste à partir d'un classement des événements et le convertir en distribution à l'aide d'un \textit{softmax} sur l'inverse des positions. Cette méthode à l'avantage de sa simplicité, il est simple d'ordonner des événements plutôt que de leur attribuer un score exact, mais avoir un ordre total n'est pas toujours possible (certains événements peuvent être normativement équivalent). Elle souffre aussi d'une perte d'expressivité, les écarts entre événements sont fixés par le nombre d'arcs sortant de l'état plutôt que par une différence normative réelle.
+ Une seconde construction consiste à demander directement à l'expert une distribution de probabilité sur les événements sortant d'un état. Cette méthode permet de limiter la perte d'expressivité et autorise l'attribution de scores égaux. Elle présente cependant l'incovéniant propre à toute distribution de probabilité imposant une somme de tous les scores égale à 1. Cela amène mécaniquement à pénaliser les événements issus d'un état comportant de nombreux arcs sortants comme l'illustre la Figure \ref{graph_prob}.
+
+    \begin{figure}[h!]
+    \centering
+    \[
+        \xymatrix @R=0.1em@C=5em {
+            & & *++[o][F-]{D} \ar[r]^{\dots} &
+        \\ & & *++[o][F-]{E} \ar[r]^{\dots}&
+        \\ & *++[o][F-]{B} \ar[ruu]^{0.25}\ar[ru]^{0.25}\ar[r]^{0.25}\ar[rd]^{0.25}& *++[o][F-]{B}&
+        \\ & & *++[o][F-]{G} \ar[r]^{\dots}&
+        \\  *++[o][F-]{A} \ar[ruu]^{0.5} \ar[rd]^{0.5}& & &
+        \\ & *++[o][F-]{C}\ar[r]^{0.5} \ar[rd]^{0.5}&*++[o][F-]{H} \ar[r]^{\dots} &
+        \\ & & *++[o][F-]{I} \ar[r]^{\dots}& 
+        }            
+    \]
+    \captionsetup{width = 0.6\textwidth}
+    \caption{Exemple de LTS pondéré par des distributions de probabilités. Pour les états B et C chaque événement sortant est normativement équivalent aux autres. Les arcs sortants de l'état B sont pénalisés par leur nombre.}
+    \label{graph_prob}
+\end{figure}
+
+\paragraph{Distribution de possibilité}
+
+On peut à la place d'une distribution de probabilité envisager une distribution de possibilité. Ce type de distribution possède cependant l'hypothèse du monde clos qui impose que le score maximal parmi les événements sortant d'un état soit égal à 1, sans contraintes sur la somme des scores. Cette approche permet de ne plus avoir une pénalisation par rapport au nombre d'arcs sortant tout en conservant une forme de normalisation mais, elle suppose que l'ensemble des événements sortants représentés dans le LTS est exhaustif et qu'aucun événement extérieur ne pourrait représenter une alternative pleinement satisfaisante.
+
+\paragraph{Valeurs libres}
+
+Une troisième option consiste à abandonner toute contrainte entre les événements d'un même état, en demandant à l'expert de juger chaque événement indépendamment des autres. Cette approche a l'avantage de ne pas avoir les inconvénients présentés précédemment mais elle déplace la difficulté sur l'expert. Sans contraintes structurelle, l'interprétation et le choix à travers l'ensemble des valeurs du LTS se complexifie.
+
+%  \begin{enumerate}
+%     \item Distribution de probabilités : L'expert donne une distribution de probabilités sur les arcs sortant d'un état, deux possibilités de construction :
+%         \begin{itemize}
+%             \item À partir d'un classement avec softmax sur l'inverse des positions : simple, mais on perd en expressivité, les écarts entre les événements sont fixes relativement au nombre d'arcs sortants du sommet qui représente un état. De plus cela demande d'avoir un ordre sur les événements ce qui n'est pas toujours souhaitable si on a des événements normativement équivalents.
+%             \item L'expert donne directement une distribution de probabilités, cette méthode a l'avantage de limiter la perte d'expressivité et d'autoriser des scores égaux pour deux événements sortant d'un même état.
+%             \item Une distribution de probabilité peut fortement pénaliser des événements issus d'un état avec de nombreux arcs sortant comme on l'observe sur le LTS ci-dessous :
+%         \end{itemize}
+
+%         \begin{figure}[h!]
+%             \centering
+%             \[
+%                 \xymatrix @R=0.1em@C=5em {
+%                     & & *++[o][F-]{D} \ar[r]^{\dots} &
+%                 \\ & & *++[o][F-]{E} \ar[r]^{\dots}&
+%                 \\ & *++[o][F-]{B} \ar[ruu]^{0.25}\ar[ru]^{0.25}\ar[r]^{0.25}\ar[rd]^{0.25}& *++[o][F-]{B}&
+%                 \\ & & *++[o][F-]{G} \ar[r]^{\dots}&
+%                 \\  *++[o][F-]{A} \ar[ruu]^{0.5} \ar[rd]^{0.5}& & &
+%                 \\ & *++[o][F-]{C}\ar[r]^{0.5} \ar[rd]^{0.5}&*++[o][F-]{H} \ar[r]^{\dots} &
+%                 \\ & & *++[o][F-]{I} \ar[r]^{\dots}& 
+%                 }            
+%             \]
+%             \captionsetup{width = 0.6\textwidth}
+%             \caption{Exemple de LTS pondéré par des distributions de probabilités. Pour les états B et C chaque événement sortant est normativement équivalent aux autres. Les arcs sortants de l'état B sont pénalisés par leur nombre.}
+%         \end{figure}
+
+%     \item Distribution de possibilité : l'expert attribue une distribution de possibilité sur l'ensemble des arcs sortant d'un état donné. On note qu'une distribution de possibilité impose que le score maximal parmi tous les scores des événements sortant d'un état soit de 1.
+%     \item Valeurs libres : l'expert juge indépendamment chaque événement possible en attribuant une valeur entre 0 et 1. Avantage : pas de contrainte sur la somme des scores ou encore sur leur valeur maximale. Désavantage : interprétation et choix des valeurs potentiellement plus complexe.  
         
-\end{enumerate}
+% \end{enumerate}
  \subsubsection{Construction d'une politique optimale à partir de l'expert}
  Pour évaluer la vraisemblance d'un contexte causal contrefactuel à partir d'une évaluation experte, on peut premièrement construire une politique optimale vis-à-vis de l'évaluation puis dans un second temps comparer nos deux politiques (optimale et contrefactuelle). La construction de politiques optimales peut être contrainte selon l'application, en fonction d'une heuristique, en prenant en compte le coût de calcul de la construction, etc. Les politiques optimales dépendent uniquement d'un LTS et de l'évaluation d'un juge expert, elles sont indépendantes des contextes causaux contrefactuels qui sont évalués.
  \begin{enumerate}
@@ -171,7 +217,7 @@ Différentes méthodes sont applicables pour attribuer les scores. On peut contr
      Comme pour les politiques optimales sans planification, il n'y a pas unicité du résultat. Un traitement spécifique est nécessaire pour les états qui possèdent plusieurs événements qui maximise le score.
  \end{enumerate}
 
-\subsubsection{Évaluation de la vraisemblance à partir de la politique optimale}
+\subsubsection{Évaluation de la vraisemblance à partir de la politique optimale} \label{v_pol_opt}
 
 À partir d'une politique optimale donnée, on peut définir un coût de vraisemblance entre cette dernière et la politique associé à un contexte causal contrefactuel. On définit une fonction de distance entre deux politiques sur une trace d'état : 
 \begin{equation}
@@ -201,7 +247,7 @@ On obtient la trace $\sigma^{\chi'}=[S_0,b,S_2,a,S_5]$ et donc $\sigma_{|state}^
 \end{itemize}
 On observe que le résultat du coût de vraisemblance dépends de la politique optimale même si l'évaluation experte sur lesquelles $\pi^{opt1}_\tau$ et $\pi^{opt2}_\tau$ sont construites est la même.
 
-\subsubsection{Exploitation directe de l'expert}
+\subsubsection{Exploitation directe de l'expert}\label{agre_v}
 Une autre approche possible pour évaluer la vraisemblance d'un contexte causal contrefactuel est de directement exploiter l'évaluation experte, en agrégeant les scores des événements associés à la trace du contexte causal contrefactuel. Pour cela différents opérateurs d'agrégation peuvent être utilisés en fonction de l'application.
 
 
