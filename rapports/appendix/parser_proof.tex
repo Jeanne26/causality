@@ -1,16 +1,24 @@
 
 \setlist[itemize,1]{label=\textbullet}
 
-\section{Démonstrations des propriétés du parser}
+\section{Démonstrations des propriétés du parseur}
 
-On souhaite démontrer les propriétés de correction et de terminaison du parser, on introduit pour cela les notations suivantes :
+On souhaite démontrer les propriétés de correction et de terminaison du parseur. Trois objets aux status différents interviennent dans les démonstrations :
+
+\begin{itemize}
+    \item $\mathcal{P}$ : le problème PDDL, qui est la donnée du problème.
+    \item $\langle \mathds{S}^*, \tau^* \rangle$ : le LTS cible, défini à partir de $\mathcal{P}$. Il représente mathématiquement le LTS que l'on souhaite obtenir, indépendamment de tout algorithme.
+    \item $T(\mathcal{P}) = \langle \mathds{S}, \tau \rangle$ : le LTS effectivement obtenu par notre parseur $T$ en pratique, lorsqu'on lui donne $\mathcal{P}$ en entrée.
+\end{itemize}
+
+On introduit maintenant les notations formelles associées à ces objets :
 
 Soit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_{init}, \mathcal{G})$ un problème PDDL avec :
 \begin{itemize}
     \item $\mathcal{O}$ : l'ensemble des objets du problème
     \item $Pred$ : l'ensemble des prédicats déclarés dans le domaine de $\mathcal{P}$
     \item $\mathds{F}(\mathcal{P}) = \{ p(o_1,\dots,o_k) \mid p\in Pred, (o_1, \dots,o_k) \in \mathcal{O}^k\}$: ensemble des prédicats instanciables du domaine (ensemble fini, car $Pred$ et $\mathcal{O}$ sont finis)
-    \item $\mathcal{A}$ : l'ensemble des actions du problème. Pour tout $a\in \mathcal{A}$ la définition du tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
+    \item $\mathcal{A}$ : l'ensemble des actions du problème. Pour tout $a\in \mathcal{A}$ on définit le tuple :  $$(param(a),pre(a),eff^+(a),eff^-(a))$$
     et $pre(a),eff^+(a),eff^-(a) \in 2^{\mathds{F}(\mathcal{P})}$. Avec $param(a)$ les paramètres de l'action $a$,  $pre(a)$ ses préconditions, $eff^+(a)$ ses effets positifs et $eff^-(a)$ ses effets négatifs.
 
     \item $\mathds{E}(\mathcal{P}) = \{ a(o_1,\dots, o_k) \mid a \in \mathcal{A}, (o_1, \dots,o_k) \in \mathcal{O}^k, k = \lvert param(a) \rvert \}$ : ensemble des actions instanciables à partir des objets du domaine.
@@ -31,31 +39,17 @@ $$\mathds{S^*} = \{S \in 2^{\mathds{F}(\mathcal{P})} \mid \text{il existe un che
     \end{aligned}
 \end{equation*}
 
-Et $T(\mathcal{P}) = \langle S, \tau \rangle $ avec $T$ notre processus (parser) et donc $T(\mathcal{P})$ le LTS obtenu en l'appliquant au problème PDDL $\mathcal{P}$.
+Et $T(\mathcal{P}) = \langle S, \tau \rangle $ avec $T$ notre processus (parseur) et donc $T(\mathcal{P})$ le LTS obtenu en l'appliquant au problème PDDL $\mathcal{P}$.
 
 
-% \subsection{Correction v0}
-% Pour démontrer la correction on souhaite montrer dans un premier temps que le LTS obtenu par notre parser est correct. C'est à dire que $\mathds{S} \subseteq 2 ^{\mathds{F}(\mathcal{P})}$ et $\tau \subseteq \mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S} $. Par construction $S_0 \in \mathds{S}$ et $S_0\in 2 ^{\mathds{F}(\mathcal{P})}$. De plus pour tout $S\in \mathds{S}$ et pour tout $e \in \mathds{E}(\mathcal{P})$ si $pre(e)$ est vérifié dans $S$ on construit l'état résultant de l'application de $e$ dans $S$ de la façon suivante $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ et $eff^+(e),eff^-(e) \in 2 ^{\mathds{F}(\mathcal{P})}$ donc $S'\in 2 ^{\mathds{F}(\mathcal{P})}$. Et on ajoute $(S,\{e\}, S')$ à $\tau$. Cette procédure est la seule possible pour ajouter des états à $\mathds{S}$ donc $\mathds{S} \subseteq 2 ^{\mathds{F}(\mathcal{P})}$. 
-% Pour $\tau$ on ajoute uniquement en plus les arcs réflexifs qui appartiennent bien à $\mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S}$ donc on a bien $\tau \subseteq \mathds{S} \times 2 ^{\mathds{E}(\mathcal{P})} \times \mathds{S} $. On en conclut que $T(\mathcal{P})$ est un LTS correct.
-
-% Dans un second temps on souhaite montrer $T(\mathcal{P}) = \langle \mathds{S}, \tau \rangle$ avec $S = \mathds{S}^*$ et $\tau = \tau^*$.
-% \begin{itemize}
-%     \item $\mathds{S} \subseteq \mathds{S}^*$: pour tout $S\in \mathds{S}$, $S$ a été atteint par BFS depuis $S_0$ en aplique des événements dont les préconditions sont satisfaites donc $S$ est accessible depuis $S_0$ i.e $\mathds{S} \subseteq \mathds{S}^*$
-%     \item $\tau \subseteq \tau^*$: pour toutes transitions $(S, \{e\}, S')\in \tau$,  $pred(e)$ est vérifié dans $S$ et $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ donc $(S, \{e\}, S') \in \tau^*$ et les arêtes de la forme $(S, \emptyset, S)\in \tau$ sont ajoutées si et seulement si  $S \models \mathcal{G}$ donc $(S, \emptyset, S)\in \tau^*$.
-%     \item $\mathds{S} \supseteq \mathds{S}^* $ et $\tau \supseteq \tau^*$ par induction: 
-%     \begin{itemize}
-%         \item Base: $S_0 \in \mathds{S}$ car l'algorithme BFS est initialisé avec $S_0$
-%         \item Induction: Soit $S\in \mathds{S}^*$ accessible depuis $S_0$ par définition. Soit $e \in \mathds{E}(\mathcal{P})$ tel que $pre(e)$ est vérifié dans $S$ et soit $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ par définition $S'\in \mathds{S}^*$ et $(S,\{e\}, S') \in \tau*$. Lorsque le processus $T$ va traiter $S$ il va tester l'ensemble des événements et ajouter $(S,\{e\}, S')$ à $\tau$ et $S'$ à $\mathds{S}$ ainsi qu'à la liste d'états à traiter. On a bien $\mathds{S} \supseteq \mathds{S}^* $ et $\tau \supseteq \tau^*$ .
-%         \end{itemize}
-%  \end{itemize}
 
 \subsection{Correction}
-Afin de démontrer la correction de notre parser, nous allons montrer que $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^* \rangle$.
+Afin de démontrer la correction de notre parseur, nous allons montrer que le LTS construit par l'algorithme coïncide avec le LTS cible, c'est-à-dire $T(\mathcal{P}) = \langle \mathds{S}^*, \tau^* \rangle$.
 
 On montre dans un premier temps que $\mathds{S} = \mathds{S}^*$ :
 \begin{itemize}
-    \item $\mathds{S} \subseteq \mathds{S}^*$ : Pour tout $S$ appartenant $\mathcal{S}$, $S$ a été atteint par BFS depuis $S_0$ en appliquant des événements dont les préconditions sont satisfaites donc il existe un chemin entre $S_0$ et $S$. On peut donc en conclure que $\mathds{S} \subseteq \mathds{S}^*$.
-    \item $\mathds{S}^* \subseteq \mathds{S}$ Par induction avec l'hypothèse : Si $S^* \in \mathds{S}^*$ et il existe $\{e\}\in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S^*$ alors $S'\in \mathds{S}^*$ avec $S' = (S \ eff^-(e)) \cup eff^+(e)$
+    \item $\mathds{S} \subseteq \mathds{S}^*$ : Pour tout $S$ appartenant $\mathcal{S}$, $S$ a été atteint par \textit{Breadth-First Search} (BFS) depuis $S_0$ en appliquant des événements dont les préconditions sont satisfaites donc il existe un chemin entre $S_0$ et $S$. On peut donc en conclure que $\mathds{S} \subseteq \mathds{S}^*$.
+    \item $\mathds{S}^* \subseteq \mathds{S}$ Par récurrence avec l'hypothèse : Si $S^* \in \mathds{S}^*$ et il existe $\{e\}\in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S^*$ alors $S'\in \mathds{S}^*$ avec $S' = (S \ eff^-(e)) \cup eff^+(e)$
     \begin{itemize}
         \item Base : $S_0 \in \mathds{S}$, car l'algorithme BFS est initialisé avec $S_0$
         \item  Induction : Soit $S \in \mathds{S}^* \cap \mathds{S}$  et de plus, il existe $\{e\} \in 2^{\mathds{E}(\mathcal{P})}$ tel que $pre(e) \subseteq S$. Montrons que $S'$ définit par  $S' = (S \setminus eff^-(e)) \cup eff^+(e)$ appartenant par hypothèse à $\mathds{S}^*$ appartient aussi à $\mathds{S}$. Lorsque le processus $T$ traite $S$ il teste l'ensemble des événements possibles pour tenter de les appliquer dans $S$. L'événement  $\{e\}$ est applicable dans $S$ donc $T$ va construire l'état $(S \setminus eff^-(e)) \cup eff^+(e) = S'$ et va l'ajouter à $\mathds{S}$.
@@ -90,7 +84,13 @@ Le processus $T$ est basé sur un algorithme BFS dont l'espace d'exploration est
 
 
 \subsection{Complétude}
-Nous souhaitons montrer que notre algorithme est complet sur le sous-ensemble de LTS obtenables avec notre parseur (pas de nœud isolé, un événement unique par transition et au moins une transition réflexive). Soit un LTS défini par $\langle \mathds{S}, \tau \rangle$, tel que $\mathds{S} \subseteq 2^{\mathds{F}}$ et $\tau \subseteq \mathds{S} \times 2^{\mathds{E}} \times \mathds{S}$, $S_0 \in \mathds{S}$. Il est possible d'y associé un domaine et un problème PDDL. Pour cela, on fixe :
+Nous souhaitons montrer que notre algorithme est complet sur le sous-ensemble de LTS obtenables avec notre parseur (pas de nœud isolé, un événement unique par transition et au moins une transition réflexive). 
+
+\paragraph{Donnée}
+Soit un LTS défini par $\langle \mathds{S}, \tau \rangle$, tel que $\mathds{S} \subseteq 2^{\mathds{F}}$ et $\tau \subseteq \mathds{S} \times 2^{\mathds{E}} \times \mathds{S}$, $S_0 \in \mathds{S}$. Nous allons montrer qu'il est possible de construire un domaine et un problème PDDL $\mathds{P}$ tel que $T(\mathcal{P})= \langle \mathds{S}, \tau \rangle$.
+
+
+\paragraph{Construction du problème PDDL associé} On construit $\mathcal{P} = (\mathcal{O}, \mathcal{A}, Pred, S_{init}, \mathcal{G})$ de la façon suivante : 
 \begin{itemize}
     \item $\mathcal{O} = \{o\}$ on définit un unique objet pour tous les problèmes associés (nb: on pourrait ne pas en mettre du tout, mais les prédicats ne porteraient plus sur rien et notre parseur ne gère pas les actions sans paramètres).  
     \item $Pred = \{f(o) \mid \forall f \in \mathds{F}\}$ : L'ensemble des prédicats ont une arité d'un. L'unique objet/paramètre ne représente rien, mais sert de "levier" pour dire si un prédicat est vrai ou faux.
@@ -102,9 +102,14 @@ Nous souhaitons montrer que notre algorithme est complet sur le sous-ensemble de
             \item $eff^-(a) = S \cap \neg S'$ avec $\neg S' = \{\neg s \mid s \in S'\}$
         \end{itemize}
     \item $S_{init} = \{ f(o) \mid f \in S_0\}$ 
-    \item $\mathcal{G}$ est construite  à partir de $\mathds{A} = \{S \mid S \in \mathds{S}, (S,\varnothing, S) \in \tau \}$. La formule $\mathcal{G}$ corresponds à l'union des états appartenant à $\mathds{A}$. 
+    \item $\mathcal{G}$ est construite  à partir de $\mathds{A} = \{S \mid S \in \mathds{S}, (S,\varnothing, S) \in \tau \}$. La formule $\mathcal{G}$ correspond à la réunion des états appartenant à $\mathds{A}$. 
 \end{itemize}
 
-Nous avons démontré la complétude au sens formelle. Il existe pour les LTS obtenables par notre parseur une possibilité de les reconvertir en problème PDDL. Cependant, il est à noter que sur le plan computationnel la correspondance est inapplicable avec un solveur PDDL. En effet, nous restreignons l'application d'une action à une unique état en générant des préconditions de taille $\mid \mathcal{F}\mid$ ce qui fait exploser la combinatoire du problème et perdre l'intérêt du solveur. 
 
-nb: on ne montre pas vraiment la complétude, mais plutôt l'idée de représentabilité en PDDL. On ne perd pas en information sémantiquement, mais cette transition inverse est peu optimale. Une autre possibilité de démonstration intéressante serait de construire un PDDL moins restreint et plus compact. En contrepartie des états non présents dans le LTS de base pourrait être atteints en appliquant notre parseur au PDDL construit. Dans tous les cas, pour notre parseur actuel, il n'existe pas d'application inverse qui reconstruise à l'identique le problème PDDL qui a permis d'obtenir un LTS. 
+Nous avons démontré une complétude au sens formel. Il existe pour l'ensemble des LTS qui peuvent être obtenus par notre parseur une possibilité de les reconvertir en problème PDDL. Cependant, il est à noter que sur le plan computationnel la correspondance est inapplicable avec un solveur PDDL. En effet, nous restreignons l'application d'une action à une unique état en générant des préconditions de taille $\mid \mathcal{F}\mid$ ce qui fait exploser la combinatoire du problème et perdre l'intérêt du solveur. 
+
+
+Le résultat précédent relève moins d'une complétude au sens strict que d'une propriété de représentabilité : tout LTS obtenu par notre parseur pouvant être exprimé sous forme d'un problème PDDL. On ne perd pas en information sémantiquement, mais cette transition inverse est peu optimale. Une autre possibilité de démonstration intéressante serait de construire un PDDL moins restreint et plus compact. En contrepartie des états non présents dans le LTS de base pourrait être atteints en appliquant notre parseur au PDDL construit. Dans tous les cas, pour notre parseur actuel, il n'existe pas d'application inverse qui reconstruise à l'identique le problème PDDL qui a permis d'obtenir un LTS. 
+
+
+

@@ -1,7 +1,7 @@
 
 \subsection{Exemple PDDL}\label{ex_pddl}
 
-Nous appliquons dans cette section notre parser sur une instanciation de problème PDDL issus de \url{https://github.com/arii/planning_exercises/tree/master}. Le domaine correspond à un domaine Block World classique avec les quatre actions classiques de manipulation d'objet (\textit{"pick-up"}, \textit{"put-down"}, \textit{"stack"},\textit{"unstack"}), la définition complète du domaine se trouve dans la section \ref{domain_bw}. Le problème contient deux objets bloc A et bloc B, initialement le bras ne tient rien, le bloc B est posé sur la table et le bloc A au-dessus du b. L'objectif est de poser A sur la table et que rien ne soit posé sur B. Les conditions de l'objectif sont donc respecté dans deux états : A est posé sur la table et B est posé sur la table, ou bien A est posé sur la table et B est posé sur A.
+Nous appliquons dans cette section notre parser sur une instanciation de problème PDDL issus de \url{https://github.com/arii/planning_exercises/tree/master}. Le domaine correspond à un domaine Block World classique avec les quatre actions classiques de manipulation d'objets (\textit{"pick-up"}, \textit{"put-down"}, \textit{"stack"},\textit{"unstack"}), la définition complète du domaine se trouve dans l'annexe \ref{domain_bw}. Le problème contient deux objets bloc A et bloc B, initialement le bras ne tient rien, le bloc B est posé sur la table et le bloc A au-dessus de B. L'objectif est de poser A sur la table et que rien ne soit posé sur B. Les conditions de l'objectif sont donc respectées dans deux états : A est posé sur la table et B est posé sur la table, ou bien A est posé sur la table et B est posé sur A.
 
 \subsection*{Définition du  domaine}
 %     \begin{lstlisting}[language=Lisp,basicstyle=\ttfamily\footnotesize]
@@ -57,7 +57,10 @@ Nous appliquons dans cette section notre parser sur une instanciation de problè
 %     \end{lstlisting}
 
 \subsection*{Définition du problème}
-    \begin{lstlisting}[language=Lisp,basicstyle=\ttfamily\footnotesize]
+
+Lié au domaine défini dans l'annexe \ref{domain_bw}, on introduit une définition de problème. Initialement A et B sont sur la table et on cherche à atteindre un état où B se trouve sur A :
+
+\begin{lstlisting}[language=Lisp,basicstyle=\ttfamily\footnotesize]
 (define (problem bw-simple)
   (:domain bw)
   (:objects a b )
@@ -67,7 +70,6 @@ Nous appliquons dans cette section notre parser sur une instanciation de problè
 
 
 
-On obtient pour l'exemple \ref{ex_pddl} le graphe suivant :
 
 \begin{figure}[h!]
     \[

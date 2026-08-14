@@ -1,10 +1,10 @@
 \section{Application : exemple du poison}\label{ex_poison}
 
-Dans cette partie, nous allons présenter un exemple concret d'application du travail présenté précédemment. Cette section est organisée sous forme de pipeline, nous partons d'un problème défini en PDDL que nous convertissons en LTS, nous ajoutons une évaluation experte avant d'appliquer différentes configurations de la fonction de coût pour en analyser les nuances. L'exemple défini correspond à une situation dans laquelle se trouve un verre qui contient à l'origine de l'eau. On considère que différents événements peuvent se produire pour altérer la potabilité de ce dernier et entraîner ou non la mort de la personne qui le boit. Les événements sont évalués selon une norme que l'on laisse floue, mais qui correspond approximativement à une norme du bien dans le sens où un événement est jugé comme peu normal s'il est associé à une nuisance  (comme empoisonner le verre qui peut entraîner la mort) et comme très normal s'il entraîne un bénéfice (verser un antidote dans un verre empoisonné permet de sauver une personne). Dans notre modélisation un verre vide entraîne la mort cela peut paraître contre-intuitif, mais cette modélisation s'inspire d'un exemple connu en causalité. Cet exemple représente un voyageur dans le désert qui se fait empoisonner sa gourde puis un second assassin la lui vide. Nous nous inspirons de cet exemple pour représenter la possibilité de mourir de soif et évaluons subjectivement l'action de vider un verre moins mauvaise que de l'empoisonner. La modélisation de la situation et de l'évaluation est entièrement subjective et pourrait être complexifié, mais nous souhaitons garder un exemple simple pour plus de lisibilité. 
+Dans cette partie, nous allons présenter un exemple concret d'application du travail introduit précédemment. Cette section est organisée sous forme de pipeline, nous partons d'un problème défini en PDDL que nous convertissons en LTS, nous ajoutons une évaluation experte avant d'appliquer différentes configurations de la fonction de coût pour en analyser les nuances. L'exemple défini correspond à une situation dans laquelle se trouve un verre qui contient à l'origine de l'eau. On considère que différents événements peuvent se produire pour altérer la potabilité de ce dernier et entraîner ou non la mort de la personne qui le boit. Les événements sont évalués selon une norme que l'on laisse floue, mais qui correspond approximativement à une norme du bien dans le sens où un événement est jugé comme peu normal s'il est associé à une nuisance  (comme empoisonner le verre qui peut entraîner la mort) et comme très normal s'il entraîne un bénéfice (verser un antidote dans un verre empoisonné permet de sauver une personne). Dans notre modélisation un verre vide entraîne la mort. Cela peut paraître contre-intuitif, mais cette modélisation s'inspire d'un exemple connu en causalité. Cet exemple représente un voyageur dans le désert qui se fait empoisonner sa gourde avant qu'un second ne la lui vide. Nous nous inspirons de cet exemple pour représenter la possibilité de mourir de soif et évaluons subjectivement l'action de vider un verre comme moins mauvaise que de l'empoisonner. La modélisation de la situation et de l'évaluation est entièrement subjective et pourrait être complexifiée, mais nous souhaitons garder un exemple simple pour plus de lisibilité. 
 
 \subsection{De PDDL vers un LTS}
 
-La définition des fichiers PDDL se trouve en annexe \ref{app_pddl_poison_file}. Ci-dessous le LTS résultant de l'application du parseur.
+La définition des fichiers PDDL se trouve en annexe \ref{app_pddl_poison_file}. Ci-dessous est présenté le LTS résultant de l'application du parseur.
 
 \begin{equation*}
     \begin{aligned}
@@ -233,27 +233,27 @@ On note $\forall S\in \mathds{S},\quad \pi^{opt1}_\tau(S) =\pi^{opt2}_\tau(S)$. 
     \label{fig:placeholder}
 \end{figure}
 
-\subsection{Expérimentations}
+% \subsection{Expérimentations}
 
-De nombreuses variables $\gamma, \lambda_1,\lambda_2,\delta$, et opérateurs ont été introduits pour la définition de la formule de coût. Pour fixer et choisir les opérateurs de manière adaptée, il est important de comprendre leur comportement et leur sensibilité à leurs paramètres. 
+% De nombreuses variables $\gamma, \lambda_1,\lambda_2,\delta$, et opérateurs ont été introduits pour la définition de la formule de coût. Pour fixer et choisir les opérateurs de manière adaptée, il est important de comprendre leur comportement et leur sensibilité à leurs paramètres. 
 
 % \subsubsection{Variabilité des résultats en fonction de la configuration}
 
-\subsubsection{Sensibilité à $\gamma$ pour l'opérateur gamma}
+% \subsubsection{Sensibilité à $\gamma$ pour l'opérateur gamma}
 
-La variable $\gamma$ des opérateurs temporels influe directement sur le coût de vraisemblance d'un contexte contrefactuel. On peut noter quelques spécificités de cet opérateur : lorsque la trace contient un seul événement le gamma n'a aucune influence et le score correspond à l'évaluation de l'événement. À contrario plus le nombre d'événements est important plus la valeur de $\gamma$ aura une influence. S'il est fixé à un, on effectue une simple moyenne arithmétique, plus on le fait tendre vers zéro, plus il ignore les résultats en début (opérateur $agg_{\gamma\_late}$) ou fin de scénario (opérateur $agg_\gamma$).
+% La variable $\gamma$ des opérateurs temporels influe directement sur le coût de vraisemblance d'un contexte contrefactuel. On peut noter quelques spécificités de cet opérateur : lorsque la trace contient un seul événement le gamma n'a aucune influence et le score correspond à l'évaluation de l'événement. À contrario plus le nombre d'événements est important plus la valeur de $\gamma$ aura une influence. S'il est fixé à un, on effectue une simple moyenne arithmétique, plus on le fait tendre vers zéro, plus il ignore les résultats en début (opérateur $agg_{\gamma\_late}$) ou fin de scénario (opérateur $agg_\gamma$).
 
 
-Dans la figure \ref{fig:sensi_gamma} on observe l'évolution du coût de vraisemblance dans l'exemple du poison avec les contextes causaux définis plus haut. L'opérateur utilisé est $agg_\gamma$ qui donne plus d'importance aux événements en début de scénario. Le coût est calculé sur l'ensemble des événements des traces, relativement au contexte causal $\chi_1$.
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.6\textwidth]{fig/sensibilite_gamma.pdf}
-    \caption{Sensibilité au paramètre $\gamma$ ($agg_\gamma$ early)\\
-    Contexte observé : $\chi_1$,  $\lambda_2$ = 1}
-    \label{fig:sensi_gamma}
-\end{figure}
+% Dans la figure \ref{fig:sensi_gamma} on observe l'évolution du coût de vraisemblance dans l'exemple du poison avec les contextes causaux définis plus haut. L'opérateur utilisé est $agg_\gamma$ qui donne plus d'importance aux événements en début de scénario. Le coût est calculé sur l'ensemble des événements des traces, relativement au contexte causal $\chi_1$.
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.6\textwidth]{fig/sensibilite_gamma.pdf}
+%     \caption{Sensibilité au paramètre $\gamma$ ($agg_\gamma$ early)\\
+%     Contexte observé : $\chi_1$,  $\lambda_2$ = 1}
+%     \label{fig:sensi_gamma}
+% \end{figure}
 
-On observe sur la figure \ref{fig:sensi_gamma} l'impact de $\gamma$ sur le coût de vraisemblance. Le contexte causal $\chi_2$ (\textit{VO, boire, Vivant}) contient un unique événement donc sa vraisemblance n'est pas impactée par la valeur de $\gamma$. Le contexte causal $\chi_3$ (\textit{V0,vider,VV,}$\emptyset$\textit{,Mort}) ne dépends pas non plus de $\gamma$ alors qu'il contient plus d'un événement. Ce comportement est dû aux scores des événements qui valent tous 0.5 et le fait que l'opérateur respecte une propriété d'idempotence. Lorsque tous les scores à agréger sont égaux $\gamma$ n'influe pas le résultat. Concernant les contextes causaux $\chi_4$ (\textit{VO, emp, VE,vider,VV,}$\emptyset$\textit{,Mort}) et $\chi_5$ (\textit{VO,emp, VE,anti,VA,boire,Vivant}) ils sont impactés par $\gamma$. Lorsque $\gamma$ est proche de zéro, on ne prend en compte presque uniquement que le premier événement, égal dans les deux scénarios qui est $empoisonner$. Plus le $\gamma$ augmente, plus on s'intéresse à ce qui se passe en fin de scénario dans $\chi_5$ un antidote est versé donc le coût chute plus fortement que dans $\chi_4$. Autour de la valeur $\gamma=0.5$ on observe un chevauchement des courbes de $\chi_3$ et $\chi_5$, le contexte causal $\chi_5$ devient moins coûteux que $\chi_3$. Cela montre l'importance de fixer correctement le $\gamma$. Pour cela, il faut avoir en tête ces valeurs de bascules (même s'elles ne sont pas automatiquement présentes, elles peuvent exister). Il est aussi important de fixer $\gamma$ en fonction de la longueur des scénarios que l'on traite si les scénarios sont courts favoriser un $\gamma$ relativement faible ($\leq 0.5$) et l'augmenter pour des longueurs plus importantes. 
+% On observe sur la figure \ref{fig:sensi_gamma} l'impact de $\gamma$ sur le coût de vraisemblance. Le contexte causal $\chi_2$ (\textit{VO, boire, Vivant}) contient un unique événement donc sa vraisemblance n'est pas impactée par la valeur de $\gamma$. Le contexte causal $\chi_3$ (\textit{V0,vider,VV,}$\emptyset$\textit{,Mort}) ne dépends pas non plus de $\gamma$ alors qu'il contient plus d'un événement. Ce comportement est dû aux scores des événements qui valent tous 0.5 et le fait que l'opérateur respecte une propriété d'idempotence. Lorsque tous les scores à agréger sont égaux $\gamma$ n'influe pas le résultat. Concernant les contextes causaux $\chi_4$ (\textit{VO, emp, VE,vider,VV,}$\emptyset$\textit{,Mort}) et $\chi_5$ (\textit{VO,emp, VE,anti,VA,boire,Vivant}) ils sont impactés par $\gamma$. Lorsque $\gamma$ est proche de zéro, on ne prend en compte presque uniquement que le premier événement, égal dans les deux scénarios qui est $empoisonner$. Plus le $\gamma$ augmente, plus on s'intéresse à ce qui se passe en fin de scénario dans $\chi_5$ un antidote est versé donc le coût chute plus fortement que dans $\chi_4$. Autour de la valeur $\gamma=0.5$ on observe un chevauchement des courbes de $\chi_3$ et $\chi_5$, le contexte causal $\chi_5$ devient moins coûteux que $\chi_3$. Cela montre l'importance de fixer correctement le $\gamma$. Pour cela, il faut avoir en tête ces valeurs de bascules (même s'elles ne sont pas automatiquement présentes, elles peuvent exister). Il est aussi important de fixer $\gamma$ en fonction de la longueur des scénarios que l'on traite si les scénarios sont courts favoriser un $\gamma$ relativement faible ($\leq 0.5$) et l'augmenter pour des longueurs plus importantes. 
 
 % \subsubsection{Sensibilité aux paramètres $\lambda_1$ et $\lambda_2$}
 
@@ -261,14 +261,14 @@ On observe sur la figure \ref{fig:sensi_gamma} l'impact de $\gamma$ sur le coût
 
 \subsection{Résultats}
 
-En fonction de la configuration choisie (extraction d'une politique optimale, exploitation directe, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance à priori des contraintes que l'on souhaite appliquer lors de l'évaluation permet de guider le classement. 
+En fonction de la configuration choisie (extraction d'une politique optimale, exploitation directe, évaluation de la normalité globale, sur les événements avec alternatives uniquement) et des hyper paramètres ($\lambda_1,\lambda_2, \gamma$...) on obtient différents résultats. Une connaissance a priori des contraintes que l'on souhaite appliquer lors de l'évaluation permet de guider le classement. 
 
-Dans les exemples suivants, on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$, on fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$ (avec cette valeur la validité ne dépends que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel).
+Dans les exemples suivants, on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$. On fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$. Avec cette valeur, la validité ne dépend que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel.
 
-\paragraph{Priorité à des contrefactuels avec des scores d'événements consistants :}
-On choisit pour la fonction de vraisemblance la formule \ref{exploit_direct} avec comme opérateur d'agrégation $agg_{geo}$ et on agrège les scores de tous les événements des scénarios. On souhaite dans cette configuration pénaliser des traces avec une variance de score importante.
+\paragraph{Priorité à des contrefactuels avec des scores d'événements stables:}
+On choisit pour la fonction de vraisemblance la formule \ref{exploit_direct} avec l'opérateur d'agrégation $agg_{geo}$ et on agrège les scores de tous les événements des scénarios. On souhaite dans cette configuration pénaliser des traces avec une variance de score importante.
 
-On obtient les résultats suivants :
+Les résultats sont donnés en résumé dans la Table \ref{tab:prio_normativite}
 
 \begin{table}[h]
 \centering
@@ -283,17 +283,17 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide
 2 & $\chi_5$ & 0.50 & 0.54 & 1.04 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
 \hline
 \end{tabular}
-\caption{Résultats pour la priorité à la normativité}
+\caption{Résultats pour la priorité à la normativité.}
 \label{tab:prio_normativite}
 \end{table}
 
-On observe dans la table \ref{tab:prio_normativite} que le contexte contrefactuel avec le coût minimal est le contexte $\chi2$ sa distance à l'observation est de 0.67 et sa vraisemblance de 0 (l'unique événement $boire$ a un score de 1). Ce contrefactuel est suivi du contexte $\chi_5$, plus proche de l'observation (coût de 0.5) mais le scénario associé contient l'événement $empoisonner$ qui fait augmenter le coût. Les deux premiers contrefactuels $\chi_2$ et $\chi_5$ sont valides.
+On observe dans la Table \ref{tab:prio_normativite} que le contexte contrefactuel avec le coût minimal est le contexte $\chi2$. Sa distance à l'observation est de 0.67 et sa vraisemblance de 0 (l'unique événement $boire$ a un score de 1). Ce contrefactuel est suivi du contexte $\chi_5$, plus proche de l'observation (coût de 0.5) mais le scénario associé contient l'événement $empoisonner$ qui fait augmenter le coût. Les deux premiers contrefactuels $\chi_2$ et $\chi_5$ sont valides.
 
 
 
 \paragraph{Interdiction de dépasser un seuil}
 
-On utilise l'opérateur d'agrégation avec un seuil fixé à $\lambda = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. 
+On utilise l'opérateur d'agrégation avec un seuil fixé à $\eta = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. 
 
 \begin{table}[h]
 \centering
@@ -308,14 +308,14 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ &  trace & valid
 4 & $\chi_5$ & 0.50 & 1.0 & 1.50 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \texttimes \\
 \hline
 \end{tabular}
-\caption{Résultats pour la priorité à la normativité}
+\caption{Résultats pour la priorité à la normativité.}
 \label{tab:res_seuil}
 \end{table}
 
-Dans cette configuration uniquement le contexte causal $\chi_2$ est valide. En rajoutant une contrainte sur le coût de vraisemblance, on exclut automatiquement les contrefactuels qui possèdent un événement inférieur au seuil, c'est ce qu'on observe pour $\chi_5$. 
+Dans cette configuration, le contexte causal $\chi_2$ est le seul contexte valide. En rajoutant une contrainte sur le coût de vraisemblance, on exclut automatiquement les contrefactuels qui possèdent un événement inférieur au seuil, c'est ce qu'on observe pour $\chi_5$. 
 
 \paragraph{Normativité en début de scénario}
-On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élevés sur les événements en début de trace en considérant peu ceux de la fin de la trace.
+On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élevés sur les événements en début de trace et en considérant peu ceux en fin de  trace.
 
 \begin{table}[h]
 \centering
@@ -330,16 +330,16 @@ CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide 
 4 & $\chi_5$ & 0.50 & 0.69 & 1.19 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
 \hline
 \end{tabular}
-\caption{Priorité à la normativité en début de scénario}
+\caption{Priorité à la normativité en début de scénario.}
 \label{tab:res_gamma}
 \end{table}
 
-On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût correspond à $\chi_2$ qui a le premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possède en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. 
+On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût correspond à $\chi_2$ qui a le premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possèdent en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. 
 
 
 \paragraph{Normativité en fin de scénario}
 
-On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplé au coût sur la distance à l'observation, on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace, mais qui reste le plus proche possible au début.
+On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplé au coût sur la distance à l'observation. Ainsi, on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace, mais qui reste le plus proche possible au début.
 
 \begin{table}[h]
 \centering
@@ -354,14 +354,14 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide
 1 & $\chi_5$ & 0.50 & 0.04 & 0.54 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \checkmark \\
 \hline\hline
 \end{tabular}
-\caption{Priorité à la normativité en fin de scénario}
+\caption{Priorité à la normativité en fin de scénario.}
 \label{tab:res_gamma_late}
 \end{table}
 
 La table des résultats \ref{tab:res_gamma_late} montre que dans cette configuration, c'est $\chi_5$ qui a le coût le plus faible, malgré l'empoisonnement, on s'éloigne de l'observation le plus tard possible.
 
 \paragraph{Normativité du contrefactuel avec distance à une politique optimale}
-On choisit pour cette configuration de calculer la distance à la politique optimale définie par \ref{pol_opti}. Le choix est fait de ne considérer que les événements pour lesquelles une alternative existe.
+On choisit pour cette configuration de calculer la distance à la politique optimale (voir \ref{pol_opti}). Le choix est fait de ne considérer que les événements pour lesquelles une alternative existe.
 
 \begin{table}[h]
 \centering
@@ -380,7 +380,7 @@ CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide 
 \label{tab:dist_pol}
 \end{table}
 
-Les résultats présents dans la table \ref{tab:dist_pol} indiquent qu'avec cette configuration, le contexte causal avec le plus faible coût est le contexte $\chi_2$ suivi de $\chi_5$ les deux contrefactuels valides. Concernant la fonction de vraisemblance : dans la trace associée à $\chi_2$ un seul événement est présent et un choix est possible, le choix fait est l'événement $boire$ qui correspond à l'événement choisi par la politique optimale donc le coût associé est de 0. Pour $\chi_5$, deux événements avec alternative sont présents dans la trace $empoisonner$ qui n'est pas l'événement indiqué par la politique optimale, et $antidote$ qui est similaire à la politique optimale. Sur les deux événements un seul est égal à la politique optimale donc un coût de 0.5 est appliqué. Pour $\chi_3$ et $\chi_4$ tous les choix possibles différents de la politique optimale un coût d'un leur est attribué.
+Les résultats présents dans la table \ref{tab:dist_pol} indiquent qu'avec cette configuration, le contexte causal avec le plus faible coût est le contexte $\chi_2$ suivi de $\chi_5$ les deux contrefactuels valides. Concernant la fonction de vraisemblance : dans la trace associée à $\chi_2$ un seul événement est présent et un choix est possible. Le choix fait est l'événement $boire$ qui correspond à l'événement choisi par la politique optimale donc le coût associé est de 0. Pour $\chi_5$, deux événements avec alternative sont présents dans la trace $empoisonner$ qui n'est pas l'événement choisi par la politique optimale, et $antidote$ qui est similaire à la politique optimale. Sur les deux événements un seul est égal à la politique optimale donc un coût de 0.5 est appliqué. Pour $\chi_3$ et $\chi_4$ tous les choix possibles sont différents de la politique optimale, un coût de 1 leur est attribué.
 
 
 

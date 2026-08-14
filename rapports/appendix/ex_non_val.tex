@@ -1,5 +1,5 @@
-\section{Exemple contexte causal non valide pour la fonction de coût}
-Soit, le LTS $\langle \mathds{S},\tau \rangle$ avec :
+\section{Exemple de contexte causal non valide pour la fonction de coût}
+Soit le LTS $\langle \mathds{S},\tau \rangle$, illustré Figure \ref{lts_an}, avec :
 
 
 \begin{equation*}
@@ -19,21 +19,22 @@ Soit, le LTS $\langle \mathds{S},\tau \rangle$ avec :
          \\ & & *++[o][F-]{S_4} \ar@(r,u)[]_{\emptyset}
         }    
     \]
-    \caption{Exemple de LTS}
+    \caption{Exemple de LTS.}
+    \label{lts_an}
 \end{figure}
 
 On définit :
-$\chi_1 = (\pi_1,S_0,\tau)$, $(\pi_2,S_3,\tau)$ $(\pi_3,S_0,\tau)$ et  avec :
+$\chi_1 = (\pi_1,S_0,\tau)$, $(\chi_2 = \pi_2,S_3,\tau)$ $\chi_3 = (\pi_3,S_0,\tau)$ et  avec :
 
 $$\pi_1(S_0) = a \quad \pi_1(S_2)=c \quad et \quad \forall i\in[1,3,4],\pi_1(S_i)= \emptyset$$
 $$\pi_2(S_0) = a \quad \pi_2(S_2)=d \quad et \quad \forall i\in[1,3,4],\pi_2(S_i)= \emptyset$$
-$$\pi_3(S_0) = e \quad \pi_3(S_2)=d \quad et \quad \forall i\in[1,3,4],\pi_3(S_i)= \emptyset$$
+$$\pi_3(S_0) = c \quad \pi_3(S_2)=d \quad et \quad \forall i\in[1,3,4],\pi_3(S_i)= \emptyset$$
 
 
 
 \subsection{Fonction $divergence$}\label{ex_div}
 
-$divergence(\chi_1,\chi_2)= +\infty$ même si ces deux contextes causaux sont différents le coût est de $+\infty$, les politiques divergent uniquement en $S_2$ hors cet état est absent de $\sigma^{\chi_1}=[S_0,S_1]$. Les politiques sont égales sur la trace.
+$divergence(\chi_1,\chi_2)= +\infty$ : même si ces deux contextes causaux sont différents le coût est de $+\infty$, les politiques divergent uniquement en $S_2$, or cet état est absent de $\sigma^{\chi_1}=[S_0,S_1]$. Les politiques sont égales sur la trace.
 
 \subsection{Fonction $correct$}\label{ex_corr}
-$correct(\chi_3) = +\infty$ la politique $\pi_3$ n'étant pas correcte relativement au LTS. $\nexists S' \textit{ tel que } (S_0,e,S')\in \tau$
+$correct(\chi_3) = +\infty$ car la politique $\pi_3$ n'est pas correcte relativement au LTS : $\nexists S' \textit{ tel que } (S_0,c,S')\in \tau$.

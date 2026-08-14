@@ -307,19 +307,19 @@ Une autre approche possible pour évaluer la vraisemblance d'un contexte causal 
 
 Soit $Agg$ un opérateur d'agrégation, un LTS $\langle \mathds{S},\tau \rangle$, un contexte causal contrefactuel $\chi'= (\pi',S_0,\tau)$ avec $\sigma^{\chi'}= [S^{\chi'}(0),E^{\chi'}(0),\dots,E^{\chi'}(n-1),S^{\chi'}(n)]$ et $expert\_judge_\tau$ une évaluation experte sur le LTS, la fonction $v$ de l'équation \ref{cout} est de la forme :
 
-\begin{equation}
+\begin{equation}\label{exploit_direct}
     \begin{aligned}
         &v(\chi',expert\_judge_\tau)= 1 - Agg(s_0, \dots, s_{n-1}) \\
         & \forall i < len(\sigma^{\chi'}_{|state}) \quad s_i= expert\_judge(S^{\chi'}(i),E^{\chi'}(i))
     \end{aligned}
-\end{equation}\label{exploit_direct}
+\end{equation}
 
 
 
 Différentes propriétés peuvent être désirables pour les opérateurs d'agrégation : une invariance à la longueur de la liste des scores (implicitement du chemin), une pénalisation en fonction du temps, des possibilités de compensation, etc.
 
 
- \paragraph{Opérateur de moyenne géométrique} 
+ \paragraph{Opérateur de moyenne géométrique}\label{op_geo}
  Dans la définition usuelle, la moyenne géométrique n'admet pas de paramètre $\varepsilon$. Or sans ce paramètre un score nul annule entièrement l'agrégation quelle que soit la valeur des autres scores ce qui en fait un agrégateur "partiel" de compensation. Elle reste néanmoins intéressante, car elle est plus sensible aux variations que la moyenne arithmétique, ce qui présente un intérêt lorsqu'on travaille sur des normes : on cherche alors à pénaliser les chemins présentant une forte disparité entre les scores. . C'est pour cette raison que l'on introduit $\varepsilon>0$ qui garantit que même un score très faible (voire nul) conserve une contribution non nulle à l'agrégation, permettant à l'opérateur de rester un opérateur de compensation sans se à restreindre l'évaluation à des valeurs strictement supérieures à 0.
  Soit $\varepsilon>0$ :
     \begin{equation}
@@ -418,7 +418,7 @@ Soit $\gamma\in ]0,1]$, $\Gamma = \frac{1-\gamma^{N}}{1-\gamma}$ ($\Gamma =N $ s
 
 
     
-    Les opérateurs gamma permettent de prendre en compte le temps dans l'agrégation des scores, ils ne sont pas invariants à la longueur de la trace et ne permettent pas une réelle compensation entre des scores s'ils sont éloignés temporellement.
+    Les opérateurs gamma permettent de prendre en compte le temps dans l'agrégation des scores, ils ne sont pas invariants à la longueur de la trace et ne permettent pas une réelle compensation entre des scores s'ils sont éloignés temporellement. Une étude de l'influence du paramètre $\gamma$ sur les résultats se trouve en annexe \ref{gamma_study}
 
 \paragraph{Opérateur seuil} Soit $\eta\in[0,1]$ :
 \begin{equation}
