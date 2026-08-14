@@ -293,7 +293,7 @@ On observe dans la Table \ref{tab:prio_normativite} que le contexte contrefactue
 
 \paragraph{Interdiction de dépasser un seuil}
 
-On utilise l'opérateur d'agrégation avec un seuil fixé à $\eta = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. 
+On utilise l'opérateur d'agrégation avec un seuil fixé à $\eta = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. Les résultats sont synthétisés dans la Table \ref{tab:res_seuil}
 
 \begin{table}[h]
 \centering
@@ -308,7 +308,7 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ &  trace & valid
 4 & $\chi_5$ & 0.50 & 1.0 & 1.50 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ &  \texttimes \\
 \hline
 \end{tabular}
-\caption{Résultats pour la priorité à la normativité.}
+\caption{Résultats pour l'interdiction de dépasser un seuil.}
 \label{tab:res_seuil}
 \end{table}
 
@@ -382,7 +382,11 @@ CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide 
 
 Les résultats présents dans la table \ref{tab:dist_pol} indiquent qu'avec cette configuration, le contexte causal avec le plus faible coût est le contexte $\chi_2$ suivi de $\chi_5$ les deux contrefactuels valides. Concernant la fonction de vraisemblance : dans la trace associée à $\chi_2$ un seul événement est présent et un choix est possible. Le choix fait est l'événement $boire$ qui correspond à l'événement choisi par la politique optimale donc le coût associé est de 0. Pour $\chi_5$, deux événements avec alternative sont présents dans la trace $empoisonner$ qui n'est pas l'événement choisi par la politique optimale, et $antidote$ qui est similaire à la politique optimale. Sur les deux événements un seul est égal à la politique optimale donc un coût de 0.5 est appliqué. Pour $\chi_3$ et $\chi_4$ tous les choix possibles sont différents de la politique optimale, un coût de 1 leur est attribué.
 
+\paragraph{Bilan}
 
+\hfill
+
+Ces différentes configurations et leurs résultats montrent la modularité et la pertinence de la mesure de qualité proposée. En fonction des priorités que l'on souhaite donner à l'évaluation (stabilité normative, pénalisation en début ou fin de scénario, proximité à une politique optimale), le classement des contrefactuels varie et reste cohérent avec l'intuition qui motive le choix de configuration. Cet exemple met en évidence l'importance du choix des composantes et des hyperparamètres dans l'évaluation d'un contrefactuel et confirme la capacité du cadre proposé à s'adapter à différentes exigences applicatives.
 
 
 
