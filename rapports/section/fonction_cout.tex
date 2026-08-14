@@ -85,11 +85,11 @@ La mutabilité correspond ainsi au nombre d'arcs sortants de l'état de départ 
     \centering
     \[
         \xymatrix @R=0.3em @C=5em{
-                & *++[o][F-]{B} \ar[ddr] \ar@[red]@{->}@< -4pt>[ddr] \ar@[blue]@{->}@< +4pt>[rdd]& & *++[o][F-]{E} \ar[rdd] \ar@[red]@{->}@< +4pt>[rdd]& \\
+                & *++[o][F-]{B} \ar[ddr] \ar@[BrickRed]@{->}@< -4pt>[ddr] \ar@[NavyBlue]@{->}@< +4pt>[rdd]& & *++[o][F-]{E} \ar[rdd] \ar@[BrickRed]@{->}@< +4pt>[rdd]& \\
                 & & & *++[o][F-]{F} & \\
-            *++[o][F-]{A} \ar[ruu] \ar@[blue]@{->}@< +4pt>[ruu] \ar[rdd] \ar@[green]@{->}@< -4pt>[ddr] \ar@[red]@{->}@< -4pt>[ruu] & & *++[o][F-]{D} \ar[ruu] \ar[ru] \ar[rd] \ar@[blue]@{->}@< +4pt>[rd] \ar@[green]@{->}@< -4pt>[dr] \ar[rdd] \ar@[red]@{->}@< +4pt>[ruu]& & *++[o][F-]{I} \\
-                & & & *++[o][F-]{G} \ar[ru] \ar@[blue]@{->}@< +4pt>[ru] \ar@[green]@{->}@< -4pt>[ru]& \\
-                & *++[o][F-]{C} \ar[ruu] \ar@[green]@{->}@< -4pt>[ruu] & & *++[o][F-]{H} &
+            *++[o][F-]{A} \ar[ruu] \ar@[NavyBlue]@{->}@< +4pt>[ruu] \ar[rdd] \ar@[ForestGreen]@{->}@< -4pt>[ddr] \ar@[BrickRed]@{->}@< -4pt>[ruu] & & *++[o][F-]{D} \ar[ruu] \ar[ru] \ar[rd] \ar@[NavyBlue]@{->}@< +4pt>[rd] \ar@[ForestGreen]@{->}@< -4pt>[dr] \ar[rdd] \ar@[BrickRed]@{->}@< +4pt>[ruu]& & *++[o][F-]{I} \\
+                & & & *++[o][F-]{G} \ar[ru] \ar@[NavyBlue]@{->}@< +4pt>[ru] \ar@[ForestGreen]@{->}@< -4pt>[ru]& \\
+                & *++[o][F-]{C} \ar[ruu] \ar@[ForestGreen]@{->}@< -4pt>[ruu] & & *++[o][F-]{H} &
         }
     \]
     \captionsetup{width = 0.8\textwidth}
@@ -186,11 +186,11 @@ Une troisième option consiste à abandonner toute contrainte entre les événem
 %             \[
 %                 \xymatrix @R=0.1em{
 %                     & &  *++[o][F-]{S_3}\ar@(r,u)[]_{\emptyset} &
-%                 \\  & *++[o][F-]{S_1} \ar@[red][ru]_{a: 0.2} \ar[rd]_{b: 0.2}&     
+%                 \\  & *++[o][F-]{S_1} \ar@[BrickRed][ru]_{a: 0.2} \ar[rd]_{b: 0.2}&     
 %                 \\  & & *++[o][F-]{S_4}\ar@(r,u)[]_{\emptyset} &
-%                 \\  *++[o][F-]{S_0} \ar@[red][ruu]_{a: 0.7} \ar@[green][rdd]_{b: 0.4}& &   
+%                 \\  *++[o][F-]{S_0} \ar@[BrickRed][ruu]_{a: 0.7} \ar@[ForestGreen][rdd]_{b: 0.4}& &   
 %                 \\  & & *++[o][F-]{S_5} \ar@(r,u)[]_{\emptyset} &   
-%                 \\  & *++[o][F-]{S_2} \ar[ru]_{a: 0.8} \ar@[green][rd]_{b: 0.9}&     
+%                 \\  & *++[o][F-]{S_2} \ar[ru]_{a: 0.8} \ar@[ForestGreen][rd]_{b: 0.9}&     
 %                 \\  & & *++[o][F-]{S_6}\ar@(r,u)[]_{\emptyset} &
 %                 }
 %             \]
@@ -237,11 +237,11 @@ La construction de politiques optimales peut être contrainte selon l'applicatio
             \[
                 \xymatrix @R=0,1em{
                     & &  *++[o][F-]{S_3}\ar@(r,u)[]_{\emptyset} &
-                \\  & *++[o][F-]{S_1} \ar@[red][ru]_{a: 0,2} \ar[rd]_{b: 0,2}&     
+                \\  & *++[o][F-]{S_1} \ar@[BrickRed][ru]_{a: 0,2} \ar[rd]_{b: 0,2}&     
                 \\  & & *++[o][F-]{S_4}\ar@(r,u)[]_{\emptyset} &
-                \\  *++[o][F-]{S_0} \ar@[red][ruu]_{a: 0,7} \ar@[green][rdd]_{b: 0,4}& &   
+                \\  *++[o][F-]{S_0} \ar@[BrickRed][ruu]_{a: 0,7} \ar@[ForestGreen][rdd]_{b: 0,4}& &   
                 \\  & & *++[o][F-]{S_5} \ar@(r,u)[]_{\emptyset} &   
-                \\  & *++[o][F-]{S_2} \ar[ru]_{a: 0,8} \ar@[green][rd]_{b: 0,9}&     
+                \\  & *++[o][F-]{S_2} \ar[ru]_{a: 0,8} \ar@[ForestGreen][rd]_{b: 0,9}&     
                 \\  & & *++[o][F-]{S_6}\ar@(r,u)[]_{\emptyset} &
                 }
             \]
@@ -476,10 +476,10 @@ Pour le moment, nous avons agrégé l'ensemble des scores d'un chemin causal. Ce
         \centering
         \[
             \xymatrix @R=0.1em{
-                &  *++[o][F-]{B} \ar[r]^{d:1} \ar@[blue]@{-}@<2pt> [r]& *++[o][F-]{D} \ar[r]^{g:0,9} \ar@[blue]@{-}@<2pt>[r] &  *++[o][F-]{G} \ar@[blue]@{-}@<2pt> [r] \ar[r]^{i:1} & *++[o][F-]{I}
-                \\ *++[o][F-]{A} \ar[ru]^{b:0,2} \ar[rdd]^{c:0,8}  \ar@[red]@{-}@< 2pt> [rdd] \ar@[green]@{-}@< -2pt> [rdd] \ar@[blue]@{-}@<2pt> [ru] & & & 
-                \\ & & *++[o][F-]{E} \ar[r]^{h:0,3} \ar@[red]@{-}@<2pt> [r] & *++[o][F-]{H} &
-                \\ & *++[o][F-]{C} \ar[ru]^{e:0,8} \ar@[red]@{-}@<2pt> [ru] \ar[rd]^{f:0,3} \ar@[green]@{-}@< -2pt> [rd]  & & &
+                &  *++[o][F-]{B} \ar[r]^{d:1} \ar@[NavyBlue]@{-}@<2pt> [r]& *++[o][F-]{D} \ar[r]^{g:0,9} \ar@[NavyBlue]@{-}@<2pt>[r] &  *++[o][F-]{G} \ar@[NavyBlue]@{-}@<2pt> [r] \ar[r]^{i:1} & *++[o][F-]{I}
+                \\ *++[o][F-]{A} \ar[ru]^{b:0,2} \ar[rdd]^{c:0,8}  \ar@[BrickRed]@{-}@< 2pt> [rdd] \ar@[ForestGreen]@{-}@< -2pt> [rdd] \ar@[NavyBlue]@{-}@<2pt> [ru] & & & 
+                \\ & & *++[o][F-]{E} \ar[r]^{h:0,3} \ar@[BrickRed]@{-}@<2pt> [r] & *++[o][F-]{H} &
+                \\ & *++[o][F-]{C} \ar[ru]^{e:0,8} \ar@[BrickRed]@{-}@<2pt> [ru] \ar[rd]^{f:0,3} \ar@[ForestGreen]@{-}@< -2pt> [rd]  & & &
                 \\ & & *++[o][F-]{F}
             }
         \]
