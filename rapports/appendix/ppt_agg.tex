@@ -23,7 +23,7 @@ $$agg_{geo}(0,\dots,0) =\exp\left( \frac{1}{N} \sum_{i<n} \log(\varepsilon)\righ
 $$agg_{geo}(1,\dots,1) =\exp\left( \frac{1}{N} \sum_{i<n} \log(1)\right) =  1$$
 Pour la limite en zéro la condition n'est pas respectée.
 
-Les propriétés d'identité et de conditions aux limites ne sont plus respecté après l'ajout de $\varepsilon$ (contrairement à la moyenne géométrique classique). Cependant, nous considérons ces propriétés moins déterminante pour notre application par rapport à l'avantage d'ajouter $\varepsilon$  comme discuté dans la section \ref{op_geo}.
+Les propriétés d'identité et de conditions aux limites ne sont plus respectées après l'ajout de $\varepsilon$ (contrairement à la moyenne géométrique classique). Cependant, nous considérons ces propriétés moins déterminantes pour notre application par rapport à l'avantage d'ajouter $\varepsilon$  comme discuté dans la section \ref{op_geo}.
 
 \paragraph{Monotonie croissante}
 Soit $u \leq v$, $Agg(u_1,\dots,u,\dots,u_n)$ ne diffère de $ Agg(u_1,\dots,v,\dots,u_n)$ que par un seul terme de la somme.
@@ -38,7 +38,7 @@ Soit $\gamma\in ]0,1]$, $\Gamma = \frac{1-\gamma^{N}}{1-\gamma}$ ($\Gamma =N $ s
 Soit $u\in [0,1]$, $N=1$ donc $\Gamma =1$
 $$agg_\gamma(u)= \gamma^0u= u$$
 La propriété d'identité est donc respectée.
-L'identité étant vérifiée, on peut vérifier la propriété d'idempotence que l'on défini comme l'extension de l'identité avec un $n \geq 1$.
+L'identité étant vérifiée, on peut vérifier la propriété d'idempotence que l'on définit comme l'extension de l'identité avec un $n \geq 1$.
 
 Soit $\textbf{u} = (u,\dots,u)$, $\textbf{u} \in [0,1]^n$ :
 
@@ -129,9 +129,9 @@ La propriété de monotonie croissante est respectée.
 \end{table}
 
 
-\subsection{Sensibilité à $\gamma$ pour l'opérateur gamma}\label{gamma_study}
+\subsection{Sensibilité de l'opérateur gamma au paramètre $\gamma$}\label{gamma_study}
 
-La variable $\gamma$ des opérateurs temporels influe directement sur le coût de vraisemblance d'un contexte contrefactuel. On peut noter quelques spécificités de cet opérateur : lorsque la trace contient un seul événement, $\gamma$ n'a aucune influence et le score correspond à l'évaluation de l'événement. À contrario, plus le nombre d'événements est important plus la valeur de $\gamma$ aura une influence. Si elle est fixée à 1, on effectue une simple moyenne arithmétique, plus on le fait tendre vers 0, plus l'opérateur ignore les résultats en début (opérateur $agg_{\gamma\_late}$) ou fin de scénario (opérateur $agg_\gamma$).
+La variable $\gamma$ des opérateurs temporels influe directement sur le coût de vraisemblance d'un contexte contrefactuel. On peut noter quelques spécificités de cet opérateur : lorsque la trace contient un seul événement, $\gamma$ n'a aucune influence et le score correspond à l'évaluation de l'événement. A contrario, plus le nombre d'événements est important plus la valeur de $\gamma$ aura une influence. Si elle est fixée à 1, on effectue une simple moyenne arithmétique, plus on le fait tendre vers 0, plus l'opérateur ignore les résultats en début (opérateur $agg_{\gamma\_late}$) ou fin de scénario (opérateur $agg_\gamma$).
 
 
 Dans la figure \ref{fig:sensi_gamma}, on observe l'évolution du coût de vraisemblance pour l'exemple du poison de la section \ref{ex_poison}. L'opérateur utilisé est $agg_\gamma$ qui donne plus d'importance aux événements en début de scénario. Le coût est calculé sur l'ensemble des événements des traces, relativement au contexte causal $\chi_1$.
@@ -143,4 +143,4 @@ Dans la figure \ref{fig:sensi_gamma}, on observe l'évolution du coût de vraise
     \label{fig:sensi_gamma}
 \end{figure}
 
-On observe sur la Figure \ref{fig:sensi_gamma}, l'impact de $\gamma$ sur le coût de vraisemblance. Le contexte causal $\chi_2$ (\textit{VO, boire, Vivant}) contient un unique événement donc sa vraisemblance ne dépend pas de la valeur de $\gamma$. Le contexte causal $\chi_3$ (\textit{V0,vider,VV,}$\emptyset$\textit{,Mort}) ne dépend pas non plus de $\gamma$ alors qu'il contient plus d'un événement. Ce comportement est dû aux scores des événements qui valent tous 0.5 et le fait que l'opérateur respecte une propriété d'idempotence. Lorsque tous les scores à agréger sont égaux, $\gamma$ n'influe pas le résultat. Concernant les contextes causaux $\chi_4$ (\textit{VO, emp, VE,vider,VV,}$\emptyset$\textit{,Mort}) et $\chi_5$ (\textit{VO,emp, VE,anti,VA,boire,Vivant}), ils sont impactés par $\gamma$. Lorsque $\gamma$ est proche de zéro, on ne prend en compte presque uniquement que le premier événement, égal dans les deux scénarios qui est $empoisonner$. Plus la valeur de $\gamma$ augmente, plus on s'intéresse à ce qui se passe en fin de scénario dans $\chi_5$ un antidote est versé, et donc le coût chute plus fortement que dans $\chi_4$. Autour de la valeur $\gamma=0.5$ on observe un chevauchement des courbes de $\chi_3$ et $\chi_5$. Le contexte causal $\chi_5$ devient moins coûteux que $\chi_3$. Cela montre l'importance de fixer correctement $\gamma$. Pour cela, il faut avoir en tête ces valeurs de bascules, même si elles ne sont pas automatiquement présentes, elles peuvent exister. Il est aussi important de fixer $\gamma$ en fonction de la longueur des scénarios que l'on traite. Si les scénarios sont courts favoriser un $\gamma$ relativement faible ($\leq 0.5$) et l'augmenter pour des longueurs plus importantes. 
+On observe sur la figure \ref{fig:sensi_gamma}, l'impact de $\gamma$ sur le coût de vraisemblance. Le contexte causal $\chi_2$ (\textit{VO, boire, Vivant}) contient un unique événement donc sa vraisemblance ne dépend pas de la valeur de $\gamma$. Le contexte causal $\chi_3$ (\textit{V0,vider,VV,}$\emptyset$\textit{,Mort}) ne dépend pas non plus de $\gamma$ alors qu'il contient plus d'un événement. Ce comportement est dû aux scores des événements qui valent tous 0.5 et le fait que l'opérateur respecte une propriété d'idempotence. Lorsque tous les scores à agréger sont égaux, $\gamma$ n'influe pas sur le résultat. Concernant les contextes causaux $\chi_4$ (\textit{VO, emp, VE,vider,VV,}$\emptyset$\textit{,Mort}) et $\chi_5$ (\textit{VO,emp, VE,anti,VA,boire,Vivant}), ils sont impactés par $\gamma$. Lorsque $\gamma$ est proche de zéro, on prend en compte presque uniquement le premier événement, égal dans les deux scénarios qui est $empoisonner$. Plus la valeur de $\gamma$ augmente, plus on s'intéresse à ce qui se passe en fin de scénario. Dans $\chi_5$ un antidote est versé, et donc le coût chute plus fortement que dans $\chi_4$. Autour de la valeur $\gamma=0.5$ on observe un chevauchement des courbes de $\chi_3$ et $\chi_5$. Le contexte causal $\chi_5$ devient moins coûteux que $\chi_3$. Cela montre l'importance de fixer correctement $\gamma$. Pour cela, il faut avoir en tête ces valeurs de bascule, même si elles ne sont pas automatiquement présentes, elles peuvent exister. Il est aussi important de fixer $\gamma$ en fonction de la longueur des scénarios que l'on traite. Si les scénarios sont courts, on favorisera un $\gamma$ relativement faible ($\leq 0.5$) et on l'augmentera pour des longueurs plus importantes. 

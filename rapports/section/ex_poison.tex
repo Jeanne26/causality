@@ -1,6 +1,6 @@
 \section{Application : exemple du poison}\label{ex_poison}
 
-Dans cette partie, nous allons présenter un exemple concret d'application du travail introduit précédemment. Cette section est organisée sous forme de pipeline, nous partons d'un problème défini en PDDL que nous convertissons en LTS, nous ajoutons une évaluation experte avant d'appliquer différentes configurations de la fonction de coût pour en analyser les nuances. L'exemple défini correspond à une situation dans laquelle se trouve un verre qui contient à l'origine de l'eau. On considère que différents événements peuvent se produire pour altérer la potabilité de ce dernier et entraîner ou non la mort de la personne qui le boit. Les événements sont évalués selon une norme que l'on laisse floue, mais qui correspond approximativement à une norme du bien dans le sens où un événement est jugé comme peu normal s'il est associé à une nuisance  (comme empoisonner le verre qui peut entraîner la mort) et comme très normal s'il entraîne un bénéfice (verser un antidote dans un verre empoisonné permet de sauver une personne). Dans notre modélisation un verre vide entraîne la mort. Cela peut paraître contre-intuitif, mais cette modélisation s'inspire d'un exemple connu en causalité. Cet exemple représente un voyageur dans le désert qui se fait empoisonner sa gourde avant qu'un second ne la lui vide. Nous nous inspirons de cet exemple pour représenter la possibilité de mourir de soif et évaluons subjectivement l'action de vider un verre comme moins mauvaise que de l'empoisonner. La modélisation de la situation et de l'évaluation est entièrement subjective et pourrait être complexifiée, mais nous souhaitons garder un exemple simple pour plus de lisibilité. 
+Dans cette partie, nous allons présenter un exemple concret d'application du travail introduit précédemment. Cette section est organisée sous forme de pipeline : nous partons d'un problème défini en PDDL que nous convertissons en LTS, nous ajoutons une évaluation experte avant d'appliquer différentes configurations de la fonction de coût pour en analyser les nuances. L'exemple défini correspond à une situation dans laquelle se trouve un verre qui contient à l'origine de l'eau. On considère que différents événements peuvent se produire pour altérer la potabilité de ce dernier et entraîner ou non la mort de la personne qui le boit. Les événements sont évalués selon une norme que l'on laisse floue, mais qui correspond approximativement à une norme du bien dans le sens où un événement est jugé comme peu normal s'il est associé à une nuisance  (comme empoisonner le verre qui peut entraîner la mort) et comme très normal s'il entraîne un bénéfice (verser un antidote dans un verre empoisonné permet de sauver une personne). Dans notre modélisation un verre vide entraîne la mort. Cela peut paraître contre-intuitif, mais cette modélisation s'inspire d'un exemple connu en causalité. Cet exemple représente un voyageur dans le désert qui se fait empoisonner sa gourde avant qu'un second ne la lui vide. Nous nous inspirons de cet exemple pour représenter la possibilité de mourir de soif et évaluons subjectivement l'action de vider un verre comme moins mauvaise que de l'empoisonner. La modélisation de la situation et de l'évaluation est entièrement subjective et pourrait être complexifiée, mais nous souhaitons garder un exemple simple pour plus de lisibilité. 
 
 \subsection{De PDDL vers un LTS}
 
@@ -8,7 +8,7 @@ La définition des fichiers PDDL se trouve en annexe \ref{app_pddl_poison_file}.
 
 \begin{equation*}
     \begin{aligned}
-        \mathds{F} & = \{VerreOK, \textit{VerreEmpoisonné},VerreVide,VerreAntidote,Mort,Vivant\}\\ 
+        \mathds{F} & = \{VerreOK (VO), \textit{VerreEmpoisonné} (VE),VerreVide (VV), \\ & \quad VerreAntidote (VA),Mort,Vivant\}\\ 
         \mathds{E} & = \{empoisonner,antidote,boire_{VO},boire_{VA},boire_{VE},vider_{VO}, vider_{VE}\}\\
         \mathds{A} & = \{ Vivant,Mort\}\\
         \mathds{T}& = \mathds{N} \\
@@ -17,6 +17,13 @@ La définition des fichiers PDDL se trouve en annexe \ref{app_pddl_poison_file}.
         & pre(empoisonner) = VO \quad pre(vider_{VO}) = VO \\
         & pre(vider_{VE}) = VE \\
         & pre(\emptyset) = VV \vee Mort \vee Vivant\\
+    \end{aligned}
+\end{equation*}
+
+Un état du système doit décrire de façon complète et sans ambiguïtés une situation, il faut donc préciser la valeur de chacun des fluents. Par souci de lisibilité, chaque état dans notre modélisation est désigné par l'unique fluent qui y est vrai.
+
+\begin{equation*}
+    \begin{aligned}
         \mathds{S} & = \left\{
         \begin{aligned}
         VO     &= VO     \wedge \neg VE \wedge \neg VV \wedge \neg VA \wedge \neg \text{Mort} \wedge \neg \text{Vivant}, \\
@@ -42,7 +49,7 @@ Pour alléger la notation, on fusionne la notation de $boire_{VO},boire_{VA},boi
         \right\} \\
         expert\_judge_\tau &= \left\{
         \begin{aligned}
-        VO &: \{boire: 1,\ vider: 0.5,\ emp: 0.1\}, \\
+        VO &: \{boire: 1,\ vider: 0.5,\ empoisonner : 0.1\}, \\
         VE &: \{antidote: 1,\ boire: 0.1,\ vider: 0.5\}, \\
         VV &: \{\emptyset: 0.5\}, \\
         VA &: \{boire: 1\}, \\
@@ -69,7 +76,7 @@ Pour alléger la notation, on fusionne la notation de $boire_{VO},boire_{VA},boi
 
 
 \subsection{Définition des contextes causaux}
-On réduit le champ de travail en ne travaillant que sur des contextes causaux partageant le même état de départ $S_0$ et une politique correcte relativement au LTS $<\mathds{S},\tau>$.
+On réduit le champ de travail en ne travaillant que sur des contextes causaux partageant le même état de départ $S_0 = VO$ et une politique correcte relativement au LTS $<\mathds{S},\tau>$.
 \begin{itemize}
 \item Contexte causal  $\chi_1 = (\pi_1,S_0,\tau)$ avec $\pi_1\in \Pi_\tau$ :
 
@@ -204,7 +211,9 @@ On réduit le champ de travail en ne travaillant que sur des contextes causaux p
      \end{minipage}
 \end{itemize}
 
-\subsection{Définition des politiques optimales}
+\subsection{Définition des politiques optimales}\label{pol_opti}
+
+On définit les politiques optimales, avec et sans planification (présentées dans la section \ref{v_pol_opt}), associées au LTS :  
 
 Politique optimale sans planification :
 \begin{align*}
@@ -212,7 +221,7 @@ Politique optimale sans planification :
     & \pi^{opt1}_\tau(VA)=\{boire\}, \quad \pi^{opt1}_\tau(Vivant)=\{\emptyset\} \quad
 \end{align*}
 Politique optimale avec planification :
-\begin{align}\label{pol_opti}
+\begin{align}
     & \pi^{opt2}_\tau(VO)=\{boire\}, \quad \pi^{opt2}_\tau(VE)=\{antidote\}, \quad \pi^{opt2}_\tau(VV)=\{\emptyset\}, \quad \pi^{opt2}_\tau(Mort)=\{\emptyset\} \\
     & \pi^{opt2}_\tau(VA)=\{boire\}, \quad \pi^{opt2}_\tau(Vivant)=\{\emptyset\} \quad
 \end{align}
@@ -229,7 +238,7 @@ On note $\forall S\in \mathds{S},\quad \pi^{opt1}_\tau(S) =\pi^{opt2}_\tau(S)$. 
         }    
     \]
     \captionsetup{width=0.8\textwidth}
-    \caption{Politique optimale : les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale}
+    \caption{Politique optimale : les flèches rouges indiquent dans chaque état l'événement choisi par la politique optimale.}
     \label{fig:placeholder}
 \end{figure}
 
@@ -266,9 +275,7 @@ En fonction de la configuration choisie (extraction d'une politique optimale, ex
 Dans les exemples suivants, on considère, si ce n'est pas précisé, que le contexte causal observé est $\chi_1$. On fixe  $\lambda_1 =\lambda_2 =1$ et un coût maximal $\delta=2$. Avec cette valeur, la validité ne dépend que de la différence entre les deux états finaux des traces de l'observation et du contrefactuel.
 
 \paragraph{Priorité à des contrefactuels avec des scores d'événements stables:}
-On choisit pour la fonction de vraisemblance la formule \ref{exploit_direct} avec l'opérateur d'agrégation $agg_{geo}$ et on agrège les scores de tous les événements des scénarios. On souhaite dans cette configuration pénaliser des traces avec une variance de score importante.
-
-Les résultats sont donnés en résumé dans la Table \ref{tab:prio_normativite}
+On choisit pour la fonction de vraisemblance la formule \ref{exploit_direct} avec l'opérateur d'agrégation $agg_{geo}$ et on agrège les scores de tous les événements des scénarios. On souhaite dans cette configuration pénaliser des traces avec une variance de score importante. Les résultats sont donnés en résumé dans la table \ref{tab:prio_normativite}
 
 \begin{table}[h]
 \centering
@@ -287,13 +294,13 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide
 \label{tab:prio_normativite}
 \end{table}
 
-On observe dans la Table \ref{tab:prio_normativite} que le contexte contrefactuel avec le coût minimal est le contexte $\chi2$. Sa distance à l'observation est de 0.67 et sa vraisemblance de 0 (l'unique événement $boire$ a un score de 1). Ce contrefactuel est suivi du contexte $\chi_5$, plus proche de l'observation (coût de 0.5) mais le scénario associé contient l'événement $empoisonner$ qui fait augmenter le coût. Les deux premiers contrefactuels $\chi_2$ et $\chi_5$ sont valides.
 
 
+D'après la table \ref{tab:prio_normativite}, le contrefactuel avec le coût minimal est $\chi_2$ (distance de 0.67, vraisemblance nulle car l'unique événement $boire$ a un score de 1). Il est valide : son état final ($Vivant$) diffère de l'observation ($Mort$). $\chi_3$ et $\chi_4$, bien que moins coûteux que $\chi_5$, ne le sont pas, leur état final étant $Mort$. Entre les deux contrefactuels valides, $\chi_2$ est favorisé par rapport à $\chi_5$ grâce à des scores plus stables et plus élevés, $\chi_5$ étant pénalisé par l'événement $empoisonner$. Ce résultat confirme le comportement attendu de la configuration, qui privilégie les traces avec une faible variance dans les scores.
 
 \paragraph{Interdiction de dépasser un seuil}
 
-On utilise l'opérateur d'agrégation avec un seuil fixé à $\eta = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. Les résultats sont synthétisés dans la Table \ref{tab:res_seuil}
+On utilise l'opérateur d'agrégation avec un seuil fixé à $\eta = 0.2$ pour pénaliser les contrefactuels dont le scénario contient un empoisonnement. On fixe aussi un coût maximal de 0.5 pour le coût de vraisemblance. Les résultats sont synthétisés dans la table \ref{tab:res_seuil}
 
 \begin{table}[h]
 \centering
@@ -312,10 +319,10 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ &  trace & valid
 \label{tab:res_seuil}
 \end{table}
 
-Dans cette configuration, le contexte causal $\chi_2$ est le seul contexte valide. En rajoutant une contrainte sur le coût de vraisemblance, on exclut automatiquement les contrefactuels qui possèdent un événement inférieur au seuil, c'est ce qu'on observe pour $\chi_5$. 
+Dans cette configuration, le contexte causal $\chi_2$ est le seul contexte valide. En ajoutant une contrainte sur le coût de vraisemblance, on exclut automatiquement les contrefactuels qui possèdent un événement inférieur au seuil, ici l'événement $empoisonner$. Cela impacte la validité des contrefactuels, en effet, $\chi_5$ a un état final différent de l'observation, mais il dépasse les bornes d'acceptabilité fixées. 
 
 \paragraph{Normativité en début de scénario}
-On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élevés sur les événements en début de trace et en considérant peu ceux en fin de  trace.
+On utilise maintenant l'opérateur $agg_\gamma$, avec $\gamma = 0.25$, qui avantage les scénarios qui ont des scores élevés sur les événements en début de trace et en considérant peu ceux en fin de  trace (table \ref{tab:res_gamma}).
 
 \begin{table}[h]
 \centering
@@ -334,12 +341,12 @@ CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide 
 \label{tab:res_gamma}
 \end{table}
 
-On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût correspond à $\chi_2$ qui a le premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possèdent en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. 
+On observe avec la table \ref{tab:res_gamma} que le contrefactuel avec le plus faible coût correspond à $\chi_2$ qui a le premier événement avec un score le plus élevé ($boire$ =1) suivit de $\chi_3$ qui a un score pour son premier événement de 0.5. Les deux derniers contextes causaux possèdent en premier événement $empoisonner$ ce qui vient fortement augmenter le coût. Les contextes causaux valides sont $\chi_2$ et $\chi_5$, ils restent les deux seuls contrefactuels avec un état final différent de l'observation.
 
 
 \paragraph{Normativité en fin de scénario}
 
-On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplé au coût sur la distance à l'observation. Ainsi, on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace, mais qui reste le plus proche possible au début.
+On utilise l'opérateur $gamma_{late}$ avec $\gamma =0.25$. On priorise la normativité en fin de trace, couplée au coût sur la distance à l'observation. Ainsi, on cherche des contrefactuels qui ne diffèrent de l'observation qu'en fin de trace, mais qui restent le plus proche possible au début.
 
 \begin{table}[h]
 \centering
@@ -358,10 +365,10 @@ CF & classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide
 \label{tab:res_gamma_late}
 \end{table}
 
-La table des résultats \ref{tab:res_gamma_late} montre que dans cette configuration, c'est $\chi_5$ qui a le coût le plus faible, malgré l'empoisonnement, on s'éloigne de l'observation le plus tard possible.
+La table des résultats \ref{tab:res_gamma_late} montre que, dans cette configuration, c'est $\chi_5$ qui a le coût le plus faible, malgré l'empoisonnement, on s'éloigne de l'observation le plus tard possible.
 
 \paragraph{Normativité du contrefactuel avec distance à une politique optimale}
-On choisit pour cette configuration de calculer la distance à la politique optimale (voir \ref{pol_opti}). Le choix est fait de ne considérer que les événements pour lesquelles une alternative existe.
+On choisit pour cette configuration de calculer la distance à la politique optimale, définie dans la section \ref{pol_opti}. Le choix est fait de ne considérer que les événements pour lesquels une alternative existe.
 
 \begin{table}[h]
 \centering
@@ -376,11 +383,11 @@ CF& classement & $d_{\text{obs}}$ & $v$ & $d_{\text{obs}} + v$ & trace & valide 
 2 & $\chi_5$ & 0.50 & 0.5 & 1.0 & $[VO,empoisonner,VE,antidote,VA,boire,Vivant]$ & \checkmark \\
 \hline
 \end{tabular}
-\caption{Résultats distance à la politique optimale.}
+\caption{Résultats selon la distance à la politique optimale.}
 \label{tab:dist_pol}
 \end{table}
 
-Les résultats présents dans la table \ref{tab:dist_pol} indiquent qu'avec cette configuration, le contexte causal avec le plus faible coût est le contexte $\chi_2$ suivi de $\chi_5$ les deux contrefactuels valides. Concernant la fonction de vraisemblance : dans la trace associée à $\chi_2$ un seul événement est présent et un choix est possible. Le choix fait est l'événement $boire$ qui correspond à l'événement choisi par la politique optimale donc le coût associé est de 0. Pour $\chi_5$, deux événements avec alternative sont présents dans la trace $empoisonner$ qui n'est pas l'événement choisi par la politique optimale, et $antidote$ qui est similaire à la politique optimale. Sur les deux événements un seul est égal à la politique optimale donc un coût de 0.5 est appliqué. Pour $\chi_3$ et $\chi_4$ tous les choix possibles sont différents de la politique optimale, un coût de 1 leur est attribué.
+Les résultats présentés dans la table \ref{tab:dist_pol} indiquent qu'avec cette configuration, le contexte causal avec le plus faible coût est le contexte $\chi_2$ suivi de $\chi_5$, les deux contrefactuels valides. Concernant la fonction de vraisemblance, dans la trace associée à $\chi_2$ un seul événement est présent et un choix est possible. Le choix fait est l'événement $boire$ qui correspond à l'événement choisi par la politique optimale donc le coût associé est de 0. Pour $\chi_5$, deux événements avec alternative sont présents dans la trace $empoisonner$ qui n'est pas l'événement choisi par la politique optimale, et $antidote$ qui est similaire à la politique optimale. Sur les deux événements un seul est égal à la politique optimale donc un coût de 0.5 est appliqué. Pour $\chi_3$ et $\chi_4$ tous les choix possibles sont différents de la politique optimale, un coût de 1 leur est attribué.
 
 \paragraph{Bilan}
 

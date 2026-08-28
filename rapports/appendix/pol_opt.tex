@@ -26,8 +26,8 @@
         \caption{LTS augmenté}
         \label{fig:diag-b}
     \end{subfigure}
-    \caption{Construction du graphe pour l'application d'un algorithme de plus court chemin}
+    \caption{Construction du graphe pour l'application d'un algorithme de plus court chemin.}
     \label{fig:lts astar}
 \end{figure}
-Les algorithmes de plus court chemin nécessitent l'indication d'un état de départ et d'arrivée. Dans notre cas, on souhaite trouver le chemin qui minimise le coût sans contraindre à une destination fixe. Pour permettre cela, on crée un LTS temporaire, à partir de notre LTS de travail, auquel on ajoute un état "poubelle" (voir Figure \ref{fig:lts astar}). On relie chaque état terminal du LTS original à ce nouvel état, et chaque transition entre un état terminal et l'état possède un score égal (par exemple 1). L'ajout de cet état nous permet d'appliquer un algorithme de recherche du plus court chemin en fixant l'état d'arrivée à l'état ajouté.
+Les algorithmes de plus court chemin nécessitent l'indication d'un état de départ et d'arrivée. Dans notre cas, on souhaite trouver le chemin qui minimise le coût sans contraindre à une destination fixe. Pour permettre cela, on crée un LTS temporaire, à partir de notre LTS de travail, auquel on ajoute un état "poubelle" (voir figure \ref{fig:lts astar}). On relie chaque état terminal du LTS original à ce nouvel état, et chaque transition entre un état terminal et l'état possède un score égal (par exemple 1). L'ajout de cet état nous permet d'appliquer un algorithme de recherche du plus court chemin en fixant l'état d'arrivée à l'état ajouté.
 

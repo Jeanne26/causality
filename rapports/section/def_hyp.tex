@@ -1,11 +1,11 @@
 
 \section{Définitions et notations}\label{def}
-On définit dans un premier temps l'ensemble des objets nécessaires à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article \cite{sarmiento_formalising_2025}, d'autres ont été légèrement modifiées et certaines ont été ajoutées.
+On définit dans un premier temps l'ensemble des objets nécessaires à l'évaluation des contextes causaux contrefactuels. Une partie des définitions est directement extraite de l'article de \cite{sarmiento_formalising_2025}, d'autres ont été légèrement modifiées et certaines ont été ajoutées.
 
-On commence par décrire la structure statique du monde : les fluents qui le caractérisent ainsi que les formules d'états qui permettent d'exprimer des propriétés logiques sur ces fluents. On
-introduit ensuite sa dynamique, à travers les événements qui font évoluer le monde et les
-relations de transition qui les relient aux états, formant ainsi un système de transition
-d'états étiquetés (LTS).
+% On commence par décrire la structure statique du monde : les fluents qui le caractérisent ainsi que les formules d'états qui permettent d'exprimer des propriétés logiques sur ces fluents. On
+% introduit ensuite sa dynamique, à travers les événements qui font évoluer le monde et les
+% relations de transition qui les relient aux états, formant ainsi un système de transition
+% d'états étiquetés (LTS).
 
 On commence par décrire la structure du monde : les fluents qui le caractérisent ainsi que les formules d'états qui permettent d'exprimer des propriétés logiques sur ces fluents.
 \begin{itemize}
@@ -17,11 +17,11 @@ On commence par décrire la structure du monde : les fluents qui le caractérise
         \item $\mathds{S} \subseteq 2^{\mathds{F}}$ : ensemble de tous les états possibles du monde
     \end{itemize}
 
-On introduit ensuite la dynamique du monde, à travers les événements qui font évoluer le monde et les relations de transitions qui les relient aux états, formant ainsi un système de transition d'états étiquetés (LTS).
+On introduit ensuite la dynamique du monde, à travers les événements qui font évoluer le monde et les relations de transition qui les relient aux états, formant ainsi un système de transition d'états étiquetés (LTS).
 \begin{itemize}
-    \item $\mathds{E}$ : ensemble des variables qui décrivent les transitions, "ground events" qui modifient les fluents
-    \item $\tau \subseteq \mathds{S} \times 2^{\mathds{E}} \times \mathds{S}$ : ensemble des relations de transition. Pour chaque état indique, les  ensembles d'événements simultanés qui pourraient se produire ainsi que les états résultants
-    \item \textbf{Labelled Transition System}, $\langle\mathds{S}, \tau\rangle$ : graphe dirigé avec $\mathds{S}$ les nœuds du graphe et $\tau$ les arcs du graphe. \textit{NB}~: définition conventionnelle d'un graphe (nœuds + arcs), cette définition permet aussi de garder l'information d'états qui n'ont pas de transition entrante ou sortante. Soit $pre: \mathds{E}\to \mathcal{F}$, la fonction qui à chaque événement associe les préconditions qui lui sont associées. Les préconditions sont sous la forme de formule d'état et expriment les conditions qui doivent être respecté dans un état pour qu'un événement puisse se produire. On considère dans notre contexte que tous les LTS sont corrects relativement à cette fonction. Formellement
+    \item $\mathds{E}$ : ensemble des variables qui décrivent les transitions, "\textit{ground events}" qui modifient les fluents
+    \item $\tau \subseteq \mathds{S} \times 2^{\mathds{E}} \times \mathds{S}$ : ensemble des relations de transition. Pour chaque état $\tau$ indique les  ensembles d'événements simultanés qui pourraient se produire ainsi que les états résultants
+    \item \textbf{Labelled Transition System}, $\langle\mathds{S}, \tau\rangle$ : graphe orienté avec $\mathds{S}$ les nœuds du graphe et $\tau$ les arcs du graphe. \textit{Remarque}~: cette définition conventionnelle d'un graphe (nœuds + arcs) permet aussi de garder l'information d'états qui n'ont pas de transition entrante ou sortante. Soit $pre: \mathds{E}\to \mathcal{F}$, la fonction qui à chaque événement associe ses préconditions. Celles-ci sont exprimées sous la forme de formules d'état et donnent les conditions qui doivent être respectées dans un état pour qu'un événement puisse se produire. On considère dans notre contexte que tous les LTS sont corrects relativement à cette fonction. Formellement :
         \begin{equation*}
             \forall (S,E,S') \in \tau,  \quad \forall e \in E, \quad S\models pre(e)
         \end{equation*}
@@ -30,36 +30,36 @@ On introduit ensuite la dynamique du monde, à travers les événements qui font
 
 Une fois cette structure posée, on définit la notion de politique qui associe à chaque état un événement à réaliser, ainsi que la notion de contexte causal, qui associe une politique et un état de départ dans un LTS donné.
 \begin{itemize}
-    \item \textbf{Politique} $\pi$ : $\mathds{S} \to 2^{\mathds{E}}$ relativement à un LTS donné. À la différence de l'article \textcite{sarmiento_formalising_2025} les événements ne dépendent que d'un état et non d'un couple (état, temps). On considère dans notre cadre que les états contiennent l'ensemble des informations nécessaires, ce qui peut inclure des informations implicites sur le temps.
+    \item \textbf{Politique} $\pi$ : $\mathds{S} \to 2^{\mathds{E}}$ relativement à un LTS donné. À la différence du modèle de \textcite{sarmiento_formalising_2025} les événements ne dépendent que d'un état et non d'un couple (état, temps). On considère dans notre cadre que les états contiennent l'ensemble des informations nécessaires, ce qui peut inclure des informations implicites sur le temps.
 
-    \item $\Pi_\tau$ l'ensemble de toutes les politiques possibles relativement à un LTS $\langle\mathds{S},\tau\rangle$
-    \item \textbf{Politique correcte} $\pi$ relative à un LTS c'est-à-dire telle que : $\forall S \in \mathds{S} \quad \exists S'\in \mathds{S}, (S, \pi(S),S')\in \tau$
+    \item $\Pi_\tau$ l'ensemble de toutes les politiques possibles relativement à un LTS $\langle\mathds{S},\tau\rangle$.
+    \item \textbf{Politique correcte} $\pi$ relative à un LTS, c'est-à-dire telle que : $$\forall S \in \mathds{S} \quad \exists S'\in \mathds{S}, (S, \pi(S),S')\in \tau.$$
     \item \textbf{Contexte causal} : $\chi = (\pi, S_0,\tau)$ avec $\pi \in \Pi_\tau$ une politique, $S_0\in \mathds{S}$ un état de départ et $\tau$ un ensemble de relations de transitions décrivant un LTS. 
     \item \textbf{Contexte causal contrefactuel} : soit $\chi = (\pi, S_0, \tau)$ un contexte causal observé. On appelle contexte causal contrefactuel relatif à $\chi$ tout contexte causal $\chi' = (\pi', S_0', \tau)$ construit sur le même LTS $\langle \mathds{S},\tau\rangle$, tel que $\pi' \neq \pi$ ou $S_0' \neq S_0$. Un contexte causal contrefactuel représente un scénario alternatif à un scénario observé, obtenu soit en modifiant la politique suivie, soit l'état de départ, soit les deux, tout en conservant les mêmes lois causales du monde (le LTS étant inchangé).
     
     \item Hypothèse déterministe : un LTS défini par $\langle\mathds{S},\tau\rangle$ est dit déterministe si : 
         \begin{equation*}
-            \forall S,S'\in \mathds{S}, \forall E\in 2^{\mathds{E}}, \quad (S,E,S')\in \tau \implies \nexists S'' \in \mathds{S}, \quad (S,E,S'')\in \tau
+            \forall S,S'\in \mathds{S}, \forall E\in 2^{\mathds{E}}, \quad (S,E,S')\in \tau \implies \nexists S'' \in \mathds{S}, \quad (S,E,S'')\in \tau, \quad S'' \neq S'.
         \end{equation*}
     \item \textbf{États terminaux } $\mathds{A} \subseteq \mathds{S}$ : ensemble des états d'un LTS $\langle\mathds{S},\tau\rangle$ défini par :
         \begin{equation*}
         \begin{aligned}
             \mathds{A} &= \{ S\in \mathds{S} \mid\ (S,\emptyset,S) \in \tau \} 
-                    &\quad \text{et} \quad \forall S' \notin \mathds{A},\ \forall E \in 2^{\mathds{E}},\ (S',E,S')\notin \tau
+                    &\quad \text{et} \quad \forall S' \notin \mathds{A},\ \forall E \in 2^{\mathds{E}},\quad E \neq \emptyset, \quad (S',E,S')\notin \tau.
         \end{aligned}
         \end{equation*}
     \end{itemize}
 
-L'exécution d'un contexte causal engendre une évolution du monde qu'il est nécessaire de pouvoir indexer temporellement, on introduit pour cela l'ensemble des pas de temps, qui permet de définir les fonctions $S^\chi$ et $E^\chi$ donnant l'état et l'événement obtenus à un instant donné, ainsi que la trace $\sigma^\chi$. Les résultats de $S^\chi$, $E^\chi$ ainsi que la trace sont directement dérivables de par le fait que les LTS ainsi que les politiques soient déterministe. 
+L'exécution d'un contexte causal engendre une évolution du monde qu'il est nécessaire de pouvoir indexer temporellement, on introduit pour cela l'ensemble des pas de temps, qui permet de définir les fonctions $S^\chi$ et $E^\chi$ donnant l'état et l'événement obtenus à un instant donné, ainsi que la trace $\sigma^\chi$. Les résultats de $S^\chi$, $E^\chi$ ainsi que la trace sont directement calculables de par le fait que les LTS ainsi que les politiques sont déterministes. 
 
 \begin{itemize}
-    \item $\mathds{T}$: ensemble des pas de temps
+    \item $\mathds{T}$ : ensemble des pas de temps
     
-    \item $S^\chi: \mathds{T}\to \mathds{S}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'état dans lequel on se trouve en suivant la politique $\pi$, dans $\tau$ depuis $S_0$.
+    \item $S^\chi: \mathds{T}\to \mathds{S}$ la fonction relative à un contexte causal $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'état dans lequel on se trouve en suivant la politique $\pi$, dans $\tau$ depuis $S_0$.
 
-    \item $E^\chi: \mathds{T}\to \mathds{E}$ la fonction relative à un causal setting $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'événement qui a lieu en suivant la politique $\pi$, dans $\tau$ depuis $S_0$
+    \item $E^\chi: \mathds{T}\to \mathds{E}$ la fonction relative à un contexte causal $\chi = (\pi,S_0,\tau)$ qui indique au pas de temps $t\in \mathds{T}$ l'événement qui a lieu en suivant la politique $\pi$, dans $\tau$ depuis $S_0$
     
-    \item \textbf{Trace} $\sigma^\chi$ : avec $\chi = (\pi,S_0,\tau)$, la trace complète (états, événements), obtenue dans le contexte causal $\chi$, de la forme : $[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n,E_n,S_n,E_n\dots] $. Une fois un état terminal atteint, on observe une boucle qui amène à une trace infinie. On simplifie cette trace pour qu'elle soit de longueur finie. Soit $n$ tel que $S_n\in \mathds{A}$ : la trace d'origine devient $\sigma^\chi=[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n]$. On notera $\sigma^{\chi}_{|state}$ la partie de la trace ne contenant que les états et, $\sigma^{\chi}_{|event}$ la trace ne contenant que les événements.
+    \item \textbf{Trace} $\sigma^\chi$ : avec $\chi = (\pi,S_0,\tau)$, la trace complète (états, événements), obtenue dans le contexte causal $\chi$, de la forme : $[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n,E_n,S_n,E_n\dots] $. Une fois un état terminal atteint, on observe une boucle qui donne une trace infinie. On simplifie cette trace pour qu'elle soit de longueur finie. Soit $n$ tel que $S_n\in \mathds{A}$ : la trace d'origine devient $\sigma^\chi=[S_0,E_0,S_1,E_1,\dots,E_{n-1},S_n]$. On notera $\sigma^{\chi}_{|state}$ la partie de la trace ne contenant que les états et $\sigma^{\chi}_{|event}$ la trace ne contenant que les événements.
     
 \end{itemize}
 
@@ -69,4 +69,4 @@ Enfin, on introduit la fonction $expert\_judge_\tau$, qui permet de représenter
     \item $expert\_judge_\tau: \mathds{S} \times 2 ^{\mathds{E}}\to \lbrack 0, 1\rbrack$ fonction d'évaluation experte, définie partiellement sur l'ensemble des couples $(S,E)$ tel que $\exists S'\in\mathds{S},(S,E,S')\in \tau$. Cette fonction attribue à chaque paire une valeur comprise entre 0 et 1 relative à une norme (statistique ou prescriptive).
 \end{itemize}
 
-Les éléments présentés dans cette section forment un cadre de travail clair et expressif, sur lequel je m'appuie dans la section \ref{fct_cout} pour introduire la contribution principale de ce travail. Un exemple d'instanciation avec ces notions se trouve dans la section \ref{ex_poison}
+Les éléments présentés dans cette section forment un cadre de travail clair et expressif, sur lequel je m'appuie dans la section \ref{fct_cout} pour introduire la contribution principale de ce travail. Un exemple d'instanciation avec ces notions se trouve dans la section \ref{ex_poison}.

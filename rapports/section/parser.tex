@@ -1,15 +1,15 @@
 \section{Transition d'un framework RAC vers LTS : PDDL}\label{parser_section}
 
-Les LTS ne constituent pas directement un langage pour le domaine du RAC mais, comme dit dans \textcite{sarmiento_formalising_2025}, leur utilisation permet d'unifier des raisonnements dans différents cadres ainsi que de lever certaines ambiguïtés. Tout formalisme pouvant être représenté sous forme de LTS bénéficie ainsi des réflexions et observations de ce travail. Pour illustrer la possibilité de transition, nous allons développer  la traduction d'un problème PDDL vers LTS. La représentation LTS permet de travailler sur la comparaison de contextes causaux contrefactuels, mais on laisse le travail de recherche et de résolution de problème de planification aux outils préexistants. En effet, la complexité exponentielle d'un LTS en fonction du nombre d'états et d'actions n'est pas adaptée à la recherche de politique.
+Les LTS ne constituent pas directement un langage pour le domaine du RAC, mais comme dit par \textcite{sarmiento_formalising_2025}, leur utilisation permet d'unifier des raisonnements dans différents cadres ainsi que de lever certaines ambiguïtés. Tout formalisme pouvant être représenté sous forme de LTS bénéficie ainsi des réflexions et observations de ce travail. Pour illustrer la possibilité de transition, nous allons développer  la traduction d'un problème PDDL vers un LTS. La représentation LTS permet de travailler sur la comparaison de contextes causaux contrefactuels, mais on laisse le travail de recherche et de résolution de problèmes de planification aux outils préexistants. En effet, la complexité exponentielle d'un LTS en fonction du nombre d'états et d'actions n'est pas adaptée à la recherche de politique. En annexe \ref{demo_pars}, se trouvent les preuves formelles des propriétés de représentabilité, de correction et de terminaison du parseur proposé.
 
 
 \subsection{Rappel sur PDDL}
 
-Un problème de planification est décrit en PDDL par deux types de fichiers. Le premier définit le domaine de planification, il contient la déclaration des types, des actions (effets et préconditions) ainsi que les axiomes et les règles du domaine. Le second fichier définit le problème, il indique les objets, les constantes spécifiques ainsi que la situation de départ et l'objectif. Un exemple se trouve en annexe \ref{ex_pddl}
+Un problème de planification est décrit en PDDL par deux types de fichiers. Le premier définit le domaine de planification, et contient la déclaration des types, des actions (effets et préconditions) ainsi que les axiomes et les règles du domaine. Le second fichier définit le problème, et indique les objets, les constantes spécifiques ainsi que la situation de départ et l'objectif. Un exemple se trouve en annexe \ref{append_pddl}
 
 
 \subsection{Construction d'un LTS à partir d'un problème PDDL}
-Pour construire un LTS à partir d'un couple de fichiers domaine/problème, on commence par instancier toutes les actions possibles à partir de leurs définitions et des objets du problème. Ce processus est explicité  ci-dessous :
+Pour construire un LTS à partir d'un couple de fichiers (domaine, problème), on commence par instancier toutes les actions possibles à partir de leurs définitions et des objets du problème. Ce processus est explicité  ci-dessous :
 
 \hfill
 \begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize,
@@ -35,11 +35,11 @@ Une fois l'ensemble de toutes les actions instanciées et avant de pouvoir const
                    keywordstyle=\bfseries]
 def statisfied(preconditions,state):
     if preconditions conjonctives:
-        return all(statisfied(p,state) for p in preconditions)
+        return all(satisfied(p,state) for p in preconditions)
     if preconditions negatives:
-        return not statisfied(preconditions,state)
+        return not satisfied(preconditions,state)
     if preconditions disjonctives:
-        return any(statisfied(p,state) for p in preconditions)
+        return any(satisfied(p,state) for p in preconditions)
     return precondition in state
 
 \end{lstlisting}
@@ -63,7 +63,7 @@ def apply_effects(effects,state):
 \end{lstlisting}
 \hfill
 
-Avec ces trois fonctions, on peut maintenant définir la fonction de construction du LTS associé au problème PDDL. Un état est défini par l'ensemble des prédicats qui sont vrais dans ce dernier. On utilise une pile pour progresser dans la construction du graphe. À chaque nouvel état, on observe parmi toutes les actions possibles celles qui sont applicables en fonction de leurs préconditions. Si une action est applicable, on ajoute une nouvelle arête qui a pour état d'arrivée soit un état préexistant soit un nouvel état que l'on ajoute à la pile. Les états finaux sont les états dans lesquelles les conditions de l'objectif sont respectés. Pour les distinguer des autres états une arête réflexive est ajoutée. 
+Avec ces trois fonctions, on peut maintenant définir la fonction de construction du LTS associé au problème PDDL. Un état est défini par l'ensemble des prédicats qui sont vrais dans ce dernier. On utilise une pile pour progresser dans la construction du graphe. À chaque nouvel état, on observe parmi toutes les actions possibles celles qui sont applicables en fonction de leurs préconditions. Si une action est applicable, on ajoute une nouvelle arête qui a pour état d'arrivée soit un état préexistant soit un nouvel état que l'on ajoute à la pile. Les états finaux sont les états dans lesquels les conditions de l'objectif sont respectées. Pour les distinguer des autres états, une arête réflexive est ajoutée. 
 
 \hfill
 \begin{lstlisting}[language=Python,basicstyle=\ttfamily\footnotesize,
@@ -110,6 +110,6 @@ def build_graph(actions, init_state, goals):
 % Les LTS obtenus ne représentent pas l'ensemble des états possibles du monde, seuls les états accessibles depuis l'état initial, respectant les fonctions de précondition y figurent. Pour enrichir ces graphes, il serait potentiellement intéressant de construire pour un même domaine et objectif,  différents graphes selon différents états de départ et les fusionner afin de pouvoir travailler notamment sur des contextes contrefactuels avec des états de départ qui diffèrent (peut être potentiellement très coûteux). 
 Il est possible de continuer de tirer parti de PDDL et de ses solveurs pour extraire de manière automatique des politiques qui nous permettent par la suite de travailler sur des contextes causaux. Pour construire la politique, on avance dans le graphe depuis l'état de départ en attribuant à chaque état dans lequel on se trouve l'action associée dans le plan. Si besoin, ces politiques partielles peuvent ensuite être complétées aléatoirement ou selon une heuristique.
 
-Il est à noter que les LTS correspondent à une sémantique et non pas à des outils manipulables en pratique. Leur utilité pour des applications concrètes reste limitée et ils seront surtout utilisés de manière formelle pour raisonner. Pour des applications à des exemples simples, ils permettent une meilleure visualisation, et on considère donc suffisant un parseur simple comme présenté ci-dessus. L'idée de cette section étant principalement d'expliciter la faisabilité d'une transition d'un cadre de RAC vers des LTS, de possibles améliorations sont laissées en suspend, car ne représentant pas l'objet principal du travail. Nous laissons son optimisation pour des travaux futurs. On peut par exemple noter que ce parseur ne traite que des problèmes PDDL contenant uniquement les extensions STRIPS, préconditions disjonctives et préconditions négatives. Le choix de s'appuyer sur PDDL dans ce travail se justifie aussi par le nombre d'instances de problèmes déjà disponibles en PDDL, ce qui en un support pratique pour la génération d'exemples.
+Il est à noter que les LTS correspondent à une sémantique et non pas à des outils manipulables en pratique. Leur utilité pour des applications concrètes reste limitée et ils seront surtout utilisés de manière formelle pour raisonner. Pour des applications à des exemples simples, ils permettent une meilleure visualisation, et on considère donc suffisant un parseur simple comme présenté ci-dessus. L'idée de cette section étant principalement d'expliciter la faisabilité d'une transition d'un cadre de RAC vers des LTS, de possibles améliorations sont laissées en suspend, car ne représentant pas l'objet principal du travail. Nous laissons son optimisation pour des travaux futurs. On peut par exemple noter que ce parseur ne traite que des problèmes PDDL contenant uniquement les extensions STRIPS, préconditions disjonctives et préconditions négatives. Le choix de s'appuyer sur PDDL dans ce travail se justifie aussi par le nombre d'instances de problèmes déjà disponibles en PDDL, ce qui en fait un support pratique pour la génération d'exemples.
 
 
